@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Intellectir | Enterprise AI Consulting & Implementation</title>
+    <meta name="description" content="Intellectir is an enterprise AI consulting and implementation company building autonomous agentic systems for industry leaders.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="light-theme">
+
+    <!-- Interactive 3D Mouse Tracker -->
+    <div id="cursor-dot" class="cursor-dot"></div>
+    <div id="cursor-circle" class="cursor-circle"></div>
+
+    <!-- Header Navigation -->
+    <header id="masthead" class="site-header">
+        <div class="wrapper">
+            <div class="main-header">
+                <a href="index.html" class="brand-logo">
+                    <img src="assets/intellectir_logo.png" alt="Intellectir Logo" class="logo-img">
+                    <span class="logo-text">INTELLECTIR<span class="logo-dot">.</span></span>
+                </a>
+
+                <nav class="site-navigation">
+                    <ul class="nav-menu">
+                        <li class="nav-item"><a href="solutions.html" class="nav-link">Solutions</a></li>
+                        <li class="nav-item"><a href="industries.html" class="nav-link">Industries</a></li>
+                        <li class="nav-item"><a href="discover.html" class="nav-link">Discover</a></li>
+                        <li class="nav-item"><a href="company.html" class="nav-link active" style="color: #2563eb;">Company</a></li>
+                    </ul>
+                </nav>
+
+                <div class="header-actions">
+                    <button class="btn btn-nav-cta open-modal-btn" data-modal="demo">
+                        <span>Book a Consultation</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="primary" class="site-main">
+
+        <!-- Banner -->
+        <section class="ind-hero-section">
+            <div class="wrapper">
+                <div class="ind-hero-content center">
+                    <span class="subhead-tag"><i class="fa-solid fa-building"></i> ABOUT INTELLECTIR</span>
+                    <h1 class="ind-hero-title">Architecting the Autonomous Enterprise</h1>
+                    <p class="ind-hero-desc">
+                        We bridge the gap between AI hype and real operational business value with specialized agentic systems.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Company Mission -->
+        <section class="pillars-section" style="padding-top: 0;">
+            <div class="wrapper">
+                <div class="glass-card pillar-card" style="max-width: 800px; margin: 0 auto 40px; padding: 40px;">
+                    <h3 class="pillar-title" style="margin-bottom: 16px;"><i class="fa-solid fa-rocket" style="color: #2563eb;"></i> Our Mission</h3>
+                    <p class="pillar-desc" style="font-size: 1.05rem; line-height: 1.7;">
+                        Intellectir was founded on a simple principle: <strong>every workflow needs speed, but not every task needs a human.</strong> We help security, operations, and engineering leaders architect, deploy, and scale custom AI agents that eliminate operational bottlenecks with enterprise-grade security and proven ROI.
+                    </p>
+                </div>
+
+                <!-- Contact Card -->
+                <div class="glass-card pillar-card" style="max-width: 800px; margin: 0 auto; padding: 40px; text-align: center;">
+                    <h3 class="pillar-title" style="margin-bottom: 12px;">Ready to Transform Your Operations?</h3>
+                    <p class="pillar-desc" style="margin-bottom: 24px;">Book a private 15-minute consultation with our principal AI architects.</p>
+                    <button class="btn btn-primary btn-large open-modal-btn" data-modal="demo">
+                        <span>Book a Consultation Now</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="wrapper">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="index.html" class="brand-logo">
+                        <img src="assets/intellectir_logo.png" alt="Intellectir Logo" class="logo-img">
+                        <span class="logo-text">INTELLECTIR<span class="logo-dot">.</span></span>
+                    </a>
+                </div>
+                <div class="footer-links">
+                    <div class="footer-col">
+                        <h4>Navigation</h4>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="solutions.html">Solutions</a></li>
+                            <li><a href="industries.html">Industries</a></li>
+                            <li><a href="discover.html">Discover</a></li>
+                            <li><a href="company.html">Company</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom center">
+                <p>&copy; 2026 Intellectir Inc. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="demo-modal" class="modal-backdrop">
+        <div class="modal-card glass-card">
+            <button class="modal-close-btn" id="close-modal-btn"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-header"><h3 class="modal-title">Book a Consultation</h3></div>
+            <form id="modal-consultation-form" class="modal-form">
+                <div class="form-group"><label>Full Name</label><input type="text" required placeholder="John Doe"></div>
+                <div class="form-group"><label>Work Email</label><input type="email" required placeholder="john@company.com"></div>
+                <button type="submit" class="btn btn-primary btn-full" style="margin-top: 12px;">Submit Request →</button>
+            </form>
+        </div>
+    </div>
+    <div id="toast" class="toast"><i class="fa-solid fa-circle-check"></i><span id="toast-message">Request submitted successfully!</span></div>
+    <script src="app.js"></script>
+</body>
+</html>

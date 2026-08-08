@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intellectir | Enterprise AI Consulting & Custom Implementation Platform</title>
+    <meta name="description" content="Intellectir is the premier enterprise AI consulting and implementation partner. Architect, deploy, and scale custom AI agents and autonomous workflows with total governance and measurable ROI.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="light-theme">
+
+    <!-- Interactive 3D Mouse Tracker -->
+    <div id="cursor-dot" class="cursor-dot"></div>
+    <div id="cursor-circle" class="cursor-circle"></div>
+
+    <!-- Header Navigation -->
+    <header id="masthead" class="site-header">
+        <div class="wrapper">
+            <div class="main-header">
+                <a href="#" class="brand-logo">
+                    <img src="assets/intellectir_logo.png" alt="Intellectir Logo" class="logo-img">
+                    <span class="logo-text">INTELLECTIR<span class="logo-dot">.</span></span>
+                </a>
+
+                <nav class="site-navigation" aria-label="Main Navigation">
+                    <ul class="nav-menu">
+                        <li class="nav-item has-dropdown">
+                            <a href="#solutions" class="nav-link">Solutions <i class="fa-solid fa-chevron-down drop-icon"></i></a>
+                            <div class="mega-menu">
+                                <div class="mega-grid">
+                                    <div class="mega-column">
+                                        <h4 class="mega-heading">AI Capabilities</h4>
+                                        <a href="#strategy" class="mega-item">
+                                            <div class="mega-icon"><i class="fa-solid fa-compass"></i></div>
+                                            <div>
+                                                <span class="mega-title">AI Strategy & Discovery</span>
+                                                <span class="mega-desc">Executive roadmap & ROI assessment</span>
+                                            </div>
+                                        </a>
+                                        <a href="#agents" class="mega-item">
+                                            <div class="mega-icon"><i class="fa-solid fa-robot"></i></div>
+                                            <div>
+                                                <span class="mega-title">Custom Multi-Agent Networks</span>
+                                                <span class="mega-desc">Autonomous workflow orchestration</span>
+                                            </div>
+                                        </a>
+                                        <a href="#rag" class="mega-item">
+                                            <div class="mega-icon"><i class="fa-solid fa-brain"></i></div>
+                                            <div>
+                                                <span class="mega-title">RAG & LLM Fine-Tuning</span>
+                                                <span class="mega-desc">Domain-adapted enterprise models</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="mega-column">
+                                        <h4 class="mega-heading">Enterprise Governance</h4>
+                                        <a href="#governance" class="mega-item">
+                                            <div class="mega-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                                            <div>
+                                                <span class="mega-title">AI Security & Compliance</span>
+                                                <span class="mega-desc">SOC2, HIPAA & GDPR guardrails</span>
+                                            </div>
+                                        </a>
+                                        <a href="#integration" class="mega-item">
+                                            <div class="mega-icon"><i class="fa-solid fa-network-wired"></i></div>
+                                            <div>
+                                                <span class="mega-title">Legacy API Integration</span>
+                                                <span class="mega-desc">Connect custom stack & data lakes</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item"><a href="industries.html" class="nav-link">Industries</a></li>
+                        <li class="nav-item"><a href="discover.html" class="nav-link">Discover</a></li>
+                        <li class="nav-item"><a href="company.html" class="nav-link">Company</a></li>
+                    </ul>
+                </nav>
+
+                <div class="header-actions">
+                    <button class="btn btn-nav-cta open-modal-btn" data-modal="demo">
+                        <span>Book a Consultation</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="primary" class="site-main">
+
+        <!-- Hero Section with Background Video Support -->
+        <section id="hero" class="hero video-background">
+            <div class="video-container">
+                <!-- HTML5 Background Video Element -->
+                <video id="hero-bg-video" autoplay loop muted playsinline poster="assets/hero_poster.png">
+                    <!-- Default fallback video source -->
+                    <source src="" type="video/mp4">
+                </video>
+                <div class="video-overlay"></div>
+            </div>
+
+            <!-- Video Insertion Control Bar for User Preview -->
+            <div class="hero-video-controls">
+                <div class="video-control-pill">
+                    <i class="fa-solid fa-video video-icon-pulse"></i>
+                    <span>Background Video:</span>
+                    <label for="user-video-input" class="btn-video-select" title="Click to insert your own MP4 video file into the Hero background">
+                        <i class="fa-solid fa-upload"></i> Insert Your Video
+                    </label>
+                    <input type="file" id="user-video-input" accept="video/mp4,video/webm" style="display: none;">
+                    <span id="video-filename-status" class="video-status-text">Video Active</span>
+                </div>
+            </div>
+
+            <div class="wrapper hero-wrapper">
+                <div class="hero-grid">
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            Transforming the future of business with <span class="gradient-text">AGENTIC ENGINEERING.</span>
+                        </h1>
+
+                        <p class="hero-description">
+                            We build and deploy specialised autonomous agentic systems that breakdown complex business processes into simple multi-step tasks.
+                        </p>
+
+                        <div class="hero-cta-group">
+                            <button class="btn btn-nav-cta btn-large open-modal-btn" data-modal="demo">
+                                <span>Book a Consultation</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Logo Gallery / Marquee -->
+        <section class="logo-gallery">
+            <div class="wrapper">
+                <h3 class="gallery-title">TRUSTED BY FORWARD-THINKING ENTERPRISES & SCALE-UPS</h3>
+                <div class="marquee-wrapper">
+                    <div class="marquee-track">
+                        <div class="logo-item"><span class="logo-mock">FINTECH GLOBAL</span></div>
+                        <div class="logo-item"><span class="logo-mock">CYBERCORE</span></div>
+                        <div class="logo-item"><span class="logo-mock">APEX HEALTH</span></div>
+                        <div class="logo-item"><span class="logo-mock">NEXUS LOGISTICS</span></div>
+                        <div class="logo-item"><span class="logo-mock">AEROSPACE AI</span></div>
+                        <div class="logo-item"><span class="logo-mock">OMNI RETAIL</span></div>
+                        <div class="logo-item"><span class="logo-mock">DATAFLOW</span></div>
+                        <!-- Duplicated for seamless loop -->
+                        <div class="logo-item"><span class="logo-mock">FINTECH GLOBAL</span></div>
+                        <div class="logo-item"><span class="logo-mock">CYBERCORE</span></div>
+                        <div class="logo-item"><span class="logo-mock">APEX HEALTH</span></div>
+                        <div class="logo-item"><span class="logo-mock">NEXUS LOGISTICS</span></div>
+                        <div class="logo-item"><span class="logo-mock">AEROSPACE AI</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Value Proposition Section (Simple & Intuitive) -->
+        <section id="proposition" class="proposition-section">
+            <div class="wrapper">
+                <div class="section-header center">
+                    <span class="subhead-tag">WHAT INTELLECTIR DOES FOR YOUR BUSINESS</span>
+                    <h2 class="section-title">We turn hours of manual daily work into <span class="gradient-text">instant 5-second AI actions.</span></h2>
+                    <p class="section-lead">You don't need complex technical jargon to understand AI. Here is exactly how we help your company grow faster and save money.</p>
+                </div>
+
+                <!-- 3 Simple Plain-English Comparison Cards -->
+                <div class="prop-cards-grid">
+                    <div class="glass-card prop-card prop-problem">
+                        <div class="prop-icon-wrap problem-icon">
+                            <i class="fa-solid fa-hourglass-half"></i>
+                        </div>
+                        <span class="prop-step-label">THE PROBLEM TODAY</span>
+                        <h3 class="prop-card-title">Manual Bottlenecks & Burnout</h3>
+                        <p class="prop-card-desc">Your valuable team members spend 60%+ of their working hours copy-pasting data between systems, answering repetitive emails, digging through PDFs, and manually filing tickets.</p>
+                        <div class="prop-badge problem-badge"><i class="fa-solid fa-triangle-exclamation"></i> Wasting 20+ hrs/employee weekly</div>
+                    </div>
+
+                    <div class="glass-card prop-card prop-solution featured-prop">
+                        <div class="prop-featured-tag">WHAT WE BUILD FOR YOU</div>
+                        <div class="prop-icon-wrap solution-icon">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <span class="prop-step-label">OUR SOLUTION</span>
+                        <h3 class="prop-card-title">Custom AI Digital Employees</h3>
+                        <p class="prop-card-desc">We build specialized AI agents trained on your company's exact rules. They work 24/7 inside your existing software (Salesforce, Email, ERP, Slack) to handle multi-step jobs automatically.</p>
+                        <div class="prop-badge solution-badge"><i class="fa-solid fa-sparkles"></i> Operates 24/7 with zero human error</div>
+                    </div>
+
+                    <div class="glass-card prop-card prop-result">
+                        <div class="prop-icon-wrap result-icon">
+                            <i class="fa-solid fa-chart-line-up"></i>
+                        </div>
+                        <span class="prop-step-label">THE IMPACT</span>
+                        <h3 class="prop-card-title">10x Speed & Massively Reduced Costs</h3>
+                        <p class="prop-card-desc">Tasks that used to take days get completed in seconds. Your employees stop doing boring repetitive work and focus entirely on high-value strategy and customer growth.</p>
+                        <div class="prop-badge result-badge"><i class="fa-solid fa-circle-check"></i> Average 70%+ cost & time reduction</div>
+                    </div>
+                </div>
+
+                <!-- Interactive "See What You Save" ROI Calculator Widget -->
+                <div class="glass-card roi-calculator-card">
+                    <div class="calculator-header center">
+                        <span class="subhead-tag"><i class="fa-solid fa-calculator"></i> INTERACTIVE ROI CALCULATOR</span>
+                        <h3 class="calc-title">See How Much Time & Money AI Agents Can Save Your Team</h3>
+                        <p class="calc-subtitle">Select a department and drag the slider to estimate your company's immediate annual savings.</p>
+                    </div>
+
+                    <div class="calc-grid">
+                        <div class="calc-controls">
+                            <div class="dept-selector-group">
+                                <label class="calc-label">1. Select Your Department:</label>
+                                <div class="dept-pills">
+                                    <button class="dept-btn active" data-dept="support" data-hours="22" data-rate="45"><i class="fa-solid fa-headset"></i> Customer Support</button>
+                                    <button class="dept-btn" data-dept="sales" data-hours="18" data-rate="65"><i class="fa-solid fa-briefcase"></i> Sales & CRM</button>
+                                    <button class="dept-btn" data-dept="finance" data-hours="25" data-rate="55"><i class="fa-solid fa-file-invoice-dollar"></i> Finance & Legal</button>
+                                    <button class="dept-btn" data-dept="operations" data-hours="20" data-rate="60"><i class="fa-solid fa-gears"></i> Operations & IT</button>
+                                </div>
+                            </div>
+
+                            <div class="slider-group">
+                                <div class="slider-header">
+                                    <label for="team-size-slider" class="calc-label">2. Team Size Doing Manual Work:</label>
+                                    <span id="team-size-val" class="slider-val-badge">10 Employees</span>
+                                </div>
+                                <input type="range" id="team-size-slider" min="2" max="100" value="10" step="1" class="calc-slider">
+                                <div class="slider-ticks">
+                                    <span>2 team members</span>
+                                    <span>50 team members</span>
+                                    <span>100+ team members</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="calc-results-card">
+                            <div class="results-heading">ESTIMATED ANNUAL IMPACT</div>
+                            <div class="results-metric-grid">
+                                <div class="res-box">
+                                    <span class="res-num" id="res-hours">220 hrs</span>
+                                    <span class="res-lbl">Hours Saved Every Week</span>
+                                </div>
+                                <div class="res-box highlight-res">
+                                    <span class="res-num" id="res-savings">$629,200</span>
+                                    <span class="res-lbl">Estimated Annual Savings</span>
+                                </div>
+                            </div>
+                            <div class="res-bullet">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span>Tasks automated: <strong id="res-task-desc">Ticket triage, customer replies, CRM logging & follow-ups</strong></span>
+                            </div>
+                            <button class="btn btn-nav-cta btn-full open-modal-btn" data-modal="demo" style="margin-top: 20px;">
+                                <span>Book a Consultation to Automate This</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reassuring Guarantees Bar for Business Owners -->
+                <div class="guarantees-bar">
+                    <div class="guarantee-item">
+                        <i class="fa-solid fa-plug-circle-check"></i>
+                        <div>
+                            <strong>No Software Overhaul Needed</strong>
+                            <span>We connect directly to tools you already use.</span>
+                        </div>
+                    </div>
+                    <div class="guarantee-item">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <div>
+                            <strong>Human-in-the-Loop Control</strong>
+                            <span>You decide which actions require staff sign-off.</span>
+                        </div>
+                    </div>
+                    <div class="guarantee-item">
+                        <i class="fa-solid fa-lock"></i>
+                        <div>
+                            <strong>100% Data Privacy Guaranteed</strong>
+                            <span>Your company data is never used to train public AI.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analyst Quote Banner -->
+        <section class="quote-section">
+            <div class="wrapper">
+                <div class="glass-card quote-card">
+                    <div class="quote-badge">
+                        <i class="fa-solid fa-award"></i> FORRESTER & GARTNER ANALYST VERDICT
+                    </div>
+                    <blockquote class="quote-text">
+                        "Intellectir is the premier partner we’ve evaluated that effectively enables enterprise teams to bridge the gap between AI hype and real operational business value while solving staff burnout and execution risk."
+                    </blockquote>
+                    <div class="quote-author">
+                        <span class="author-name">Global Tech Analyst Report</span>
+                        <span class="author-title">2026 Enterprise AI Implementation Index</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3 Pillars Section -->
+        <section id="solutions" class="pillars-section">
+            <div class="wrapper">
+                <div class="section-header center">
+                    <span class="subhead-tag">WHY INTELLECTIR</span>
+                    <h2 class="section-title">The Enterprise AI You Were Promised</h2>
+                </div>
+
+                <div class="pillars-grid">
+                    <div class="glass-card pillar-card">
+                        <div class="card-icon"><i class="fa-solid fa-bullseye"></i></div>
+                        <h3 class="pillar-title">Identify High-Impact ROI</h3>
+                        <p class="pillar-desc">
+                            Let AI Discovery Agents analyze your internal workflows, ticket queues, and process silos to pinpoint high-return automation opportunities at machine speed.
+                        </p>
+                        <ul class="pillar-list">
+                            <li><i class="fa-solid fa-check"></i> Workflow Audit & Bottleneck Mapping</li>
+                            <li><i class="fa-solid fa-check"></i> Measurable Cost & Time ROI Benchmarks</li>
+                        </ul>
+                    </div>
+
+                    <div class="glass-card pillar-card featured-pillar">
+                        <div class="featured-badge">MOST POPULAR</div>
+                        <div class="card-icon"><i class="fa-solid fa-network-wired"></i></div>
+                        <h3 class="pillar-title">Deploy Custom Agent Networks</h3>
+                        <p class="pillar-desc">
+                            We architect and deploy specialized multi-agent teams that chase down answers, execute tasks, and coordinate across your custom API stack seamlessly.
+                        </p>
+                        <ul class="pillar-list">
+                            <li><i class="fa-solid fa-check"></i> Autonomous Multi-Agent Orchestration</li>
+                            <li><i class="fa-solid fa-check"></i> Custom Tool & API Integrations</li>
+                        </ul>
+                    </div>
+
+                    <div class="glass-card pillar-card">
+                        <div class="card-icon"><i class="fa-solid fa-shield-cat"></i></div>
+                        <h3 class="pillar-title">Enforce Total Governance</h3>
+                        <p class="pillar-desc">
+                            Slash execution risk with zero-data-retention guarantees, full audit trail logging, and human-in-the-loop approval guardrails built for enterprise compliance.
+                        </p>
+                        <ul class="pillar-list">
+                            <li><i class="fa-solid fa-check"></i> SOC2 & HIPAA Compliant Guardrails</li>
+                            <li><i class="fa-solid fa-check"></i> Transparent Audit Logs & Human Override</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Platform Interactive Preview Showcase -->
+        <section class="showcase-section">
+            <div class="wrapper">
+                <div class="glass-card showcase-card">
+                    <div class="showcase-header">
+                        <div class="window-controls">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                        <div class="window-title"><i class="fa-solid fa-terminal"></i> Intellectir Multi-Agent Orchestrator v3.4</div>
+                        <div class="window-status"><span class="status-indicator active"></span> 14 Agents Running</div>
+                    </div>
+                    <div class="showcase-body">
+                        <img src="assets/ai_engine_dash.png" alt="Intellectir Dashboard Interface" class="showcase-img">
+                        <div class="showcase-metrics">
+                            <div class="metric-item">
+                                <span class="metric-value">94.2%</span>
+                                <span class="metric-label">Automated Triage</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-value">4.2x</span>
+                                <span class="metric-label">Resolution Velocity</span>
+                            </div>
+                            <div class="metric-item">
+                                <span class="metric-value">100%</span>
+                                <span class="metric-label">Data Privacy Guarded</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="showcase-cta">
+                    <button class="btn btn-outline open-modal-btn" data-modal="demo">
+                        <span>Explore Intellectir Architecture</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Capability Tabs -->
+        <section id="capabilities" class="capabilities-section">
+            <div class="wrapper">
+                <div class="section-header">
+                    <span class="subhead-tag">END-TO-END IMPLEMENTATION</span>
+                    <h2 class="section-title">Comprehensive AI Consulting Capabilities</h2>
+                </div>
+
+                <div class="tabs-container">
+                    <div class="tabs-nav" role="tablist">
+                        <button class="tab-btn active" data-tab="strategy" role="tab"><i class="fa-solid fa-compass"></i> Strategy</button>
+                        <button class="tab-btn" data-tab="agents" role="tab"><i class="fa-solid fa-robot"></i> Custom Agents</button>
+                        <button class="tab-btn" data-tab="integration" role="tab"><i class="fa-solid fa-plug"></i> Integration</button>
+                        <button class="tab-btn" data-tab="finetune" role="tab"><i class="fa-solid fa-sliders"></i> LLM Fine-Tuning</button>
+                        <button class="tab-btn" data-tab="governance" role="tab"><i class="fa-solid fa-shield-halved"></i> Governance</button>
+                        <button class="tab-btn" data-tab="roi" role="tab"><i class="fa-solid fa-chart-line"></i> Optimization</button>
+                    </div>
+
+                    <div class="tabs-content">
+                        <!-- Tab 1: Strategy -->
+                        <div class="tab-pane active" id="tab-strategy">
+                            <div class="pane-grid">
+                                <div class="pane-text">
+                                    <h3 class="pane-title">AI Discovery & Executive Strategy Roadmap</h3>
+                                    <p class="pane-desc">
+                                        We analyze your enterprise architecture, data readiness, and organizational goals to construct a 12-month pragmatic AI implementation roadmap with explicit cost-benefit analysis and risk mitigations.
+                                    </p>
+                                    <div class="pane-features">
+                                        <div class="feature-box">
+                                            <i class="fa-solid fa-diagram-project"></i>
+                                            <h4>Process Mapping</h4>
+                                            <p>Identify high-leverage business processes ripe for agentic automation.</p>
+                                        </div>
+                                        <div class="feature-box">
+                                            <i class="fa-solid fa-scale-balanced"></i>
+                                            <h4>Feasibility & Risk Audit</h4>
+                                            <p>Evaluate technical constraints, data hygiene, and security posture.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pane-visual">
+                                    <div class="glass-card visual-card">
+                                        <div class="card-header-sm"><i class="fa-solid fa-layer-group"></i> Strategy Deliverables</div>
+                                        <ul class="visual-list">
+                                            <li><span class="check-icon">✓</span> Enterprise AI Capability Matrix</li>
+                                            <li><span class="check-icon">✓</span> Model Selection & Infrastructure Sizing</li>
+                                            <li><span class="check-icon">✓</span> TCO & ROI Financial Forecast</li>
+                                            <li><span class="check-icon">✓</span> Executive Alignment Workshops</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab 2: Custom Agents -->
+                        <div class="tab-pane" id="tab-agents">
+                            <div class="pane-grid">
+                                <div class="pane-text">
+                                    <h3 class="pane-title">Autonomous Multi-Agent Systems & Workflows</h3>
+                                    <p class="pane-desc">
+                                        Deploy specialized AI agents designed for your specific domain — from automated customer support escalation to multi-source financial research, code migration, and complex compliance auditing.
+                                    </p>
+                                    <div class="pane-features">
+                                        <div class="feature-box">
+                                            <i class="fa-solid fa-people-group"></i>
+                                            <h4>Agent Collaboration</h4>
+                                            <p>Orchestrate Supervisor and Worker agents to divide and conquer tasks.</p>
+                                        </div>
+                                        <div class="feature-box">
+                                            <i class="fa-solid fa-screwdriver-wrench"></i>
+                                            <h4>Custom Tool Calling</h4>
+                                            <p>Equip agents with secure tool access to execute external APIs safely.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pane-visual">
+                                    <div class="glass-card visual-card">
+                                        <div class="card-header-sm"><i class="fa-solid fa-network-wired"></i> Agent Mesh Architecture</div>
+                                        <ul class="visual-list">
+                                            <li><span class="check-icon">✓</span> Multi-Agent Task Decomposition</li>
+                                            <li><span class="check-icon">✓</span> State & Short/Long-Term Memory</li>
+                                            <li><span class="check-icon">✓</span> ReAct & Plan-Execute Loops</li>
+                                            <li><span class="check-icon">✓</span> Deterministic Fallback Logic</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab 3: Integration -->
+                        <div class="tab-pane" id="tab-integration">
+                            <div class="pane-grid">
+                                <div class="pane-text">
+                                    <h3 class="pane-title">Legacy API & Enterprise Data Integration</h3>
+                                    <p class="pane-desc">
+                                        AI is useless without connectivity. We build production connectors for Salesforce, ServiceNow, Snowflake, Jira, AWS, custom SQL databases, and proprietary legacy systems.
+                                    </p>
+                                    <div class="pane-features">
+                                        <div class="feature-box">
+                                            <i class="fa-solid fa-database"></i>
+                                            <h4>Data Lake Pipelines</h4>
+                                            <p>Stream real-time enterprise context directly to vector stores and agents.</p>
+                                        </div>
+                                        <div class="feature-box">
+                                            <i class="fa-solid fa-key"></i>
+                                            <h4>RBAC Access Controls</h4>
+                                            <p>Enforce employee permissions dynamically so AI respects user roles.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pane-visual">
+                                    <div class="glass-card visual-card">
+                                        <div class="card-header-sm"><i class="fa-solid fa-cubes"></i> Supported Stack</div>
+                                        <ul class="visual-list">
+                                            <li><span class="check-icon">✓</span> ERP & CRM Connectors</li>
+                                            <li><span class="check-icon">✓</span> Real-Time Vector Indexing</li>
+                                            <li><span class="check-icon">✓</span> On-Premise & Hybrid Deployments</li>
+                                            <li><span class="check-icon">✓</span> Low-Latency Webhook Triggers</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab 4: Fine-Tuning -->
+                        <div class="tab-pane" id="tab-finetune">
+                            <div class="pane-grid">
+                                <div class="pane-text">
+                                    <h3 class="pane-title">Enterprise RAG & Domain-Adapted LLMs</h3>
+                                    <p class="pane-desc">
+                                        We train and fine-tune open-weight models (Llama 3, Mistral) or configure private RAG architectures so your AI understands company terminology, internal jargon, and domain compliance perfectly.
+                                    </p>
+                                    <div class="pane-features">
+                                        <div class="feature-box">
+                                            <i class="fa-solid fa-microchip"></i>
+                                            <h4>Private Model Hosting</h4>
+                                            <p>Host custom models in your VPC with zero vendor lock-in or leakage.</p>
+                                        </div>
+                                        <div class="feature-box">
+                                            <i class="fa-solid fa-magnifying-glass-chart"></i>
+                                            <h4>Advanced Hybrid RAG</h4>
+                                            <p>Combine semantic vector search with keyword & graph retrieval.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pane-visual">
+                                    <div class="glass-card visual-card">
+                                        <div class="card-header-sm"><i class="fa-solid fa-sliders"></i> Model Tuning Suite</div>
+                                        <ul class="visual-list">
+                                            <li><span class="check-icon">✓</span> LoRA & QLoRA Fine-Tuning</li>
+                                            <li><span class="check-icon">✓</span> Synthetic Dataset Generation</li>
+                                            <li><span class="check-icon">✓</span> Hallucination Reduction Filters</li>
+                                            <li><span class="check-icon">✓</span> Custom Evaluation Benchmarks</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab 5: Governance -->
+                        <div class="tab-pane" id="tab-governance">
+                            <div class="pane-grid">
+                                <div class="pane-text">
+                                    <h3 class="pane-title">AI Governance, Security & Compliance Guardrails</h3>
+                                    <p class="pane-desc">
+                                        Ensure absolute compliance with GDPR, HIPAA, EU AI Act, and SOC2. Intellectir installs automated guardrails for PII redaction, prompt injection defense, and policy enforcement.
+                                    </p>
+                                    <div class="pane-features">
+                                        <div class="feature-box">
+                                            <i class="fa-solid fa-user-shield"></i>
+                                            <h4>Human-in-the-Loop</h4>
+                                            <p>Set automated thresholds where high-consequence actions require human approval.</p>
+                                        </div>
+                                        <div class="feature-box">
+                                            <i class="fa-solid fa-file-contract"></i>
+                                            <h4>Audit-Ready Telemetry</h4>
+                                            <p>Log every prompt, response, tool call, and decision rationale for auditability.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pane-visual">
+                                    <div class="glass-card visual-card">
+                                        <div class="card-header-sm"><i class="fa-solid fa-lock"></i> Trust & Security Layer</div>
+                                        <ul class="visual-list">
+                                            <li><span class="check-icon">✓</span> Dynamic PII Redaction</li>
+                                            <li><span class="check-icon">✓</span> Prompt Injection Filtering</li>
+                                            <li><span class="check-icon">✓</span> Zero Data Training Commitment</li>
+                                            <li><span class="check-icon">✓</span> Real-Time Drift Detection</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab 6: Optimization -->
+                        <div class="tab-pane" id="tab-roi">
+                            <div class="pane-grid">
+                                <div class="pane-text">
+                                    <h3 class="pane-title">Continuous Performance Optimization & ROI Analytics</h3>
+                                    <p class="pane-desc">
+                                        Deployment is just day one. We continuously optimize agent token usage, latency, accuracy metrics, and cloud compute expenses to maximize your ongoing return on investment.
+                                    </p>
+                                    <div class="pane-features">
+                                        <div class="feature-box">
+                                            <i class="fa-solid fa-coins"></i>
+                                            <h4>Token & Inference Optimization</h4>
+                                            <p>Reduce LLM token spend by up to 65% with smart caching & routing.</p>
+                                        </div>
+                                        <div class="feature-box">
+                                            <i class="fa-solid fa-gauge-high"></i>
+                                            <h4>Latency Reduction</h4>
+                                            <p>Optimize prompt lengths and model selection for sub-second responses.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pane-visual">
+                                    <div class="glass-card visual-card">
+                                        <div class="card-header-sm"><i class="fa-solid fa-chart-pie"></i> ROI Tracking Panel</div>
+                                        <ul class="visual-list">
+                                            <li><span class="check-icon">✓</span> Real-Time LLM Cost Dashboard</li>
+                                            <li><span class="check-icon">✓</span> Automated Model Routing (Cheap vs Smart)</li>
+                                            <li><span class="check-icon">✓</span> Executive Impact Reports</li>
+                                            <li><span class="check-icon">✓</span> SLA & Latency Monitoring</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Industry Reports & Analyst Recognition -->
+        <section class="reports-section">
+            <div class="wrapper">
+                <div class="section-header">
+                    <span class="subhead-tag">INDUSTRY ANALYSTS AGREE</span>
+                    <h2 class="section-title">Intellectir Leads the Enterprise AI Consulting Era</h2>
+                </div>
+
+                <div class="reports-grid">
+                    <div class="glass-card report-card">
+                        <div class="report-badge">GARTNER RESEARCH</div>
+                        <h3 class="report-title">Intellectir Named Top Innovator in Enterprise AI Implementation</h3>
+                        <p class="report-desc">Explore how Intellectir’s multi-agent deployment methodology is setting the standard for enterprise adoption.</p>
+                        <a href="#insights" class="report-link">
+                            <span>Read Briefing</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <div class="glass-card report-card">
+                        <div class="report-badge">FORRESTER WAVE</div>
+                        <h3 class="report-title">Overall Leader in 2026 Emerging AI Consulting Services</h3>
+                        <p class="report-desc">Forrester evaluates top vendors on execution speed, security guardrails, and customer satisfaction.</p>
+                        <a href="#insights" class="report-link">
+                            <span>Download Report</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+
+                    <div class="glass-card report-card">
+                        <div class="report-badge">IDC MARKETSCAPE</div>
+                        <h3 class="report-title">Leader in Custom Agentic Workflow Orchestration</h3>
+                        <p class="report-desc">Detailed analysis of enterprise ROI and multi-agent stability across Fortune 500 implementations.</p>
+                        <a href="#insights" class="report-link">
+                            <span>Read Analysis</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Event Banner Callout -->
+        <section class="event-banner-section">
+            <div class="wrapper">
+                <div class="glass-card event-banner">
+                    <div class="event-content">
+                        <div class="event-tag"><i class="fa-solid fa-calendar-star"></i> UPCOMING EXECUTIVE SUMMIT</div>
+                        <h3 class="event-title">Global Enterprise AI Leadership Summit 2026</h3>
+                        <p class="event-desc">Join 500+ CTOs and VPs of Engineering for a live deep-dive into multi-agent systems, ROI benchmarks, and production case studies.</p>
+                        <div class="event-meta">
+                            <span><i class="fa-solid fa-clock"></i> September 24-25, 2026</span>
+                            <span><i class="fa-solid fa-location-dot"></i> San Francisco, CA & Virtual Stream</span>
+                        </div>
+                    </div>
+                    <div class="event-action">
+                        <button class="btn btn-primary open-modal-btn" data-modal="demo">
+                            <span>Reserve Your Seat</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Thought Leadership & Resource Grid -->
+        <section id="insights" class="resources-section">
+            <div class="wrapper">
+                <div class="section-header">
+                    <span class="subhead-tag">THOUGHT LEADERSHIP</span>
+                    <h2 class="section-title">Latest Insights & AI Playbooks</h2>
+                </div>
+
+                <div class="resources-grid">
+                    <div class="glass-card resource-card">
+                        <div class="card-image-wrap">
+                            <img src="assets/ai_engine_dash.png" alt="Multi-Agent Architecture" class="resource-img">
+                            <span class="resource-type">BLOG</span>
+                        </div>
+                        <div class="resource-content">
+                            <h3 class="resource-title">Architecting Multi-Agent Systems in Restricted Enterprise VPC Environments</h3>
+                            <p class="resource-excerpt">How to deploy stateful agent networks behind corporate firewalls with zero external data leaks.</p>
+                            <a href="#" class="read-link">Read Playbook <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="glass-card resource-card">
+                        <div class="card-image-wrap">
+                            <img src="assets/hero_poster.png" alt="Executive AI Report" class="resource-img">
+                            <span class="resource-type">REPORT</span>
+                        </div>
+                        <div class="resource-content">
+                            <h3 class="resource-title">2026 Executive AI Leadership Report: What 400+ Enterprise CTOs Want</h3>
+                            <p class="resource-excerpt">Surveying enterprise executives on budget allocation, custom LLM adoption, and governance priorities.</p>
+                            <a href="#" class="read-link">Download Report <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="glass-card resource-card">
+                        <div class="card-image-wrap">
+                            <img src="assets/intellectir_logo.png" alt="Enterprise AI Manifesto" class="resource-img">
+                            <span class="resource-type">MANIFESTO</span>
+                        </div>
+                        <div class="resource-content">
+                            <h3 class="resource-title">The AI Implementation Manifesto: Moving Beyond Pilot Paralysis</h3>
+                            <p class="resource-excerpt">A tactical operational guide for turning experimental AI prototypes into mission-critical software.</p>
+                            <a href="#" class="read-link">Read Manifesto <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Consultation & Lead Form Section -->
+        <section id="contact" class="form-section">
+            <div class="wrapper">
+                <div class="form-grid">
+                    <div class="form-intro">
+                        <span class="subhead-tag">GET STARTED</span>
+                        <h2 class="form-heading">The Future of Enterprise Operations is Agentic.</h2>
+                        <p class="form-subtext">Schedule a 30-minute strategic consultation with our principal AI architects to evaluate your use cases, architecture, and ROI targets.</p>
+                        
+                        <div class="stats-counter-group">
+                            <div class="stat-box">
+                                <span class="stat-num">50+</span>
+                                <span class="stat-lbl">Enterprise Deployments</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-num">98%</span>
+                                <span class="stat-lbl">Client Retention</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-num">&lt;30 Days</span>
+                                <span class="stat-lbl">Time-to-Production</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card form-card">
+                        <h3 class="card-form-title">Schedule a Consultation</h3>
+                        <form id="consultation-form" class="consultation-form">
+                            <div class="form-group">
+                                <label for="fullname">Full Name *</label>
+                                <input type="text" id="fullname" name="fullname" placeholder="e.g. Sarah Jenkins" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="workemail">Work Email *</label>
+                                <input type="email" id="workemail" name="workemail" placeholder="sarah@company.com" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="company">Company Name *</label>
+                                <input type="text" id="company" name="company" placeholder="e.g. Acme Corp" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="service-interest">Primary Area of Interest</label>
+                                <select id="service-interest" name="service-interest">
+                                    <option value="multi-agent">Custom Multi-Agent Implementation</option>
+                                    <option value="strategy">Enterprise AI Strategy & Discovery</option>
+                                    <option value="rag">LLM Fine-Tuning & Private RAG</option>
+                                    <option value="governance">AI Security & Compliance Audit</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="notes">Project Scope / Details (Optional)</label>
+                                <textarea id="notes" name="notes" rows="3" placeholder="Tell us about your current workflow bottlenecks or AI goals..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-full">
+                                <span>Submit Consultation Request</span>
+                                <i class="fa-solid fa-paper-plane"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer id="colophon" class="site-footer">
+        <div class="wrapper">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="#" class="footer-logo">
+                        <img src="assets/intellectir_logo.png" alt="Intellectir Logo" class="logo-img-sm">
+                        <span class="logo-text">INTELLECTIR<span class="logo-dot">.</span></span>
+                    </a>
+                    <p class="footer-tagline">Architecting and implementing the next generation of autonomous enterprise AI.</p>
+                    
+                    <div class="footer-address">
+                        <strong>Americas HQ</strong><br>
+                        500 Technology Way, Suite 400<br>
+                        San Francisco, CA 94105
+                    </div>
+
+                    <div class="social-links">
+                        <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+                        <a href="#" aria-label="X / Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-nav-grid">
+                    <div class="footer-col">
+                        <h4>Solutions</h4>
+                        <ul>
+                            <li><a href="#strategy">AI Strategy & Discovery</a></li>
+                            <li><a href="#agents">Multi-Agent Orchestration</a></li>
+                            <li><a href="#rag">LLM Fine-Tuning & RAG</a></li>
+                            <li><a href="#governance">Security & Governance</a></li>
+                            <li><a href="#integration">Legacy Integrations</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-col">
+                        <h4>Resources</h4>
+                        <ul>
+                            <li><a href="#insights">Blog & Research</a></li>
+                            <li><a href="#insights">Whitepapers</a></li>
+                            <li><a href="#insights">Client Case Studies</a></li>
+                            <li><a href="#insights">AI Readiness Index</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-col">
+                        <h4>Company</h4>
+                        <ul>
+                            <li><a href="#contact">About Intellectir</a></li>
+                            <li><a href="#contact">Leadership</a></li>
+                            <li><a href="#contact">Careers</a></li>
+                            <li><a href="#contact">Security & Trust</a></li>
+                            <li><a href="#contact">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-badges">
+                <div class="badge-item"><i class="fa-solid fa-shield-check"></i> SOC 2 Type II Certified</div>
+                <div class="badge-item"><i class="fa-solid fa-lock"></i> ISO 27001 Certified</div>
+                <div class="badge-item"><i class="fa-solid fa-hospital-user"></i> HIPAA Compliant</div>
+                <div class="badge-item"><i class="fa-solid fa-globe"></i> GDPR Compliant</div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="copyright">
+                    © 2026 Intellectir Inc. All Rights Reserved.
+                </div>
+                <div class="legal-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Notice</a>
+                    <a href="#">Security Statement</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Consultation & Demo Modal -->
+    <div id="demo-modal" class="modal-backdrop">
+        <div class="modal-dialog">
+            <button class="modal-close-btn" aria-label="Close Modal">&times;</button>
+            <div class="modal-grid">
+                <div class="modal-info">
+                    <img src="assets/intellectir_logo.png" alt="Intellectir" class="modal-logo">
+                    <h3 class="modal-heading">See Intellectir in Action</h3>
+                    <p class="modal-sub">Intellectir enables enterprise teams to deploy secure, autonomous multi-agent networks that scale operational capacity effortlessly.</p>
+                    
+                    <div class="modal-bullets">
+                        <div class="bullet-item">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>30-minute tailored platform walkthrough</span>
+                        </div>
+                        <div class="bullet-item">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Custom ROI & architecture estimate</span>
+                        </div>
+                        <div class="bullet-item">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Zero data training security guarantee</span>
+                        </div>
+                    </div>
+
+                    <div class="modal-g2-rating">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <span>Rated 4.9/5 by Enterprise CTOs</span>
+                    </div>
+                </div>
+
+                <div class="modal-form-wrap">
+                    <h4 class="modal-form-title">Schedule Demo</h4>
+                    <form id="modal-consultation-form">
+                        <div class="form-group">
+                            <label for="modal-name">Full Name *</label>
+                            <input type="text" id="modal-name" required placeholder="Alex Morgan">
+                        </div>
+                        <div class="form-group">
+                            <label for="modal-email">Work Email *</label>
+                            <input type="email" id="modal-email" required placeholder="alex@company.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="modal-company">Company *</label>
+                            <input type="text" id="modal-company" required placeholder="Acme Enterprises">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <span>Book Consultation Now</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="toast-message">Request submitted successfully! We will be in touch shortly.</span>
+    </div>
+
+    <!-- Custom JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
