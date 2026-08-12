@@ -19,22 +19,18 @@
 </head>
 <body class="light-theme">
 
-    <!-- Interactive 3D Mouse Tracker -->
-    <div id="cursor-dot" class="cursor-dot"></div>
-    <div id="cursor-circle" class="cursor-circle"></div>
-
     <!-- Header Navigation -->
     <header id="masthead" class="site-header">
         <div class="wrapper">
             <div class="main-header">
                 <a href="index.html" class="brand-logo">
-                    <img src="assets/intellectir_logo.png" alt="Intellectir Logo" class="logo-img">
-                    <span class="logo-text">INTELLECTIR<span class="logo-dot">.</span></span>
+                    <img src="assets/intellectir_logo.jpg" alt="Intellectir Logo" class="logo-img">
+                    <span class="logo-text">INTELLECTIR</span>
                 </a>
 
                 <nav class="site-navigation">
                     <ul class="nav-menu">
-                        <li class="nav-item"><a href="solutions.html" class="nav-link">Solutions</a></li>
+                        <li class="nav-item"><a href="solutions.html" class="nav-link">Services</a></li>
                         <li class="nav-item"><a href="industries.html" class="nav-link">Industries</a></li>
                         <li class="nav-item"><a href="discover.html" class="nav-link active" style="color: #2563eb;">Discover</a></li>
                         <li class="nav-item"><a href="company.html" class="nav-link">Company</a></li>
@@ -125,6 +121,94 @@
             </div>
         </section>
 
+        <!-- Discover Search & Insights Grid -->
+        <section class="capabilities-section" style="padding-top: 40px;">
+            <div class="wrapper">
+                <div class="section-header center">
+                    <span class="subhead-tag"><i class="fa-solid fa-book-open-reader"></i> INSIGHTS & WHITE PAPERS</span>
+                    <h2 class="section-title">Explore Enterprise AI Research & Case Studies</h2>
+                    <p class="section-lead">Filter whitepapers, architecture guides, and compliance frameworks written by Intellectir engineers.</p>
+                </div>
+
+                <div class="discover-filter-bar">
+                    <div class="discover-search-box">
+                        <i class="fa-solid fa-magnifying-glass discover-search-icon"></i>
+                        <input type="text" id="discover-search-input" class="discover-search-input" placeholder="Search case studies, RAG, compliance, architecture...">
+                    </div>
+
+                    <div class="category-pills-row">
+                        <button class="filter-pill active" data-category="all">All Topics</button>
+                        <button class="filter-pill" data-category="strategy">AI Strategy</button>
+                        <button class="filter-pill" data-category="rag">Enterprise RAG</button>
+                        <button class="filter-pill" data-category="governance">Governance & Security</button>
+                        <button class="filter-pill" data-category="case-study">Case Studies</button>
+                    </div>
+                </div>
+
+                <div class="ind-grid-3">
+                    <div class="glass-card discover-article-card reveal-on-scroll" data-category="rag">
+                        <span class="shimmer-badge" style="margin-bottom: 12px;">Enterprise RAG</span>
+                        <h3 class="card-title">Hybrid Vector-Graph Retrieval for Multi-Billion Token Repositories</h3>
+                        <p class="card-desc">How combining dense vector search with sparse property graph GQL traversal achieves 99.4% factual recall in regulated financial compliance audits.</p>
+                        <div style="margin-top: 16px; font-size: 0.825rem; color: #64748b; display: flex; justify-content: space-between;">
+                            <span><i class="fa-regular fa-clock"></i> 6 min read</span>
+                            <span style="color: #2563eb; font-weight: 600;">Read Whitepaper &rarr;</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-card discover-article-card reveal-on-scroll delay-100" data-category="governance">
+                        <span class="shimmer-badge" style="margin-bottom: 12px;">Governance & Security</span>
+                        <h3 class="card-title">SOC2 & HIPAA Compliant Guardrails for Multi-Agent Workflows</h3>
+                        <p class="card-desc">Architecting zero-retention privacy layers, PII anonymization proxies, and real-time execution audit logs for healthcare and banking integrations.</p>
+                        <div style="margin-top: 16px; font-size: 0.825rem; color: #64748b; display: flex; justify-content: space-between;">
+                            <span><i class="fa-regular fa-clock"></i> 8 min read</span>
+                            <span style="color: #2563eb; font-weight: 600;">Read Framework &rarr;</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-card discover-article-card reveal-on-scroll delay-200" data-category="case-study">
+                        <span class="shimmer-badge" style="margin-bottom: 12px;">Case Study</span>
+                        <h3 class="card-title">Global Fintech Reduces Claims Processing Time from 3 Days to 45 Seconds</h3>
+                        <p class="card-desc">An in-depth case study on deploying autonomous agentic workers to extract invoice metadata, verify audit policy compliance, and initiate ERP payouts.</p>
+                        <div style="margin-top: 16px; font-size: 0.825rem; color: #64748b; display: flex; justify-content: space-between;">
+                            <span><i class="fa-regular fa-clock"></i> 5 min read</span>
+                            <span style="color: #2563eb; font-weight: 600;">Read Case Study &rarr;</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-card discover-article-card reveal-on-scroll" data-category="strategy">
+                        <span class="shimmer-badge" style="margin-bottom: 12px;">AI Strategy</span>
+                        <h3 class="card-title">The 2026 Executive Guide to Agentic Engineering & Multi-Agent Mesh</h3>
+                        <p class="card-desc">Transitioning your organization from simple chat widgets to autonomous agentic orchestrators that run end-to-end operational processes.</p>
+                        <div style="margin-top: 16px; font-size: 0.825rem; color: #64748b; display: flex; justify-content: space-between;">
+                            <span><i class="fa-regular fa-clock"></i> 10 min read</span>
+                            <span style="color: #2563eb; font-weight: 600;">Read Guide &rarr;</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-card discover-article-card reveal-on-scroll delay-100" data-category="rag">
+                        <span class="shimmer-badge" style="margin-bottom: 12px;">Enterprise RAG</span>
+                        <h3 class="card-title">LLM Fine-Tuning vs. Advanced RAG: Quantifying ROI and Maintenance Costs</h3>
+                        <p class="card-desc">When should enterprise tech leaders fine-tune open weights vs indexing knowledge bases with semantic embeddings? A cost-benefit evaluation matrix.</p>
+                        <div style="margin-top: 16px; font-size: 0.825rem; color: #64748b; display: flex; justify-content: space-between;">
+                            <span><i class="fa-regular fa-clock"></i> 7 min read</span>
+                            <span style="color: #2563eb; font-weight: 600;">Read Benchmark &rarr;</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-card discover-article-card reveal-on-scroll delay-200" data-category="governance">
+                        <span class="shimmer-badge" style="margin-bottom: 12px;">Governance & Security</span>
+                        <h3 class="card-title">Human-in-the-Loop Thresholds & Decision Override UX Patterns</h3>
+                        <p class="card-desc">Designing failsafe human intervention boundaries for autonomous agent actions exceeding monetary or legal risk parameters.</p>
+                        <div style="margin-top: 16px; font-size: 0.825rem; color: #64748b; display: flex; justify-content: space-between;">
+                            <span><i class="fa-regular fa-clock"></i> 6 min read</span>
+                            <span style="color: #2563eb; font-weight: 600;">Read Whitepaper &rarr;</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </main>
 
     <!-- Footer -->
@@ -133,8 +217,8 @@
             <div class="footer-top">
                 <div class="footer-brand">
                     <a href="index.html" class="brand-logo">
-                        <img src="assets/intellectir_logo.png" alt="Intellectir Logo" class="logo-img">
-                        <span class="logo-text">INTELLECTIR<span class="logo-dot">.</span></span>
+                        <img src="assets/intellectir_logo.jpg" alt="Intellectir Logo" class="logo-img">
+                        <span class="logo-text">INTELLECTIR</span>
                     </a>
                 </div>
                 <div class="footer-links">
@@ -142,7 +226,7 @@
                         <h4>Navigation</h4>
                         <ul>
                             <li><a href="index.html">Home</a></li>
-                            <li><a href="solutions.html">Solutions</a></li>
+                            <li><a href="solutions.html">Services</a></li>
                             <li><a href="industries.html">Industries</a></li>
                             <li><a href="discover.html">Discover</a></li>
                             <li><a href="company.html">Company</a></li>

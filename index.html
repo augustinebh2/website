@@ -19,23 +19,19 @@
 </head>
 <body class="light-theme">
 
-    <!-- Interactive 3D Mouse Tracker -->
-    <div id="cursor-dot" class="cursor-dot"></div>
-    <div id="cursor-circle" class="cursor-circle"></div>
-
     <!-- Header Navigation -->
     <header id="masthead" class="site-header">
         <div class="wrapper">
             <div class="main-header">
                 <a href="#" class="brand-logo">
-                    <img src="assets/intellectir_logo.png" alt="Intellectir Logo" class="logo-img">
-                    <span class="logo-text">INTELLECTIR<span class="logo-dot">.</span></span>
+                    <img src="assets/intellectir_logo.jpg" alt="Intellectir Logo" class="logo-img">
+                    <span class="logo-text">INTELLECTIR</span>
                 </a>
 
                 <nav class="site-navigation" aria-label="Main Navigation">
                     <ul class="nav-menu">
                         <li class="nav-item has-dropdown">
-                            <a href="#solutions" class="nav-link">Solutions <i class="fa-solid fa-chevron-down drop-icon"></i></a>
+                            <a href="#solutions" class="nav-link">Services <i class="fa-solid fa-chevron-down drop-icon"></i></a>
                             <div class="mega-menu">
                                 <div class="mega-grid">
                                     <div class="mega-column">
@@ -128,7 +124,7 @@
                 <div class="hero-grid">
                     <div class="hero-content">
                         <h1 class="hero-title">
-                            Transforming the future of business with <span class="gradient-text">AGENTIC ENGINEERING.</span>
+                            Transforming the future of business with <span class="gradient-text metallic-red-orange-text">AGENTIC ENGINEERING.</span>
                         </h1>
 
                         <p class="hero-description">
@@ -136,10 +132,18 @@
                         </p>
 
                         <div class="hero-cta-group">
-                            <button class="btn btn-nav-cta btn-large open-modal-btn" data-modal="demo">
-                                <span>Book a Consultation</span>
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </button>
+                            <form class="hero-email-bar" id="hero-email-form">
+                                <button type="button" class="btn btn-nav-cta btn-large open-modal-btn hero-cta-btn" data-modal="demo">
+                                    <span>Book a Consultation</span>
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </button>
+                                <div class="email-input-wrap">
+                                    <input type="email" class="hero-email-input" id="hero-work-email" placeholder="Enter work email" required aria-label="Enter work email">
+                                    <button type="submit" class="hero-email-submit-btn" aria-label="Submit work email" title="Get Started">
+                                        <i class="fa-solid fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -401,6 +405,55 @@
                         <span>Explore Intellectir Architecture</span>
                         <i class="fa-solid fa-arrow-right"></i>
                     </button>
+                </div>
+
+                <!-- Live Interactive AI Agent Workflow Simulator -->
+                <div class="agent-sim-container reveal-on-scroll" style="margin-top: 40px;">
+                    <div class="agent-sim-header">
+                        <div class="agent-sim-title">
+                            <i class="fa-solid fa-microchip"></i>
+                            <span>Live Autonomous Multi-Agent Pipeline Simulator</span>
+                        </div>
+                        <span class="shimmer-badge"><i class="fa-solid fa-circle-dot"></i> Interactive Sandbox</span>
+                    </div>
+
+                    <div class="sim-steps-grid">
+                        <div class="sim-step-node" id="sim-step-1">
+                            <div class="sim-step-num">STEP 01</div>
+                            <div class="sim-step-title">Intent & Strategy</div>
+                            <div class="sim-step-status">Idle</div>
+                        </div>
+                        <div class="sim-step-node" id="sim-step-2">
+                            <div class="sim-step-num">STEP 02</div>
+                            <div class="sim-step-title">Vector RAG Retrieval</div>
+                            <div class="sim-step-status">Idle</div>
+                        </div>
+                        <div class="sim-step-node" id="sim-step-3">
+                            <div class="sim-step-num">STEP 03</div>
+                            <div class="sim-step-title">Multi-Agent Mesh</div>
+                            <div class="sim-step-status">Idle</div>
+                        </div>
+                        <div class="sim-step-node" id="sim-step-4">
+                            <div class="sim-step-num">STEP 04</div>
+                            <div class="sim-step-title">Governance Audit</div>
+                            <div class="sim-step-status">Idle</div>
+                        </div>
+                    </div>
+
+                    <div class="sim-progress-track">
+                        <div class="sim-progress-fill" id="sim-progress-fill"></div>
+                    </div>
+
+                    <div class="sim-log-terminal" id="sim-log-terminal">
+                        <div class="sim-log-line"><span class="sim-log-time">[0.00s]</span> Click "Run Autonomous Simulation" to test multi-agent execution pipeline...</div>
+                    </div>
+
+                    <div class="sim-action-bar">
+                        <span style="font-size: 0.875rem; color: #94a3b8;"><i class="fa-solid fa-shield-check"></i> Real-time agent state visualization</span>
+                        <button class="btn btn-sim-run" id="sim-run-btn">
+                            <i class="fa-solid fa-play"></i> Run Autonomous Simulation
+                        </button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -739,7 +792,7 @@
 
                     <div class="glass-card resource-card">
                         <div class="card-image-wrap">
-                            <img src="assets/intellectir_logo.png" alt="Enterprise AI Manifesto" class="resource-img">
+                            <img src="assets/intellectir_logo.jpg" alt="Enterprise AI Manifesto" class="resource-img">
                             <span class="resource-type">MANIFESTO</span>
                         </div>
                         <div class="resource-content">
@@ -828,8 +881,8 @@
             <div class="footer-top">
                 <div class="footer-brand">
                     <a href="#" class="footer-logo">
-                        <img src="assets/intellectir_logo.png" alt="Intellectir Logo" class="logo-img-sm">
-                        <span class="logo-text">INTELLECTIR<span class="logo-dot">.</span></span>
+                        <img src="assets/intellectir_logo.jpg" alt="Intellectir Logo" class="logo-img-sm">
+                        <span class="logo-text">INTELLECTIR</span>
                     </a>
                     <p class="footer-tagline">Architecting and implementing the next generation of autonomous enterprise AI.</p>
                     
@@ -849,7 +902,7 @@
 
                 <div class="footer-nav-grid">
                     <div class="footer-col">
-                        <h4>Solutions</h4>
+                        <h4>Services</h4>
                         <ul>
                             <li><a href="#strategy">AI Strategy & Discovery</a></li>
                             <li><a href="#agents">Multi-Agent Orchestration</a></li>
@@ -909,7 +962,7 @@
             <button class="modal-close-btn" aria-label="Close Modal">&times;</button>
             <div class="modal-grid">
                 <div class="modal-info">
-                    <img src="assets/intellectir_logo.png" alt="Intellectir" class="modal-logo">
+                    <img src="assets/intellectir_logo.jpg" alt="Intellectir" class="modal-logo">
                     <h3 class="modal-heading">See Intellectir in Action</h3>
                     <p class="modal-sub">Intellectir enables enterprise teams to deploy secure, autonomous multi-agent networks that scale operational capacity effortlessly.</p>
                     

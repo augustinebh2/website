@@ -3,47 +3,10 @@
    ========================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     /* ----------------------------------------------------------
-       0. INTERACTIVE MOUSE TRACKER & 3D TILT MANAGER
+       0. 3D CARD TILT MANAGER
        ---------------------------------------------------------- */
-    const cursorDot = document.getElementById('cursor-dot');
-    const cursorCircle = document.getElementById('cursor-circle');
-
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let circleX = mouseX;
-    let circleY = mouseY;
-
-    window.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-
-        if (cursorDot) {
-            cursorDot.style.left = `${mouseX}px`;
-            cursorDot.style.top = `${mouseY}px`;
-        }
-    });
-
-    function renderCursor() {
-        circleX += (mouseX - circleX) * 0.18;
-        circleY += (mouseY - circleY) * 0.18;
-
-        if (cursorCircle) {
-            cursorCircle.style.left = `${circleX}px`;
-            cursorCircle.style.top = `${circleY}px`;
-        }
-
-        requestAnimationFrame(renderCursor);
-    }
-    renderCursor();
-
-    // Hover scale effects on interactive elements
-    const hoverTargets = document.querySelectorAll('a, button, input, select, textarea, .glass-card, .dept-btn');
-    hoverTargets.forEach(el => {
-        el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-        el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
-    });
 
     // 3D Mouse Card Tilt on Hover
     const tiltCards = document.querySelectorAll('.glass-card, .prop-card, .pillar-card');
@@ -83,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 heroBgVideo.src = fileURL;
                 heroBgVideo.load();
                 heroBgVideo.play().catch(err => console.log('Autoplay prevented:', err));
-                
+
                 if (videoStatusText) {
                     videoStatusText.textContent = `Active Video: ${file.name}`;
                     videoStatusText.style.color = '#00f2fe';
@@ -91,6 +54,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 showToast(`Hero video updated to "${file.name}"!`);
             }
         });
+    }
+
+    /* ----------------------------------------------------------
+       1B. TOP ATTACHED INDUSTRY HERO VIDEO CONTROLLER
+       ---------------------------------------------------------- */
+    const indTopVideo = document.getElementById('ind-top-video');
+    const indVideoBox = document.getElementById('top-industry-video-box');
+    const btnToggleSticky = document.getElementById('btn-toggle-sticky');
+    const btnToggleMute = document.getElementById('btn-toggle-mute');
+    const muteIcon = document.getElementById('mute-icon');
+    const muteLabel = document.getElementById('mute-label');
+
+    if (indTopVideo) {
+        // Sticky pin toggle
+        if (btnToggleSticky && indVideoBox) {
+            btnToggleSticky.addEventListener('click', () => {
+                indVideoBox.classList.toggle('is-sticky');
+                const isSticky = indVideoBox.classList.contains('is-sticky');
+                btnToggleSticky.classList.toggle('active', isSticky);
+                btnToggleSticky.querySelector('.tool-label').textContent = isSticky ? 'Pinned Top' : 'Sticky Pin';
+                if (typeof showToast === 'function') {
+                    showToast(isSticky ? 'Video pinned to top of screen!' : 'Video returned to header banner.');
+                }
+            });
+        }
+
+        // Sound Mute/Unmute toggle
+        if (btnToggleMute) {
+            btnToggleMute.addEventListener('click', () => {
+                indTopVideo.muted = !indTopVideo.muted;
+                if (indTopVideo.muted) {
+                    muteIcon.className = 'fa-solid fa-volume-xmark';
+                    muteLabel.textContent = 'Muted';
+                } else {
+                    muteIcon.className = 'fa-solid fa-volume-high';
+                    muteLabel.textContent = 'Sound On';
+                }
+            });
+        }
     }
 
     // Dynamic High-Tech Cyber Particle Canvas Backdrop
@@ -163,16 +165,54 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ----------------------------------------------------------
-       2. HEADER SCROLL & NAVIGATION
+       2. HEADER SCROLL & AUTOMATIC CONTRAST THEME MANAGER
        ---------------------------------------------------------- */
     const masthead = document.getElementById('masthead');
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 40) {
-            masthead.classList.add('scrolled');
-        } else {
-            masthead.classList.remove('scrolled');
+    const videoHero = document.querySelector('.ind-fullscreen-video-hero');
+    const darkHero = document.querySelector('.hero-section, .hero-particles');
+
+    function updateHeaderContrast() {
+        if (!masthead) return;
+
+        const scrollY = window.scrollY;
+
+        // If on Industries page with top video hero
+        if (videoHero) {
+            const videoHeight = videoHero.offsetHeight || window.innerHeight;
+            if (scrollY < videoHeight - 80) {
+                // Over dark video background -> White text
+                masthead.classList.remove('scrolled', 'light-nav');
+                masthead.classList.add('dark-nav');
+            } else {
+                // Over white page background -> Black text
+                masthead.classList.add('scrolled', 'light-nav');
+                masthead.classList.remove('dark-nav');
+            }
+            return;
         }
-    });
+
+        // For other pages
+        if (scrollY > 40) {
+            // Scrolled down over light/white page sections -> Black text
+            masthead.classList.add('scrolled', 'light-nav');
+            masthead.classList.remove('dark-nav');
+        } else {
+            // At top of page: check if hero background is dark or light
+            if (darkHero) {
+                // Dark hero background -> White text
+                masthead.classList.remove('scrolled', 'light-nav');
+                masthead.classList.add('dark-nav');
+            } else {
+                // Light hero background -> Black text
+                masthead.classList.add('light-nav');
+                masthead.classList.remove('dark-nav', 'scrolled');
+            }
+        }
+    }
+
+    window.addEventListener('scroll', updateHeaderContrast);
+    window.addEventListener('resize', updateHeaderContrast);
+    updateHeaderContrast();
 
     /* ----------------------------------------------------------
        3. INTERACTIVE CAPABILITY TABS
@@ -333,4 +373,186 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize calculator defaults
     updateCalculator();
 
+    /* ----------------------------------------------------------
+       5. HERO WORK EMAIL FORM HANDLER
+       ---------------------------------------------------------- */
+    const heroEmailForm = document.getElementById('hero-email-form');
+    const heroWorkEmailInput = document.getElementById('hero-work-email');
+
+    if (heroEmailForm) {
+        heroEmailForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const emailValue = heroWorkEmailInput ? heroWorkEmailInput.value.trim() : '';
+            if (emailValue) {
+                // Open demo/consultation modal and populate work email if modal has email field
+                const modal = document.getElementById('demo-modal') || document.querySelector('.modal-overlay');
+                const modalEmailInput = modal ? modal.querySelector('input[type="email"]') : null;
+                if (modalEmailInput) {
+                    modalEmailInput.value = emailValue;
+                }
+                if (modal) {
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    showToast(`Thank you! We will reach out to ${emailValue} shortly.`);
+                }
+            }
+        });
+    }
+
+    /* ----------------------------------------------------------
+       6. INTERSECTION OBSERVER SCROLL REVEAL ANIMATIONS
+       ---------------------------------------------------------- */
+    const revealElements = document.querySelectorAll('.reveal-on-scroll, .glass-card, .prop-card, .pillar-card, .case-card');
+    if ('IntersectionObserver' in window && revealElements.length > 0) {
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-revealed');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.12,
+            rootMargin: '0px 0px -40px 0px'
+        });
+
+        revealElements.forEach(el => {
+            if (!el.classList.contains('reveal-on-scroll')) {
+                el.classList.add('reveal-on-scroll');
+            }
+            revealObserver.observe(el);
+        });
+    }
+
+    /* ----------------------------------------------------------
+       7. INTERACTIVE AI AGENT WORKFLOW SIMULATOR
+       ---------------------------------------------------------- */
+    const simRunBtn = document.getElementById('sim-run-btn');
+    const simProgressFill = document.getElementById('sim-progress-fill');
+    const simLogTerminal = document.getElementById('sim-log-terminal');
+    const simStepNodes = document.querySelectorAll('.sim-step-node');
+
+    if (simRunBtn) {
+        let isSimRunning = false;
+
+        const simStepsData = [
+            { stepIndex: 0, progress: 25, log: "[0.02s] Strategy Engine: Initializing high-availability agent cluster..." },
+            { stepIndex: 1, progress: 50, log: "[0.45s] Vector DB: Ingested enterprise schemas. Querying pgvector index (cos_sim: 0.94)..." },
+            { stepIndex: 2, progress: 75, log: "[0.89s] Multi-Agent Neural Mesh: Parallelizing task execution across 4 specialized workers..." },
+            { stepIndex: 3, progress: 100, log: "[1.20s] Compliance Guardrail: Verified SOC2/HIPAA policies. Zero PII leaks detected. Workflow executed in 1.20s." }
+        ];
+
+        simRunBtn.addEventListener('click', () => {
+            if (isSimRunning) return;
+            isSimRunning = true;
+            simRunBtn.disabled = true;
+            simRunBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Executing Workflow...';
+
+            // Reset simulation states
+            simProgressFill.style.width = '0%';
+            simLogTerminal.innerHTML = '<div class="sim-log-line"><span class="sim-log-time">[0.00s]</span> Initiating autonomous agent execution...</div>';
+            simStepNodes.forEach(node => node.classList.remove('active', 'completed'));
+
+            let step = 0;
+            const interval = setInterval(() => {
+                if (step < simStepsData.length) {
+                    const stepData = simStepsData[step];
+
+                    // Mark previous steps completed
+                    for (let i = 0; i < stepData.stepIndex; i++) {
+                        if (simStepNodes[i]) {
+                            simStepNodes[i].classList.remove('active');
+                            simStepNodes[i].classList.add('completed');
+                            const statusEl = simStepNodes[i].querySelector('.sim-step-status');
+                            if (statusEl) statusEl.textContent = 'Completed';
+                        }
+                    }
+
+                    // Set current active node
+                    if (simStepNodes[stepData.stepIndex]) {
+                        simStepNodes[stepData.stepIndex].classList.add('active');
+                        const statusEl = simStepNodes[stepData.stepIndex].querySelector('.sim-step-status');
+                        if (statusEl) statusEl.textContent = 'Processing...';
+                    }
+
+                    // Update progress bar & log output
+                    simProgressFill.style.width = `${stepData.progress}%`;
+                    const logLine = document.createElement('div');
+                    logLine.className = 'sim-log-line';
+                    logLine.innerHTML = stepData.log;
+                    simLogTerminal.appendChild(logLine);
+                    simLogTerminal.scrollTop = simLogTerminal.scrollHeight;
+
+                    step++;
+                } else {
+                    clearInterval(interval);
+                    // Finalize simulation
+                    simStepNodes.forEach(node => {
+                        node.classList.remove('active');
+                        node.classList.add('completed');
+                        const statusEl = node.querySelector('.sim-step-status');
+                        if (statusEl) statusEl.textContent = 'Completed';
+                    });
+
+                    simRunBtn.disabled = false;
+                    simRunBtn.innerHTML = '<i class="fa-solid fa-rotate"></i> Re-Run Simulation';
+                    isSimRunning = false;
+                    if (typeof showToast === 'function') {
+                        showToast('Multi-Agent Workflow Simulation completed in 1.20s!');
+                    }
+                }
+            }, 800);
+        });
+    }
+
+    /* ----------------------------------------------------------
+       8. DISCOVER PAGE SEARCH & CATEGORY FILTERING
+       ---------------------------------------------------------- */
+    const discoverSearchInput = document.getElementById('discover-search-input');
+    const filterPills = document.querySelectorAll('.filter-pill');
+    const articleCards = document.querySelectorAll('.discover-article-card, .case-card, .insight-card');
+
+    function filterArticles() {
+        const searchTerm = discoverSearchInput ? discoverSearchInput.value.toLowerCase().trim() : '';
+        const activePill = document.querySelector('.filter-pill.active');
+        const selectedCategory = activePill ? activePill.getAttribute('data-category') : 'all';
+
+        articleCards.forEach(card => {
+            const title = card.querySelector('h3, .card-title, .case-title')?.textContent.toLowerCase() || '';
+            const desc = card.querySelector('p, .card-desc, .case-desc')?.textContent.toLowerCase() || '';
+            const category = card.getAttribute('data-category') || 'all';
+
+            const matchesSearch = !searchTerm || title.includes(searchTerm) || desc.includes(searchTerm);
+            const matchesCategory = selectedCategory === 'all' || category === selectedCategory;
+
+            if (matchesSearch && matchesCategory) {
+                card.style.display = '';
+                card.style.opacity = '1';
+                card.style.transform = 'scale(1)';
+            } else {
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    if (card.style.opacity === '0') {
+                        card.style.display = 'none';
+                    }
+                }, 200);
+            }
+        });
+    }
+
+    if (discoverSearchInput) {
+        discoverSearchInput.addEventListener('input', filterArticles);
+    }
+
+    filterPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            filterPills.forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+            filterArticles();
+        });
+    });
+
 });
+
