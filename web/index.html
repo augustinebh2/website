@@ -19,7 +19,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -33,7 +33,7 @@
     <header id="masthead" class="site-header dark-nav">
         <div class="nav-container main-header">
             <a href="index.html" class="brand-logo">
-                <img src="assets/intellectir_logo.svg" alt="Intellectir Logo" class="logo-img" width="32" height="32">
+                <img src="assets/ir_logo.svg" alt="Intellectir Logo" class="logo-img" width="28" height="28">
                 <span class="logo-text">INTELLECTIR</span>
             </a>
 
@@ -60,7 +60,7 @@
 
     <main id="primary" class="site-main">
 
-        <!-- 1. HERO SECTION (FULL SCREEN 100VH WITH VIDEO BG & FURTHER BOTTOM-LEFT CONTENT + CTA) -->
+        <!-- 1. HERO SECTION (FULL SCREEN 100VH WITH VIDEO BG & COMPRESSED HEADLINE + BOTTOM-LEFT POSITION) -->
         <section class="hero-fullscreen-section">
             <!-- Background Video Container -->
             <div class="hero-video-wrapper">
@@ -78,7 +78,7 @@
                     <p class="hero-main-subtitle">
                         We build and deploy specialised autonomous agentic systems that solve your complex business problems.
                     </p>
-                    <div class="hero-cta-action" style="margin-top: 1.5rem;">
+                    <div class="hero-cta-action">
                         <button class="btn btn-primary btn-large open-modal-btn" data-modal-target="demo-modal" data-modal="demo">
                             <span>Book a consultation</span>
                             <i class="fa-solid fa-arrow-right"></i>
@@ -88,7 +88,7 @@
             </div>
         </section>
 
-        <!-- 2. TECH MARQUEE SLIDESHOW SECTION (APPEARS ON ONE SCROLL BETWEEN HERO AND GLOBAL DIGITAL SHIFT) -->
+        <!-- 2. TECH MARQUEE SLIDESHOW SECTION (NON-STOP CONTINUOUS ROLL, ~1CM COMPANY SPACING, NO SPACING LOGO-NAME) -->
         <section class="tech-marquee-between-section" aria-label="Enterprise Technology Partners">
             <div class="tech-marquee-wrapper">
                 <div class="tech-marquee-header">
@@ -143,7 +143,7 @@
                                 <span>Vapi</span>
                             </div>
                         </div>
-                        <!-- Group 2 (Identical Duplicate for continuous non-stop loop) -->
+                        <!-- Group 2 (Identical Duplicate for continuous seamless non-stop roll) -->
                         <div class="tech-marquee-group" aria-hidden="true">
                             <div class="tech-logo-item brand-openai">
                                 <img src="assets/icons/openai_white.png" class="brand-img" alt="OpenAI Logo" width="24" height="24">
@@ -195,7 +195,7 @@
             </div>
         </section>
 
-        <!-- 3. AWARENESS SECTION (FULL SCREEN ONCE-OFF VIDEO CLIP FADE-IN WITH RIGHT C-SHAPED BLUR CARD) -->
+        <!-- 3. AWARENESS SECTION (GLOBAL DIGITAL SHIFT - VERTICAL TOP-TO-BOTTOM TEXT & C-SHAPED BLUR CARD) -->
         <section class="awareness-fullscreen-section" id="awareness-section">
             <div class="awareness-video-wrapper">
                 <video class="awareness-video" id="new-era-video" muted playsinline preload="auto">
@@ -204,7 +204,7 @@
                 <div class="awareness-overlay"></div>
             </div>
             <div class="wrapper awareness-container">
-                <div class="c-shaped-card">
+                <div class="c-shaped-card scroll-animate-target">
                     <span class="subhead-tag awareness-tag"><i class="fa-solid fa-earth-africa"></i> GLOBAL DIGITAL SHIFT</span>
                     <h2 class="awareness-title">The AI-driven Industrial Revolution</h2>
                     <p class="awareness-text">
@@ -214,26 +214,21 @@
             </div>
         </section>
 
-        <!-- 4. BUSINESS PROPOSITION SECTION (PITCH BLACK BACKGROUND TO THE END) -->
+        <!-- 4. BUSINESS PROPOSITION SECTION (CENTERED SECTION HEADERS & CENTERED TABS) -->
         <div class="pitch-black-domain">
 
             <section class="proposition-main-section" id="proposition-section">
                 <div class="wrapper">
-                    <div class="section-header center">
-                        <span class="subhead-tag"><i class="fa-solid fa-microchip"></i> SPECIALIZED CAPABILITIES</span>
-                        <h2 class="section-title text-white">Business Proposition</h2>
-                        <p class="section-lead text-white-muted">Specific high-impact operational problems we solve with autonomous AI agents across all enterprise industries.</p>
-                    </div>
 
                     <!-- PROPOSITION 1: DRIVE REVENUE GROWTH -->
                     <div class="prop-sub-block" id="prop-revenue-block">
-                        <div class="prop-header-group">
-                            <h3 class="prop-sub-title">1. Drive Revenue Growth</h3>
-                            <p class="prop-sub-subtitle">Make a smart decision by adopting intelligent systems designed to deliver measurable ROI</p>
+                        <div class="prop-header-group center">
+                            <h2 class="prop-sub-title text-white center">1. Drive Revenue Growth</h2>
+                            <p class="prop-sub-subtitle text-white-muted center">Make a smart decision by adopting intelligent systems designed to deliver measurable ROI</p>
                         </div>
 
-                        <!-- Tab Nav for Revenue Growth -->
-                        <div class="prop-tabs-nav" data-prop-group="revenue">
+                        <!-- Tab Nav for Revenue Growth (CENTERED) -->
+                        <div class="prop-tabs-nav center-tabs" data-prop-group="revenue">
                             <button class="prop-tab-btn active" data-tab-id="rev-tab-1">
                                 <i class="fa-solid fa-bolt-lightning"></i> <span>Speed-to-lead race</span>
                             </button>
@@ -416,13 +411,13 @@
 
                     <!-- PROPOSITION 2: MAXIMISE PRODUCTIVITY -->
                     <div class="prop-sub-block" id="prop-productivity-block">
-                        <div class="prop-header-group">
-                            <h3 class="prop-sub-title">2. Maximise Productivity</h3>
-                            <p class="prop-sub-subtitle">Automate repetitive work so your employees spend less time on administrative tasks and more time focusing on work that drives the business forward.</p>
+                        <div class="prop-header-group center">
+                            <h2 class="prop-sub-title text-white center">2. Maximise Productivity</h2>
+                            <p class="prop-sub-subtitle text-white-muted center">Automate repetitive work so your employees spend less time on administrative tasks and more time focusing on work that drives the business forward.</p>
                         </div>
 
-                        <!-- Tab Nav for Productivity -->
-                        <div class="prop-tabs-nav" data-prop-group="productivity">
+                        <!-- Tab Nav for Productivity (CENTERED) -->
+                        <div class="prop-tabs-nav center-tabs" data-prop-group="productivity">
                             <button class="prop-tab-btn active" data-tab-id="prod-tab-1">
                                 <i class="fa-solid fa-file-invoice"></i> <span>Auto Data &amp; Document processing</span>
                             </button>
@@ -556,13 +551,13 @@
 
                     <!-- PROPOSITION 3: IMPROVE CUSTOMER EXPERIENCE -->
                     <div class="prop-sub-block" id="prop-experience-block">
-                        <div class="prop-header-group">
-                            <h3 class="prop-sub-title">3. Improve Customer Experience</h3>
-                            <p class="prop-sub-subtitle">Intelligent systems that help you treat every client like they are the only one and ultimately reduce customer churn.</p>
+                        <div class="prop-header-group center">
+                            <h2 class="prop-sub-title text-white center">3. Improve Customer Experience</h2>
+                            <p class="prop-sub-subtitle text-white-muted center">Intelligent systems that help you treat every client like they are the only one and ultimately reduce customer churn.</p>
                         </div>
 
-                        <!-- Tab Nav for Customer Experience -->
-                        <div class="prop-tabs-nav" data-prop-group="experience">
+                        <!-- Tab Nav for Customer Experience (CENTERED) -->
+                        <div class="prop-tabs-nav center-tabs" data-prop-group="experience">
                             <button class="prop-tab-btn active" data-tab-id="exp-tab-1">
                                 <i class="fa-solid fa-headset"></i> <span>24/7 customer support</span>
                             </button>
@@ -676,66 +671,27 @@
                 </div>
             </section>
 
-            <!-- 6. WATERMARK SECTION -->
+            <!-- 6. CLEAN WATERMARK SECTION (REPLACED ENTIRE FOOTER, NO UNERLINE, LOGO ON LEFT OF WATERMARK) -->
             <section class="watermark-section" id="watermark-section">
                 <div class="wrapper center">
                     <div class="watermark-container">
-                        <div class="watermark-brand">INTELLECTIR</div>
-                        <div class="watermark-slogan">Intelligence. Limitless possibilities.</div>
+                        <!-- Side-by-side Watermark Logo & Brand Text -->
+                        <div class="watermark-brand-row">
+                            <img src="assets/ir_logo.svg" alt="Intellectir Watermark Logo" class="watermark-logo-img">
+                            <span class="watermark-brand">INTELLECTIR</span>
+                        </div>
+                        <!-- Watermark Slogan (Same Typography Theme, NO Underline) -->
+                        <div class="watermark-slogan-text">Intelligence. Limitless possibilities.</div>
+                    </div>
+                </div>
+                <!-- Bottom Copyright & Location Bar -->
+                <div class="watermark-bottom-bar">
+                    <div class="wrapper watermark-bar-inner">
+                        <div class="copyright">&copy; 2026 Intellectir Inc. All rights reserved.</div>
+                        <div class="footer-location"><i class="fa-solid fa-location-dot"></i> Cape Town - South Africa</div>
                     </div>
                 </div>
             </section>
-
-            <!-- 7. FOOTER -->
-            <footer id="colophon" class="site-footer">
-                <div class="wrapper">
-                    <div class="footer-top-grid">
-                        <div class="footer-col footer-col-brand">
-                            <a href="index.html" class="brand-logo footer-logo">
-                                <img src="assets/intellectir_logo.svg" alt="Intellectir Logo" class="logo-img" width="32" height="32">
-                                <span class="logo-text">INTELLECTIR</span>
-                            </a>
-                            <p class="footer-tagline">Autonomous AI Agents &amp; Enterprise Process Orchestration</p>
-                            <div class="footer-social-links">
-                                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="X (formerly Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
-                                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-                                <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
-                            </div>
-                        </div>
-                        <div class="footer-col footer-links">
-                            <h4 class="footer-heading">Navigation</h4>
-                            <ul class="footer-nav-list">
-                                <li><a href="index.html">Home</a></li>
-                                <li><a href="solutions.html">Services</a></li>
-                                <li><a href="industries.html">Industries</a></li>
-                                <li><a href="discover.html">Discover</a></li>
-                                <li><a href="company.html">Company</a></li>
-                            </ul>
-                        </div>
-                        <div class="footer-col footer-links">
-                            <h4 class="footer-heading">Trust &amp; Legal</h4>
-                            <ul class="footer-nav-list">
-                                <li><a href="company.html#compliance">Privacy Policy</a></li>
-                                <li><a href="company.html#compliance">Terms of Service</a></li>
-                                <li><a href="company.html#compliance">SOC2 Type II Compliance</a></li>
-                                <li><a href="company.html#compliance">Security Architecture</a></li>
-                            </ul>
-                        </div>
-                        <div class="footer-col footer-col-cta">
-                            <h4 class="footer-heading">Stay in Touch</h4>
-                            <p class="footer-cta-desc">Subscribe to our monthly briefing on enterprise agentic engineering breakthroughs.</p>
-                            <form class="footer-email-form" onsubmit="event.preventDefault(); if(typeof showToast==='function') showToast('Thank you for subscribing!');">
-                                <input type="email" placeholder="Enter your work email" required aria-label="Email address for newsletter">
-                                <button type="submit" class="btn btn-primary">Subscribe</button>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="footer-bottom-bar">
-                        <div class="copyright">&copy; 2026 Intellectir Inc. All rights reserved.</div>
-                        <div class="footer-location"><i class="fa-solid fa-location-dot"></i> Cape Town &amp; Global Operations</div>
-                    </div>
-                </div>
-            </footer>
 
         </div> <!-- End pitch-black-domain -->
 
