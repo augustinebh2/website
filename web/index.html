@@ -19,7 +19,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -29,7 +29,7 @@
 </head>
 <body class="dark-theme">
 
-    <!-- Header Navigation (Floating Island Navbar) -->
+    <!-- Header Navigation (Floating Island Navbar - Semi-Transparent) -->
     <header id="masthead" class="site-header dark-nav">
         <div class="nav-container main-header">
             <a href="index.html" class="brand-logo">
@@ -48,7 +48,7 @@
             </nav>
 
             <div class="nav-actions header-actions">
-                <button class="btn btn-outline nav-cta open-modal-btn" data-modal-target="demo-modal" data-modal="demo">Book Consultation</button>
+                <button class="btn btn-outline nav-cta open-modal-btn" data-modal-target="demo-modal" data-modal="demo">Book a consultation</button>
                 <button class="nav-toggle mobile-menu-btn" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="primary-nav">
                     <span class="hamburger-bar"></span>
                     <span class="hamburger-bar"></span>
@@ -60,7 +60,7 @@
 
     <main id="primary" class="site-main">
 
-        <!-- 1. HERO SECTION (FULL SCREEN 100VH WITH VIDEO BG, BOTTOM-LEFT CONTENT & FOOT MARQUEE) -->
+        <!-- 1. HERO SECTION (FULL SCREEN 100VH WITH VIDEO BG & FURTHER BOTTOM-LEFT CONTENT + CTA) -->
         <section class="hero-fullscreen-section">
             <!-- Background Video Container -->
             <div class="hero-video-wrapper">
@@ -78,110 +78,116 @@
                     <p class="hero-main-subtitle">
                         We build and deploy specialised autonomous agentic systems that solve your complex business problems.
                     </p>
+                    <div class="hero-cta-action" style="margin-top: 1.5rem;">
+                        <button class="btn btn-primary btn-large open-modal-btn" data-modal-target="demo-modal" data-modal="demo">
+                            <span>Book a consultation</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <!-- TECH MARQUEE SLIDESHOW AT FOOT OF HERO SECTION -->
-            <div class="hero-foot-marquee" aria-label="Enterprise Technology Partners">
-                <div class="tech-marquee-wrapper">
-                    <div class="tech-marquee-header">
-                        <span>POWERED BY INDUSTRY-LEADING AI &amp; ENTERPRISE INFRASTRUCTURE</span>
-                    </div>
-                    <div class="tech-marquee-track-container">
-                        <div class="tech-marquee-track">
-                            <!-- Group 1 -->
-                            <div class="tech-marquee-group">
-                                <div class="tech-logo-item brand-openai">
-                                    <img src="assets/icons/openai.svg" class="brand-img" alt="OpenAI Logo" width="24" height="24">
-                                    <span>OpenAI</span>
-                                </div>
-                                <div class="tech-logo-item brand-anthropic">
-                                    <img src="assets/icons/anthropic.svg" class="brand-img" alt="Anthropic Logo" width="24" height="24">
-                                    <span>ANTHROP\C</span>
-                                </div>
-                                <div class="tech-logo-item brand-deepmind">
-                                    <img src="assets/icons/deepmind.svg" class="brand-img" alt="Google DeepMind Logo" width="22" height="22">
-                                    <span>Google DeepMind</span>
-                                </div>
-                                <div class="tech-logo-item brand-mistral">
-                                    <img src="assets/icons/mistral.svg" class="brand-img" alt="Mistral AI Logo" width="22" height="22">
-                                    <span>Mistral AI</span>
-                                </div>
-                                <div class="tech-logo-item brand-n8n">
-                                    <img src="assets/icons/n8n.svg" class="brand-img" alt="n8n Logo" width="36" height="22">
-                                    <span>n8n</span>
-                                </div>
-                                <div class="tech-logo-item brand-aws">
-                                    <img src="assets/icons/aws.svg" class="brand-img" alt="AWS Logo" width="22" height="22">
-                                    <span>AWS</span>
-                                </div>
-                                <div class="tech-logo-item brand-microsoft">
-                                    <img src="assets/icons/microsoft.svg" class="brand-img" alt="Microsoft Logo" width="20" height="20">
-                                    <span>Microsoft</span>
-                                </div>
-                                <div class="tech-logo-item brand-supabase">
-                                    <img src="assets/icons/supabase.svg" class="brand-img" alt="Supabase Logo" width="22" height="22">
-                                    <span>Supabase</span>
-                                </div>
-                                <div class="tech-logo-item brand-meta">
-                                    <img src="assets/icons/meta.svg" class="brand-img" alt="Meta Logo" width="24" height="24">
-                                    <span>Meta</span>
-                                </div>
-                                <div class="tech-logo-item brand-vercel">
-                                    <img src="assets/icons/vercel.svg" class="brand-img" alt="Vercel Logo" width="20" height="20">
-                                    <span>Vercel</span>
-                                </div>
-                                <div class="tech-logo-item brand-vapi">
-                                    <img src="assets/icons/vapi.svg" class="brand-img" alt="Vapi Logo" width="24" height="24">
-                                    <span>Vapi</span>
-                                </div>
+        <!-- 2. TECH MARQUEE SLIDESHOW SECTION (APPEARS ON ONE SCROLL BETWEEN HERO AND GLOBAL DIGITAL SHIFT) -->
+        <section class="tech-marquee-between-section" aria-label="Enterprise Technology Partners">
+            <div class="tech-marquee-wrapper">
+                <div class="tech-marquee-header">
+                    <span>POWERED BY INDUSTRY-LEADING AI &amp; ENTERPRISE INFRASTRUCTURE</span>
+                </div>
+                <div class="tech-marquee-track-container">
+                    <div class="tech-marquee-track">
+                        <!-- Group 1 -->
+                        <div class="tech-marquee-group">
+                            <div class="tech-logo-item brand-openai">
+                                <img src="assets/icons/openai_white.png" class="brand-img" alt="OpenAI Logo" width="24" height="24">
+                                <span>OpenAI</span>
                             </div>
-                            <!-- Group 2 (Duplicate for continuous loop) -->
-                            <div class="tech-marquee-group" aria-hidden="true">
-                                <div class="tech-logo-item brand-openai">
-                                    <img src="assets/icons/openai.svg" class="brand-img" alt="OpenAI Logo" width="24" height="24">
-                                    <span>OpenAI</span>
-                                </div>
-                                <div class="tech-logo-item brand-anthropic">
-                                    <img src="assets/icons/anthropic.svg" class="brand-img" alt="Anthropic Logo" width="24" height="24">
-                                    <span>ANTHROP\C</span>
-                                </div>
-                                <div class="tech-logo-item brand-deepmind">
-                                    <img src="assets/icons/deepmind.svg" class="brand-img" alt="Google DeepMind Logo" width="22" height="22">
-                                    <span>Google DeepMind</span>
-                                </div>
-                                <div class="tech-logo-item brand-mistral">
-                                    <img src="assets/icons/mistral.svg" class="brand-img" alt="Mistral AI Logo" width="22" height="22">
-                                    <span>Mistral AI</span>
-                                </div>
-                                <div class="tech-logo-item brand-n8n">
-                                    <img src="assets/icons/n8n.svg" class="brand-img" alt="n8n Logo" width="36" height="22">
-                                    <span>n8n</span>
-                                </div>
-                                <div class="tech-logo-item brand-aws">
-                                    <img src="assets/icons/aws.svg" class="brand-img" alt="AWS Logo" width="22" height="22">
-                                    <span>AWS</span>
-                                </div>
-                                <div class="tech-logo-item brand-microsoft">
-                                    <img src="assets/icons/microsoft.svg" class="brand-img" alt="Microsoft Logo" width="20" height="20">
-                                    <span>Microsoft</span>
-                                </div>
-                                <div class="tech-logo-item brand-supabase">
-                                    <img src="assets/icons/supabase.svg" class="brand-img" alt="Supabase Logo" width="22" height="22">
-                                    <span>Supabase</span>
-                                </div>
-                                <div class="tech-logo-item brand-meta">
-                                    <img src="assets/icons/meta.svg" class="brand-img" alt="Meta Logo" width="24" height="24">
-                                    <span>Meta</span>
-                                </div>
-                                <div class="tech-logo-item brand-vercel">
-                                    <img src="assets/icons/vercel.svg" class="brand-img" alt="Vercel Logo" width="20" height="20">
-                                    <span>Vercel</span>
-                                </div>
-                                <div class="tech-logo-item brand-vapi">
-                                    <img src="assets/icons/vapi.svg" class="brand-img" alt="Vapi Logo" width="24" height="24">
-                                    <span>Vapi</span>
-                                </div>
+                            <div class="tech-logo-item brand-anthropic">
+                                <img src="assets/icons/anthropic.svg" class="brand-img" alt="Anthropic Logo" width="24" height="24">
+                                <span>ANTHROP\C</span>
+                            </div>
+                            <div class="tech-logo-item brand-deepmind">
+                                <img src="assets/icons/deepmind.svg" class="brand-img" alt="Google DeepMind Logo" width="22" height="22">
+                                <span>Google DeepMind</span>
+                            </div>
+                            <div class="tech-logo-item brand-mistral">
+                                <img src="assets/icons/mistral.svg" class="brand-img" alt="Mistral AI Logo" width="22" height="22">
+                                <span>Mistral AI</span>
+                            </div>
+                            <div class="tech-logo-item brand-n8n">
+                                <img src="assets/icons/n8n.svg" class="brand-img" alt="n8n Logo" width="36" height="22">
+                                <span>n8n</span>
+                            </div>
+                            <div class="tech-logo-item brand-aws">
+                                <img src="assets/icons/aws.svg" class="brand-img" alt="AWS Logo" width="22" height="22">
+                                <span>AWS</span>
+                            </div>
+                            <div class="tech-logo-item brand-microsoft">
+                                <img src="assets/icons/microsoft.svg" class="brand-img" alt="Microsoft Logo" width="20" height="20">
+                                <span>Microsoft</span>
+                            </div>
+                            <div class="tech-logo-item brand-supabase">
+                                <img src="assets/icons/supabase.svg" class="brand-img" alt="Supabase Logo" width="22" height="22">
+                                <span>Supabase</span>
+                            </div>
+                            <div class="tech-logo-item brand-meta">
+                                <img src="assets/icons/meta.png" class="brand-img" alt="Meta Logo" width="24" height="24">
+                                <span>Meta</span>
+                            </div>
+                            <div class="tech-logo-item brand-vercel">
+                                <img src="assets/icons/vercel.svg" class="brand-img" alt="Vercel Logo" width="20" height="20">
+                                <span>Vercel</span>
+                            </div>
+                            <div class="tech-logo-item brand-vapi">
+                                <img src="assets/icons/vapi_mint.png" class="brand-img" alt="Vapi Logo" width="24" height="24">
+                                <span>Vapi</span>
+                            </div>
+                        </div>
+                        <!-- Group 2 (Identical Duplicate for continuous non-stop loop) -->
+                        <div class="tech-marquee-group" aria-hidden="true">
+                            <div class="tech-logo-item brand-openai">
+                                <img src="assets/icons/openai_white.png" class="brand-img" alt="OpenAI Logo" width="24" height="24">
+                                <span>OpenAI</span>
+                            </div>
+                            <div class="tech-logo-item brand-anthropic">
+                                <img src="assets/icons/anthropic.svg" class="brand-img" alt="Anthropic Logo" width="24" height="24">
+                                <span>ANTHROP\C</span>
+                            </div>
+                            <div class="tech-logo-item brand-deepmind">
+                                <img src="assets/icons/deepmind.svg" class="brand-img" alt="Google DeepMind Logo" width="22" height="22">
+                                <span>Google DeepMind</span>
+                            </div>
+                            <div class="tech-logo-item brand-mistral">
+                                <img src="assets/icons/mistral.svg" class="brand-img" alt="Mistral AI Logo" width="22" height="22">
+                                <span>Mistral AI</span>
+                            </div>
+                            <div class="tech-logo-item brand-n8n">
+                                <img src="assets/icons/n8n.svg" class="brand-img" alt="n8n Logo" width="36" height="22">
+                                <span>n8n</span>
+                            </div>
+                            <div class="tech-logo-item brand-aws">
+                                <img src="assets/icons/aws.svg" class="brand-img" alt="AWS Logo" width="22" height="22">
+                                <span>AWS</span>
+                            </div>
+                            <div class="tech-logo-item brand-microsoft">
+                                <img src="assets/icons/microsoft.svg" class="brand-img" alt="Microsoft Logo" width="20" height="20">
+                                <span>Microsoft</span>
+                            </div>
+                            <div class="tech-logo-item brand-supabase">
+                                <img src="assets/icons/supabase.svg" class="brand-img" alt="Supabase Logo" width="22" height="22">
+                                <span>Supabase</span>
+                            </div>
+                            <div class="tech-logo-item brand-meta">
+                                <img src="assets/icons/meta.png" class="brand-img" alt="Meta Logo" width="24" height="24">
+                                <span>Meta</span>
+                            </div>
+                            <div class="tech-logo-item brand-vercel">
+                                <img src="assets/icons/vercel.svg" class="brand-img" alt="Vercel Logo" width="20" height="20">
+                                <span>Vercel</span>
+                            </div>
+                            <div class="tech-logo-item brand-vapi">
+                                <img src="assets/icons/vapi_mint.png" class="brand-img" alt="Vapi Logo" width="24" height="24">
+                                <span>Vapi</span>
                             </div>
                         </div>
                     </div>
@@ -189,7 +195,7 @@
             </div>
         </section>
 
-        <!-- 2. AWARENESS SECTION (FULL SCREEN ONCE-OFF VIDEO CLIP FADE-IN WITH RIGHT C-SHAPED BLUR CARD) -->
+        <!-- 3. AWARENESS SECTION (FULL SCREEN ONCE-OFF VIDEO CLIP FADE-IN WITH RIGHT C-SHAPED BLUR CARD) -->
         <section class="awareness-fullscreen-section" id="awareness-section">
             <div class="awareness-video-wrapper">
                 <video class="awareness-video" id="new-era-video" muted playsinline preload="auto">
@@ -208,7 +214,7 @@
             </div>
         </section>
 
-        <!-- 3. BUSINESS PROPOSITION SECTION (PITCH BLACK BACKGROUND TO THE END) -->
+        <!-- 4. BUSINESS PROPOSITION SECTION (PITCH BLACK BACKGROUND TO THE END) -->
         <div class="pitch-black-domain">
 
             <section class="proposition-main-section" id="proposition-section">
@@ -658,7 +664,7 @@
                 </div>
             </section>
 
-            <!-- 4. HOW WE WORK SECTION (RESERVED PLACEHOLDER SPACE) -->
+            <!-- 5. HOW WE WORK SECTION (RESERVED PLACEHOLDER SPACE) -->
             <section class="how-we-work-section" id="how-we-work-section">
                 <div class="wrapper">
                     <!-- Reserved space for How We Work section -->
@@ -670,7 +676,7 @@
                 </div>
             </section>
 
-            <!-- 5. WATERMARK SECTION -->
+            <!-- 6. WATERMARK SECTION -->
             <section class="watermark-section" id="watermark-section">
                 <div class="wrapper center">
                     <div class="watermark-container">
@@ -680,7 +686,7 @@
                 </div>
             </section>
 
-            <!-- 6. FOOTER -->
+            <!-- 7. FOOTER -->
             <footer id="colophon" class="site-footer">
                 <div class="wrapper">
                     <div class="footer-top-grid">
