@@ -1,12 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
-    <!-- Rounded square border container -->
-    <rect x="6" y="6" width="88" height="88" rx="22" stroke="currentColor" stroke-width="6.5" fill="none"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <!-- Outer Rounded Square Container -->
+    <rect x="6" y="6" width="88" height="88" rx="22" stroke="#ffffff" stroke-width="7" fill="none"/>
     <!-- i dot -->
-    <circle cx="34" cy="29" r="7.5" fill="currentColor"/>
+    <circle cx="34" cy="28" r="8" fill="#ffffff"/>
     <!-- i stem -->
-    <rect x="27" y="44" width="14" height="34" rx="2" fill="currentColor"/>
+    <rect x="26" y="43" width="16" height="34" rx="2" fill="#ffffff"/>
     <!-- r stem -->
-    <rect x="49" y="44" width="14" height="34" rx="2" fill="currentColor"/>
+    <rect x="49" y="43" width="16" height="34" rx="2" fill="#ffffff"/>
     <!-- r arm curve -->
-    <path d="M63 44 C63 44, 70 38.5, 81 38.5 C85 38.5, 86 42.5, 86 46.5 C86 53.5, 78 56.5, 70 57.5 L63 58.5 Z" fill="currentColor"/>
+    <path d="M65 43 C65 43, 72 37, 83 37 C87 37, 88 41, 88 45 C88 52, 80 55, 72 56 L65 57 Z" fill="#ffffff"/>
 </svg>
