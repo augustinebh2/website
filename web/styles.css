@@ -1119,15 +1119,26 @@ body.dark-theme .glass-card {
    ========================================================================== */
 .ind-fullscreen-video-hero {
     position: relative;
-    width: 100%;
-    min-height: 440px;
-    background: #090d16;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    background: #000000;
     color: #ffffff;
     display: flex;
     align-items: center;
+    justify-content: center;
     overflow: hidden;
-    border-radius: var(--radius-lg);
-    margin-bottom: 3.5rem;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .ind-fullscreen-video {
@@ -1137,8 +1148,11 @@ body.dark-theme .glass-card {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.35;
+    opacity: 1;
+    border: none;
+    outline: none;
 }
+
 
 .executive-summary-card {
     background: var(--bg-card);
