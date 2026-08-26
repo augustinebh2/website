@@ -1,15 +1,30 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="28" height="28">
   <defs>
-    <linearGradient id="dm-grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0066FF"/>
-      <stop offset="100%" stop-color="#0044CC"/>
+    <!-- Base DeepMind Blue Gradient -->
+    <linearGradient id="gdm-base" x1="10%" y1="10%" x2="90%" y2="90%">
+      <stop offset="0%" stop-color="#00C8FF"/>
+      <stop offset="45%" stop-color="#0066FF"/>
+      <stop offset="100%" stop-color="#002A99"/>
     </linearGradient>
-    <linearGradient id="dm-grad2" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00D2FF"/>
+    <!-- Dark Inner Shade Curve -->
+    <linearGradient id="gdm-dark" x1="80%" y1="20%" x2="20%" y2="80%">
+      <stop offset="0%" stop-color="#0052CC"/>
+      <stop offset="100%" stop-color="#00144D"/>
+    </linearGradient>
+    <!-- Light Sheen Arc -->
+    <linearGradient id="gdm-sheen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#66E0FF"/>
       <stop offset="100%" stop-color="#0066FF"/>
     </linearGradient>
   </defs>
-  <circle cx="50" cy="50" r="42" fill="none" stroke="url(#dm-grad1)" stroke-width="12"/>
-  <path d="M 50 14 A 36 36 0 0 1 86 50 A 36 36 0 0 1 50 86 C 66 72 66 28 50 14 Z" fill="url(#dm-grad2)"/>
-  <circle cx="50" cy="50" r="13" fill="#0066FF"/>
+
+  <!-- Outer Swirl Sphere Base -->
+  <circle cx="50" cy="50" r="44" fill="url(#gdm-base)"/>
+
+  <!-- Inner Off-Center Hole -->
+  <ellipse cx="44" cy="48" rx="20" ry="20" fill="#090D16"/>
+
+  <!-- 3D Crescent Swirl Arc -->
+  <path d="M 24 50 C 24 35 36 22 51 22 C 67 22 80 35 80 51 C 80 67 67 80 51 80 C 40 80 30 73 25 63 C 28 72 37 79 48 79 C 63 79 75 67 75 52 C 75 37 63 25 48 25 C 36 25 26 33 23 44 C 20 33 28 20 42 16 C 58 11 74 19 81 33 C 88 47 83 65 70 74 C 58 83 40 82 28 73 C 18 64 12 51 14 38 C 17 26 25 16 36 10 C 24 16 16 28 14 42 C 12 57 19 72 31 80 C 45 89 63 87 75 77 C 88 66 92 46 84 31 C 76 15 58 7 41 11 C 28 14 17 23 12 35 C 18 24 29 16 42 16 L 42 16 Z" fill="url(#gdm-sheen)"/>
+  <path d="M 50 6 C 74 6 94 26 94 50 C 94 74 74 94 50 94 C 33 94 18 84 10 68 C 19 82 35 90 54 88 C 74 85 89 68 87 48 C 85 28 68 12 48 13 C 32 14 18 24 12 38 C 18 24 33 13 50 13 Z" fill="url(#gdm-dark)" opacity="0.9"/>
 </svg>
