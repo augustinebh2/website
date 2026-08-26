@@ -1,12 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
     <!-- Outer Rounded Square Container -->
-    <rect x="6" y="6" width="88" height="88" rx="22" stroke="#ffffff" stroke-width="7" fill="none"/>
+    <rect x="6" y="6" width="88" height="88" rx="22" stroke="#ffffff" stroke-width="6.5" fill="none"/>
     <!-- i dot -->
-    <circle cx="34" cy="28" r="8" fill="#ffffff"/>
+    <circle cx="33" cy="24" r="11" fill="#ffffff"/>
     <!-- i stem -->
-    <rect x="26" y="43" width="16" height="34" rx="2" fill="#ffffff"/>
+    <rect x="22" y="42" width="22" height="48" fill="#ffffff"/>
     <!-- r stem -->
-    <rect x="49" y="43" width="16" height="34" rx="2" fill="#ffffff"/>
-    <!-- r arm curve -->
-    <path d="M65 43 C65 43, 72 37, 83 37 C87 37, 88 41, 88 45 C88 52, 80 55, 72 56 L65 57 Z" fill="#ffffff"/>
+    <rect x="53" y="42" width="22" height="48" fill="#ffffff"/>
+    <!-- r arm (exact geometric match to official black & white logo) -->
+    <path d="M75 42 C75 42 84 36 98 36 L98 52 C86 52 75 57 75 64 Z" fill="#ffffff"/>
 </svg>
