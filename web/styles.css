@@ -3381,15 +3381,27 @@ input[type="range"]::-webkit-slider-thumb:hover,
    HOMEPAGE REFINEMENTS (COMPRESSED HEADLINE, MARQUEE SPACING, CENTERED PROPS, WATERMARK FOOTER)
    ========================================================================== */
 
-/* 1. Compressed Headline & Geometric Font */
+/* 1. Hero Headline - Matches Reference Image Style (Clean Sans-Serif, Regular Weight 400, Crisp White, Comfortable Line Height) */
 .hero-main-title {
-    font-family: 'Outfit', 'Plus Jakarta Sans', var(--font-sans) !important;
-    font-size: clamp(2.35rem, 4.8vw, 4.1rem) !important;
-    font-weight: 800 !important;
+    font-family: 'Outfit', 'Inter', 'Plus Jakarta Sans', var(--font-sans) !important;
+    font-size: clamp(2.2rem, 4.4vw, 3.6rem) !important;
+    font-weight: 400 !important;
     color: #ffffff !important;
-    line-height: 0.98 !important; /* Compressed tight line spacing between words */
-    letter-spacing: -0.03em !important;
-    margin-bottom: 0.85rem !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.015em !important;
+    margin-bottom: 1.1rem !important;
+}
+
+.hero-main-title .hero-title-gradient-reset,
+.hero-main-title .metallic-orange {
+    font-family: inherit !important;
+    font-weight: inherit !important;
+    font-style: normal !important;
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    background-clip: unset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    color: #ffffff !important;
 }
 
 .hero-main-subtitle {
