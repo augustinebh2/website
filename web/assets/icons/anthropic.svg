@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="28" height="28">
-  <!-- Anthropic terracotta A\ emblem -->
-  <path fill="#CC785C" d="M 18 82 L 48 18 L 62 18 L 32 82 Z M 38 64 L 52 64 L 45 48 Z"/>
-  <path fill="#CC785C" d="M 58 82 L 88 18 L 74 18 L 44 82 Z"/>
+  <!-- Anthropic official terracotta logo emblem -->
+  <path fill="#CC785C" fill-rule="evenodd" d="M 34 15 L 44 15 L 66 85 L 53 85 L 47 66 L 29 66 L 23 85 L 10 85 Z M 39 30 L 44 52 L 34 52 Z"/>
+  <path fill="#CC785C" d="M 52 15 L 62 15 L 84 85 L 71 85 Z"/>
 </svg>
