@@ -3891,14 +3891,15 @@ input[type="range"]::-webkit-slider-thumb:hover,
 
 .faq-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: 1.35rem 1.85rem;
+    position: relative;
+    padding: 1.5rem 2rem;
     cursor: pointer;
     width: 100%;
     background: none;
     border: none;
-    text-align: left;
+    text-align: center;
     transition: background-color var(--transition-fast);
 }
 
@@ -3909,30 +3910,36 @@ input[type="range"]::-webkit-slider-thumb:hover,
 .faq-title-wrap {
     display: flex;
     align-items: center;
-    gap: 1.25rem;
-    padding-right: 1rem;
+    justify-content: center;
+    gap: 0.85rem;
+    text-align: center;
 }
 
 .faq-q-num {
     font-family: var(--font-mono);
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--accent-primary);
-    min-width: 32px;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #000000;
 }
 
 .faq-question {
-    font-size: 1.12rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    line-height: 1.45;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #000000 !important;
+    line-height: 1.4;
+    text-align: center;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    text-decoration-thickness: 2px;
+    text-decoration-color: #000000;
 }
 
 .faq-icon {
     font-size: 1.1rem;
-    color: var(--text-muted);
+    color: #000000;
     transition: transform var(--transition-normal), color var(--transition-fast);
     flex-shrink: 0;
+    margin-left: 0.75rem;
 }
 
 .faq-item.active .faq-icon,
@@ -3946,21 +3953,22 @@ input[type="range"]::-webkit-slider-thumb:hover,
     max-height: 0;
     overflow: hidden;
     transition: max-height var(--transition-normal), padding var(--transition-normal);
-    padding: 0 1.85rem;
+    padding: 0 2rem;
 }
 
 .faq-item.active .faq-answer,
 .faq-item.active .faq-body {
     max-height: 800px;
-    padding: 0 1.85rem 1.85rem;
+    padding: 0 2rem 1.85rem;
 }
 
 .faq-answer-inner {
     padding-top: 1.25rem;
     border-top: 1px solid var(--border-subtle);
     color: var(--text-secondary);
-    line-height: 1.7;
-    font-size: 1.02rem;
+    line-height: 1.65;
+    font-size: 0.95rem;
+    text-align: center;
 }
 
 @media (max-width: 768px) {
