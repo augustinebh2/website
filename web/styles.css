@@ -3531,8 +3531,9 @@ input[type="range"]::-webkit-slider-thumb:hover,
 .watermark-logo-img {
     height: clamp(3.5rem, 8.5vw, 7.5rem) !important;
     width: auto !important;
-    opacity: 0.12 !important;
-    filter: brightness(0) invert(1) !important;
+    border-radius: 12px !important;
+    opacity: 0.85 !important;
+    object-fit: contain !important;
 }
 
 .watermark-brand {
