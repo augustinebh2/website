@@ -1735,6 +1735,16 @@ input[type="range"]::-webkit-slider-thumb:hover,
     margin-bottom: 3.5rem;
 }
 
+/* Simplified 2-Element Layout (Non-Homepage Pages) */
+.footer-simple-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 3rem;
+    margin-bottom: 3.5rem;
+    flex-wrap: wrap;
+}
+
 .footer-col-brand {
     display: flex;
     flex-direction: column;
