@@ -3381,13 +3381,13 @@ input[type="range"]::-webkit-slider-thumb:hover,
    HOMEPAGE REFINEMENTS (COMPRESSED HEADLINE, MARQUEE SPACING, CENTERED PROPS, WATERMARK FOOTER)
    ========================================================================== */
 
-/* 1. Hero Headline - Matches Reference Image Style (Clean Sans-Serif, Regular Weight 400, Crisp White, Comfortable Line Height) */
+/* 1. Hero Headline - Matches Reference Image Style (Clean Sans-Serif, Regular Weight 400, Crisp White, Tight 2-Line Height) */
 .hero-main-title {
     font-family: 'Outfit', 'Inter', 'Plus Jakarta Sans', var(--font-sans) !important;
     font-size: clamp(2.2rem, 4.4vw, 3.6rem) !important;
     font-weight: 400 !important;
     color: #ffffff !important;
-    line-height: 1.2 !important;
+    line-height: 1.05 !important;
     letter-spacing: -0.015em !important;
     margin-bottom: 1.1rem !important;
 }
@@ -3412,20 +3412,21 @@ input[type="range"]::-webkit-slider-thumb:hover,
     margin-bottom: 1.25rem !important;
 }
 
-/* 2. Marquee Ticker (~1cm Space Between Companies, Minimal Space Between Logo & Name) */
+/* 2. Marquee Ticker (Generous Space Between Separate Companies, Minimal Gap Between Logo Icon & Name) */
 .tech-marquee-group {
     display: flex !important;
     align-items: center !important;
-    gap: 3.5rem !important; /* ~1cm spacing between companies */
-    padding-right: 3.5rem !important;
+    gap: 4.5rem !important; /* Bigger gap between separate companies */
+    padding-right: 4.5rem !important;
 }
 
-.tech-logo-item {
-    gap: 0.25rem !important; /* Minimal space between logo and company name */
+.tech-logo-item,
+.tech-marquee-group .tech-logo-item {
+    gap: 0.35rem !important; /* Logo icon and company name close together */
 }
 
 .tech-marquee-track {
-    animation: marqueeScroll 45s linear infinite !important; /* Smooth, non-stop, slightly slower roll */
+    animation: marqueeScroll 45s linear infinite !important; /* Smooth, non-stop roll */
 }
 
 /* 3. Global Digital Shift (Vertical Top-to-Bottom Layout & C-Shaped Semi-Transparent Blur) */
