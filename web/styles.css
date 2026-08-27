@@ -3334,9 +3334,10 @@ input[type="range"]::-webkit-slider-thumb:hover,
     box-shadow: none !important;
     border-radius: 0 !important;
     padding: 0 !important;
-    display: flex !important;
+    display: inline-flex !important;
     align-items: center !important;
-    gap: 0.75rem !important;
+    flex-shrink: 0 !important;
+    gap: 0.35rem !important;
     color: #ffffff !important;
     font-family: var(--font-heading) !important;
     font-weight: 600 !important;
@@ -3412,16 +3413,20 @@ input[type="range"]::-webkit-slider-thumb:hover,
     margin-bottom: 1.25rem !important;
 }
 
-/* 2. Marquee Ticker (Generous Space Between Separate Companies, Minimal Gap Between Logo Icon & Name) */
+/* 2. Marquee Ticker (Perfectly Equidistant Space Between Separate Companies, Minimal Gap Between Logo Icon & Name) */
 .tech-marquee-group {
     display: flex !important;
     align-items: center !important;
-    gap: 4.5rem !important; /* Bigger gap between separate companies */
-    padding-right: 4.5rem !important;
+    flex-shrink: 0 !important;
+    gap: 3.5rem !important; /* Equidistant 3.5rem spacing between every company */
+    padding-right: 3.5rem !important;
 }
 
 .tech-logo-item,
 .tech-marquee-group .tech-logo-item {
+    display: inline-flex !important;
+    align-items: center !important;
+    flex-shrink: 0 !important;
     gap: 0.35rem !important; /* Logo icon and company name close together */
 }
 
