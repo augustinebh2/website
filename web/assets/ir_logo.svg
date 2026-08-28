@@ -1,10 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
-    <!-- i dot -->
-    <circle cx="34" cy="22" r="8.5" fill="#ffffff"/>
-    <!-- i stem -->
-    <rect x="25" y="38" width="18" height="50" fill="#ffffff"/>
-    <!-- r stem -->
-    <rect x="50" y="38" width="18" height="50" fill="#ffffff"/>
-    <!-- r arm arch -->
-    <path d="M68 38 C74 36 82 36 90 36 C95 36 97 38 97 44 L97 49 C97 49 90 49 84 49 C76 49 71 52 68 58 Z" fill="#ffffff"/>
+    <!-- Outer Rounded Square Border -->
+    <rect x="6" y="6" width="88" height="88" rx="18" stroke="#ffffff" stroke-width="5.5" fill="none"/>
+    <!-- Centered i dot -->
+    <circle cx="26.5" cy="26" r="6.5" fill="#ffffff"/>
+    <!-- Centered i stem -->
+    <rect x="18.5" y="39" width="16" height="41" fill="#ffffff"/>
+    <!-- Centered r stem -->
+    <rect x="40.5" y="39" width="16" height="41" fill="#ffffff"/>
+    <!-- Centered r arm arch -->
+    <path d="M56.5 39 C62.5 37 68.5 37 75.5 37 C79.5 37 81.5 39 81.5 44 L81.5 48 C81.5 48 75.5 48 70.5 48 C63.5 48 59.5 51 56.5 56 Z" fill="#ffffff"/>
 </svg>
