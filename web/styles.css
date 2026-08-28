@@ -2847,17 +2847,16 @@ input[type="range"]::-webkit-slider-thumb:hover,
     text-align: left;
 }
 
-.prop-card-badge {
-    display: inline-block;
-    background: #eff6ff;
-    color: #1d4ed8;
-    font-size: 0.75rem;
-    font-weight: 800;
-    padding: 0.3rem 0.75rem;
-    border-radius: 6px;
-    margin-bottom: 1rem;
+.prop-card-title {
+    font-family: var(--font-heading);
+    font-size: clamp(0.85rem, 1.2vw, 1rem);
+    font-weight: 700;
+    color: #64748b;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e2e8f0;
 }
 
 .prop-card-heading {
@@ -3181,6 +3180,238 @@ input[type="range"]::-webkit-slider-thumb:hover,
 .t-node { background: #1e293b; padding: 0.65rem 1rem; border-radius: 8px; font-size: 0.85rem; display: flex; align-items: center; gap: 0.6rem; }
 .t-node.active { color: #34d399; font-weight: 600; }
 .t-node.pending { color: #64748b; }
+
+/* ==========================================================================
+   LIVE MINIMALISTIC ANIMATIONS FOR ALL PROPOSITION VISUAL PANELS
+   ========================================================================== */
+
+/* --- REV TAB 1: Speed-to-Lead Timer Bars --- */
+.visual-speed-timer .timer-row.slow .t-bar {
+    animation: barGrowSlow 2s ease-out forwards;
+}
+.visual-speed-timer .timer-row.fast .t-bar {
+    animation: barGrowFast 2s 0.6s ease-out forwards;
+}
+.visual-speed-timer .stat-num {
+    animation: statPulse 3s ease-in-out infinite;
+}
+@keyframes barGrowSlow {
+    from { width: 0%; } to { width: 85%; }
+}
+@keyframes barGrowFast {
+    from { width: 0%; } to { width: 8%; }
+}
+@keyframes statPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.08); opacity: 0.85; }
+}
+
+/* --- REV TAB 2: Follow-Up Flow Steps Cascade --- */
+.visual-pipeline .flow-step:nth-child(1) {
+    animation: fadeSlideIn 0.5s 0.2s ease-out both;
+}
+.visual-pipeline .flow-arrow:nth-child(2) {
+    animation: fadeSlideIn 0.5s 0.5s ease-out both;
+}
+.visual-pipeline .flow-step:nth-child(3) {
+    animation: fadeSlideIn 0.5s 0.8s ease-out both;
+}
+.visual-pipeline .flow-arrow:nth-child(4) {
+    animation: fadeSlideIn 0.5s 1.1s ease-out both;
+}
+.visual-pipeline .flow-step:nth-child(5) {
+    animation: fadeSlideIn 0.5s 1.4s ease-out both;
+}
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- REV TAB 3: CRM Cold Lead Cascade --- */
+.visual-reactivation .crm-item:nth-child(1) {
+    animation: crmSlideIn 0.5s 0.3s ease-out both;
+}
+.visual-reactivation .crm-item:nth-child(2) {
+    animation: crmSlideIn 0.5s 0.9s ease-out both;
+}
+.visual-reactivation .crm-item:nth-child(3) {
+    animation: crmSlideIn 0.5s 1.5s ease-out both;
+}
+@keyframes crmSlideIn {
+    from { opacity: 0; transform: translateX(-15px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* --- REV TAB 4: 24/7 Radar Pulse --- */
+.radar-pulse {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
+    border-radius: 50%;
+    background: rgba(56, 189, 248, 0.12);
+    border: 2px solid rgba(56, 189, 248, 0.3);
+    animation: radarPing 2.5s ease-out infinite;
+    position: relative;
+}
+.radar-pulse::after {
+    content: '';
+    position: absolute;
+    inset: -12px;
+    border-radius: 50%;
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    animation: radarRing 2.5s 0.4s ease-out infinite;
+}
+@keyframes radarPing {
+    0% { transform: scale(0.85); opacity: 1; box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.35); }
+    70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(56, 189, 248, 0); }
+    100% { transform: scale(0.85); opacity: 1; box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+}
+@keyframes radarRing {
+    0% { transform: scale(0.9); opacity: 0; }
+    50% { opacity: 0.5; }
+    100% { transform: scale(1.3); opacity: 0; }
+}
+.visual-clock .time-display {
+    animation: timeFlicker 4s ease-in-out infinite;
+}
+@keyframes timeFlicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* --- REV TAB 5: Scale Chart Bar Growth --- */
+.visual-scaling .col-bar.hl {
+    animation: chartGrowHigh 1.2s 0.3s ease-out both;
+}
+.visual-scaling .col-bar.low {
+    animation: chartGrowLow 1.2s 0.6s ease-out both;
+}
+@keyframes chartGrowHigh {
+    from { height: 0%; } to { height: 90%; }
+}
+@keyframes chartGrowLow {
+    from { height: 0%; } to { height: 15%; }
+}
+
+/* --- PROD TAB 1: Document Pipeline Slide-In --- */
+.visual-ocr .doc-file {
+    animation: docSlideRight 0.6s 0.2s ease-out both;
+}
+.visual-ocr .doc-arrow {
+    animation: docSlideRight 0.6s 0.6s ease-out both;
+}
+.visual-ocr .doc-parsed {
+    animation: docSlideRight 0.6s 1.0s ease-out both;
+}
+.visual-ocr .doc-arrow i {
+    animation: gearSpin 3s linear infinite;
+}
+@keyframes docSlideRight {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+@keyframes gearSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* --- PROD TAB 2: BI Bar Chart Stagger --- */
+.visual-bi .bi-bar.b1 {
+    animation: biBarGrow 0.8s 0.2s ease-out both;
+}
+.visual-bi .bi-bar.b2 {
+    animation: biBarGrow 0.8s 0.5s ease-out both;
+}
+.visual-bi .bi-bar.b3 {
+    animation: biBarGrow 0.8s 0.8s ease-out both;
+}
+.visual-bi .bi-text-tag {
+    animation: fadeSlideIn 0.5s 1.3s ease-out both;
+}
+@keyframes biBarGrow {
+    from { height: 0%; opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* --- PROD TAB 3: Onboarding Stepper Check-Off --- */
+.visual-onboarding .step-item:nth-child(1) {
+    animation: stepCheckIn 0.5s 0.3s ease-out both;
+}
+.visual-onboarding .step-item:nth-child(2) {
+    animation: stepCheckIn 0.5s 0.8s ease-out both;
+}
+.visual-onboarding .step-item:nth-child(3) {
+    animation: stepCheckIn 0.5s 1.3s ease-out both;
+}
+@keyframes stepCheckIn {
+    from { opacity: 0; transform: translateX(15px); border-left-color: transparent; }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* --- PROD TAB 4: Email Inbox Cascade --- */
+.visual-inbox .tag-row:nth-child(1) {
+    animation: inboxSlide 0.5s 0.2s ease-out both;
+}
+.visual-inbox .tag-row:nth-child(2) {
+    animation: inboxSlide 0.5s 0.6s ease-out both;
+}
+.visual-inbox .tag-row:nth-child(3) {
+    animation: inboxSlide 0.5s 1.0s ease-out both;
+}
+@keyframes inboxSlide {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* --- CX TAB 1: Chat Bubble Type-In --- */
+.visual-chat-preview .chat-bubble.user {
+    animation: chatBubbleIn 0.5s 0.3s ease-out both;
+}
+.visual-chat-preview .chat-bubble.agent {
+    animation: chatBubbleIn 0.5s 1.0s ease-out both;
+}
+@keyframes chatBubbleIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* --- CX TAB 2: Guidance Match Glow --- */
+.visual-guidance .guide-card {
+    animation: guideBreathe 3.5s ease-in-out infinite;
+}
+.visual-guidance .guide-match {
+    animation: matchCountUp 1.5s 0.5s ease-out both;
+}
+@keyframes guideBreathe {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(52, 211, 153, 0); }
+    50% { box-shadow: 0 0 20px 4px rgba(52, 211, 153, 0.12); }
+}
+@keyframes matchCountUp {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+/* --- CX TAB 3: Post-Purchase Timeline Nodes --- */
+.visual-postpurchase .t-node:nth-child(1) {
+    animation: nodeActivate 0.5s 0.3s ease-out both;
+}
+.visual-postpurchase .t-node:nth-child(2) {
+    animation: nodeActivate 0.5s 0.9s ease-out both;
+}
+.visual-postpurchase .t-node:nth-child(3) {
+    animation: nodeActivate 0.5s 1.5s ease-out both;
+}
+.visual-postpurchase .t-node.active i {
+    animation: nodeCheck 0.3s 0.5s ease-out both;
+}
+@keyframes nodeActivate {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes nodeCheck {
+    from { transform: scale(0); }
+    to { transform: scale(1); }
+}
 
 /* 4. HOW WE WORK RESERVED SPACE */
 .how-we-work-section {
