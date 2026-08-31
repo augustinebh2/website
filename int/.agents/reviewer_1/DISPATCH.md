@@ -1,19 +1,18 @@
-# Task Dispatch: Reviewer 1 (Architecture, Server & Security Review)
+## 2026-08-31T16:55:40Z
 
-Project Root: c:\Users\Augustine Jr\OneDrive - University of Cape Town\int\web
-Working Directory: c:\Users\Augustine Jr\OneDrive - University of Cape Town\int\web\.agents\reviewer_1
-Original Request: c:\Users\Augustine Jr\OneDrive - University of Cape Town\int\web\.agents\ORIGINAL_REQUEST.md
-Project Specification: c:\Users\Augustine Jr\OneDrive - University of Cape Town\int\web\PROJECT.md
+You are Reviewer 1 for the Intellectir website project refinement.
 
-## Scope
-Perform an independent code and architecture review of `server.js`, `assets/`, `test/`:
-1. Check correctness, completeness, robustness, security, and interface conformance.
-2. Run automated test suite (`node test/e2e_runner.js`) and server startup tests.
-3. Determine verdict: APPROVE or REQUEST_CHANGES.
+Working Directory: C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int
+Read `C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int\ORIGINAL_REQUEST.md`.
+Read Worker handoff at: `C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int\.agents\worker_2\handoff.md`.
 
-## 2026-08-24T12:27:26Z
-OBJECTIVE:
-Conduct an independent code and architecture review of `server.js`, `assets/`, `test/`:
-1. Verify server security, stream delivery, HTTP 206 Range streaming, clean URL rewrites, and MIME handling.
-2. Run `node test/e2e_runner.js` and verify all tests pass with exit code 0.
-3. State your clear verdict (APPROVE or REQUEST_CHANGES) in `handoff.md` and send a message back.
+Your review scope:
+1. Verify `index.html`:
+   - HUD border frame (`border: 1px solid rgba(255,255,255,0.12)`) and connecting rays
+   - 4 Corner Nodes: TR (Green #10b981 01 Discovery Call), TL (Blue #3b82f6 02 Building Phase), BL (Pink/Red #ec4899 03 Integrating Phase), BR (Yellow/Gold #f59e0b 04 Maintenance)
+   - Initial center title "How we work" -> Final zoom-out "The Intellectir Platform" with "Explore Our Solutions →" CTA button
+   - Left-mockup + Right-text card structure in all 4 quadrant cards
+2. Verify `styles.css` and `app.js` camera anchors and stage interpolation.
+3. Run the test suite: `node test/e2e_runner.js` and verify all tests pass.
+
+Provide your verdict: `APPROVE` or `REQUEST_CHANGES` with evidence in `.agents/reviewer_1/handoff.md` and message the orchestrator.

@@ -1235,7 +1235,7 @@ describe('Tier 3: Cross-Feature Combinations & State Consistency', () => {
     const hexes = [
       HOW_WE_WORK_SPEC.themeColors.green,
       HOW_WE_WORK_SPEC.themeColors.blue,
-      HOW_WE_WORK_SPEC.themeColors.purple,
+      HOW_WE_WORK_SPEC.themeColors.pink,
       HOW_WE_WORK_SPEC.themeColors.yellow
     ];
     const unique = new Set(hexes);
@@ -1300,11 +1300,11 @@ describe('Tier 4: Real-World Workloads, WCAG AA Accessibility & Performance', ()
     );
   });
 
-  test('4.6: WCAG AA Contrast of Neon Purple (#a855f7) against #0a0a0c is >= 4.5:1', () => {
-    const contrast = calculateContrastRatio('#a855f7', '#0a0a0c');
+  test('4.6: WCAG AA Contrast of Neon Pink (#ec4899) against #0a0a0c is >= 4.5:1', () => {
+    const contrast = calculateContrastRatio('#ec4899', '#0a0a0c');
     assert.ok(
       contrast >= 4.5,
-      `Neon Purple contrast is ${contrast.toFixed(2)}:1 (minimum 4.5:1 required)`
+      `Neon Pink contrast is ${contrast.toFixed(2)}:1 (minimum 4.5:1 required)`
     );
   });
 

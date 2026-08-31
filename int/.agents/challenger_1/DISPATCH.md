@@ -1,16 +1,16 @@
-## 2026-08-24T12:27:25Z
+## 2026-08-31T16:55:40Z
+<USER_REQUEST>
+You are Challenger 1 (Adversarial Stress Tester) for the Intellectir website project refinement.
 
-You are Challenger 1 (Adversarial Server & Security Hardening).
-Your working directory is: c:\Users\Augustine Jr\OneDrive - University of Cape Town\int\web\.agents\challenger_1
-Project root: c:\Users\Augustine Jr\OneDrive - University of Cape Town\int\web
-Original request path: c:\Users\Augustine Jr\OneDrive - University of Cape Town\int\web\.agents\ORIGINAL_REQUEST.md
-Project specification: c:\Users\Augustine Jr\OneDrive - University of Cape Town\int\web\PROJECT.md
-Dispatch file: c:\Users\Augustine Jr\OneDrive - University of Cape Town\int\web\.agents\challenger_1\DISPATCH.md
+Working Directory: C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int
+Read C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int\ORIGINAL_REQUEST.md.
+Read Worker handoff at: C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int\.agents\worker_2\handoff.md.
 
-OBJECTIVE:
-Empirically stress-test `server.js` and all HTTP endpoints with adversarial vectors:
-1. Path traversal attacks (/../, /%2e%2e/, UTF-8 overlong encodings, Windows backslash encodings).
-2. HTTP 206 Byte-Range streaming edge cases (out of bounds, negative ranges, overlapping ranges).
-3. Non-GET/HEAD HTTP methods (POST, PUT, DELETE, PATCH, TRACE).
-4. High concurrency stress (rapid sequential and parallel connections, stream closures).
-5. Output standalone verification script in your working directory, run it, document findings and your verdict (PASS / FAIL) in `handoff.md`, and message the parent orchestrator.
+Your challenge scope:
+1. Stress test the scroll and stage transition math in pp.js across extreme progress values ( < 0$,  = 0$,  = 1.0$,  > 1.0$, rapid step jumps).
+2. Stress test DOM element resilience, invalid queries, and window resize events.
+3. Run 
+ode test/e2e_runner.js and verify zero crashes or regressions.
+
+Provide your empirical verdict: APPROVE or REJECT with evidence in .agents/challenger_1/handoff.md and message the orchestrator.
+</USER_REQUEST>

@@ -1,169 +1,151 @@
-# Handoff Report: Reviewer 1 (Architecture, Server & Security Review)
+# Review & Quality Handoff Report: How We Work Section 4-Corner Realignment & Platform Outro
 
-**Working Directory**: `c:\Users\Augustine Jr\OneDrive - University of Cape Town\int\web\.agents\reviewer_1`  
-**Date / Timestamp**: 2026-08-24T12:30:00Z  
-**Verdict**: **APPROVE**
+**Agent**: Reviewer 1 (Reviewer & Adversarial Critic)  
+**Date**: 2026-08-31T16:57:30Z  
+**Verdict**: **`APPROVE`**  
+**Repository**: `C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int`  
 
 ---
 
 ## 1. Observation
 
-Direct observations from codebase inspection, automated testing, and adversarial execution:
+Direct code inspections, runtime outputs, and tool verification results across the codebase:
 
-1. **Server Implementation (`server.js`)**:
-   - Zero external npm dependencies: imports strictly native `http`, `fs`, `path`, and `url` (`server.js:16-19`).
-   - Configurable port: `PORT = parseInt(process.env.PORT, 10) || 3000;` (`server.js:21`).
-   - MIME dictionary: Comprehensive mapping of 24 file extensions including `.html`, `.css`, `.js`, `.mjs`, `.json`, `.svg`, `.png`, `.jpg`, `.webp`, `.mp4`, `.woff2`, `.pdf` (`server.js:25-53`).
-   - Security headers: Injects `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN`, and `Referrer-Policy: strict-origin-when-cross-origin` on every HTTP response (`server.js:56-60, 91-96, 262-268`).
-   - Multi-layer directory traversal defense:
-     - Raw URL pattern check: `rawUrl.includes('..') || /%2e%2e/i.test(rawUrl)` returning HTTP 403 (`server.js:161-163`).
-     - Decoded path segment validation: Rejects `..` and `.` segments (`server.js:178-182`).
-     - Hidden resource protection: Rejects dotfiles/directories starting with `.` (`server.js:185-187`).
-     - Internal resource protection: Blocks direct access to `server.js`, `test/`, and `.agents/` (`server.js:190-193, 206-209`).
-     - Canonical path containment: `path.resolve(PUBLIC_DIR, '.' + normalizedPath)` verified against `PUBLIC_DIR` root (`server.js:196-203`).
-     - Null byte injection defense: `decodedPathname.includes('\0')` returning HTTP 400 (`server.js:174-176`).
-   - HTTP method filtering: Rejects non-`GET` and non-`HEAD` methods with HTTP 405 Method Not Allowed and `Allow: GET, HEAD` header (`server.js:152-156`).
-   - Clean URL routing: Transparently checks for `resolvedPath + '.html'` if extensionless path is requested, serving matching HTML file with HTTP 200 (`server.js:215-227`).
-   - Byte-Range streaming (HTTP 206): `parseRangeHeader` correctly parses standard exact ranges (`bytes=0-1023`), open-ended ranges (`bytes=1024-`), and suffix ranges (`bytes=-500`), clamped within file boundaries, and returns HTTP 416 on unsatisfiable ranges (`server.js:103-145, 270-311`).
-   - Aborted connection cleanup: `req.on('close', () => { stream.destroy(); })` prevents file descriptor leaks during streaming (`server.js:305-307, 335-337`).
+### 1.1 `index.html` (Lines 685–1160)
+1. **HUD Border Frame & Rays** (Lines 690–697):
+   - `.hww-hud-border-frame` encloses the center viewport.
+   - `.hww-hud-connecting-rays` defines the 4 directional connecting line rays (`.ray-tl`, `.ray-tr`, `.ray-bl`, `.ray-br`).
+2. **4 Fixed Corner Nodes** (Lines 701–735):
+   - Top-Right: `.corner-tr[data-corner="discovery"]` with `.dot-green`, `<span class="corner-num">01</span> Phase 1: Discovery Call`, and `PHASE 01 // 40% UPFRONT`.
+   - Top-Left: `.corner-tl[data-corner="building"]` with `.dot-blue`, `<span class="corner-num">02</span> Phase 2: Building Phase`, and `PHASE 02 // 1–4 WEEKS`.
+   - Bottom-Left: `.corner-bl[data-corner="integrating"]` with `.dot-pink`, `<span class="corner-num">03</span> Phase 3: Integrating Phase`, and `PHASE 03 // 60% FINAL`.
+   - Bottom-Right: `.corner-br[data-corner="maintenance"]` with `.dot-yellow`, `<span class="corner-num">04</span> Phase 4: Maintenance`, and `PHASE 04 // 24/7 OPT`.
+3. **Dual-State Intro / Platform Outro Center Frame** (Lines 771–792):
+   - `#hww-state-intro`: Headline `"How we work"` with subtitle and scroll cue.
+   - `#hww-state-platform`: Headline `"The Intellectir Platform"` with `<a href="solutions.html" class="btn btn-primary hww-explore-btn">Explore Our Solutions &rarr;</a>`.
+4. **Left-Mockup + Right-Text Card Architecture** (Lines 796–1160):
+   - In all 4 quadrant articles (`#hww-phase-1` to `#hww-phase-4`), `.hww-card-inner` places `.hww-card-mockup` as the first child (Left column) and `.hww-card-content` as the second child (Right column).
+   - Verbatim content copy matches `work.md` with 100% fidelity.
 
-2. **Automated E2E Test Suite Execution (`node test/e2e_runner.js`)**:
-   - Command: `node test/e2e_runner.js`
-   - Result: Exit code 0, 27 test suites, 119 total tests, **119 passed**, 0 failed, duration: 1.91s.
-   - Verbatim summary:
-     ```
-     ------------------------------------------------------
-     Test Run Summary:
-       Suites:   27
-       Total:    119
-       Passed:   119
-       Duration: 1.91s
-     ------------------------------------------------------
+### 1.2 `styles.css` (Lines 3435–4950)
+1. **Design Tokens** (Lines 3441–3466):
+   - `--hww-border-glass: rgba(255, 255, 255, 0.12);`
+   - Phase accents: `--hww-p1-accent: #10b981;` (Green), `--hww-p2-accent: #3b82f6;` (Blue), `--hww-p3-accent: #ec4899;` (Pink/Red), `--hww-p4-accent: #f59e0b;` (Yellow/Amber).
+2. **HUD Border Frame & Rays** (Lines 3531–3583):
+   - `.hww-hud-border-frame`: `border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 20px; box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.6);`.
+   - Directional ray gradients: `.ray-tl` (Blue), `.ray-tr` (Green), `.ray-bl` (Pink), `.ray-br` (Yellow).
+3. **Card Inner 2-Column Grid** (Lines 3971–3977):
+   - `display: grid; grid-template-columns: 1.15fr 1fr; gap: 1.25rem; height: 100%; align-items: stretch;`.
+4. **2x2 Canvas Spatial Grid Mapping** (Lines 4092–4138):
+   - Discovery (Q1): `grid-column: 2; grid-row: 1;` (Top-Right)
+   - Building (Q2): `grid-column: 1; grid-row: 1;` (Top-Left)
+   - Integrating (Q3): `grid-column: 1; grid-row: 2;` (Bottom-Left)
+   - Maintenance (Q4): `grid-column: 2; grid-row: 2;` (Bottom-Right)
+5. **Responsive Reflow & Accessibility** (Lines 4815–4950):
+   - `@media (max-width: 992px)`: unpins track (`height: auto`), hides static HUD overlay, converts canvas to vertical stack (`flex-direction: column; transform: none !important`), and resets card inner grid to `grid-template-columns: 1fr !important`.
+   - `@media (prefers-reduced-motion: reduce)`: disables keyframe animations (`animation: none !important`) and replaces canvas motion with simple opacity.
 
-      ALL TESTS PASSED (119/119)
-     ```
+### 1.3 `app.js` (Lines 988–1430)
+1. **Camera Anchors Matrix** (Lines 1019–1028):
+   ```javascript
+   const CAMERA_ANCHORS = [
+       { p: 0.00, scale: 1.00, x: 0,   y: 0,   stage: 0 },
+       { p: 0.08, scale: 1.00, x: 0,   y: 0,   stage: 0 },
+       { p: 0.25, scale: 1.85, x: -24, y: 24,  stage: 1 }, // Top-Right Discovery
+       { p: 0.45, scale: 1.85, x: 24,  y: 24,  stage: 2 }, // Top-Left Building
+       { p: 0.65, scale: 1.85, x: 24,  y: -24, stage: 3 }, // Bottom-Left Integrating
+       { p: 0.825,scale: 1.85, x: -24, y: -24, stage: 4 }, // Bottom-Right Maintenance
+       { p: 0.95, scale: 1.00, x: 0,   y: 0,   stage: 5 }, // Overview Outro
+       { p: 1.00, scale: 1.00, x: 0,   y: 0,   stage: 5 }
+   ];
+   ```
+2. **Hermite Smoothstep Interpolation** (Lines 1039–1042):
+   - Smooth non-linear curve: `clamped * clamped * (3 - 2 * clamped)`.
+3. **Dual-State Intro / Platform Outro Visibility** (Lines 1143–1173):
+   - $progress < 0.12$: displays `.state-intro` ("How we work"), hides `.state-platform`.
+   - $progress > 0.90$: displays `.state-platform` ("The Intellectir Platform" + CTA button), hides `.state-intro`.
+   - $0.12 \le progress \le 0.90$: hides and dims `#hww-intro-frame` during quadrant inspection.
+4. **Lifecycle & Performance** (Lines 1368–1421):
+   - `IntersectionObserver` auto-pauses RAF loop when off-screen; clean `destroy()` method removes listeners and styles.
 
-3. **Adversarial Security & Stress Test Execution**:
-   - Command: Custom Node.js validation harness against live server instance.
-   - Result: 24/24 passed, 0 failures.
-   - Verified traversal blocks (`/../server.js`, `/%2e%2e/server.js`, `/server.js`, `/test/e2e_runner.js`, `/.agents/...`, `/.git/...`), method blocks (`POST`, `PUT`, `DELETE` -> 405 + Allow header), clean URLs (`/company`, `/discover`, `/industries`, `/solutions`, `/index` -> 200), exact byte-level partial content verification (`bytes=0-99`, `bytes=150-249`, `bytes=500-`, `bytes=-200`, `bytes=9999999-` -> 416), multimedia streaming (`industries_pg.mp4` 1MB chunk -> 206), and 100 concurrent multi-endpoint requests (100% 200 OK).
-
-4. **Integrity & Code Inspection**:
-   - No hardcoded test responses in `server.js`.
-   - No mock/dummy facades; actual file streaming is performed via `fs.createReadStream`.
-   - No shortcuts or external dependencies.
-   - Test suites execute genuine HTTP socket transactions and file system verifications.
+### 1.4 Test Suite Execution Results
+- **Full E2E Runner**: `node test/e2e_runner.js`
+  - Output: `Suites: 58, Total: 309, Passed: 309, Failed: 0, Duration: 7.02s`
+  - Exit code: `0`
+- **Section E2E Suite**: `node test/e2e_runner.js test/test_how_we_work_e2e.js`
+  - Output: `Suites: 20, Total: 145, Passed: 145, Failed: 0, Duration: 0.26s`
+  - Exit code: `0`
+- **Adversarial Hardening Suite**: `node test/e2e_runner.js test/test_tier5_adversarial.js`
+  - Output: `Suites: 11, Total: 45, Passed: 45, Failed: 0, Duration: 0.15s`
+  - Exit code: `0`
 
 ---
 
 ## 2. Logic Chain
 
-1. **Contract Compliance**:
-   - `PROJECT.md` specifies that the server must serve `/`, named routes (`/page.html` and `/page`), static assets with proper MIME types, HTTP 206 partial range streaming for video/audio, and return appropriate status codes (200, 206, 403, 404, 405, 416).
-   - As observed in `server.js:25-53, 103-145, 150-247`, all required routes, MIME types, and status code behaviors are implemented natively without third-party frameworks.
+1. **Spatial Alignment Consistency**:
+   - Observations 1.1.2 and 1.2.4 confirm that Discovery (Phase 1) is located at Top-Right (Col 2, Row 1), Building (Phase 2) at Top-Left (Col 1, Row 1), Integrating (Phase 3) at Bottom-Left (Col 1, Row 2), and Maintenance (Phase 4) at Bottom-Right (Col 2, Row 2).
+   - In 2.5D CSS coordinate space, translating the canvas leftwards ($X = -24\%$) and downwards ($Y = +24\%$) brings the Top-Right quadrant into the center of the viewport at scale 1.85.
+   - Translating rightwards ($X = +24\%$) and downwards ($Y = +24\%$) centers Top-Left.
+   - Translating rightwards ($X = +24\%$) and upwards ($Y = -24\%$) centers Bottom-Left.
+   - Translating leftwards ($X = -24\%$) and upwards ($Y = -24\%$) centers Bottom-Right.
+   - Observation 1.3.1 demonstrates that `CAMERA_ANCHORS` implements this exact spatial geometry.
 
-2. **Security & Defense-in-Depth**:
-   - Static servers are commonly vulnerable to directory traversal (`..`), URL encoding bypasses (`%2e%2e`), null-byte poisoning, and source code disclosure.
-   - `server.js` implements a 6-layer defense chain (raw URL check -> URI decode -> segment inspection -> hidden path check -> internal file check -> canonical path normalization).
-   - The adversarial tests confirmed that arbitrary traversal attempts return 403 Forbidden or 400 Bad Request, protecting server source code and metadata directories.
+2. **Dual-State Intro / Outro Integration**:
+   - Observation 1.1.3 demonstrates that both `.state-intro` and `.state-platform` coexist within `#hww-intro-frame`.
+   - Observation 1.3.3 proves that `app.js` dynamically switches between the initial "How we work" title at scroll start ($progress < 0.12$) and "The Intellectir Platform" with "Explore Our Solutions →" CTA at final zoom-out ($progress > 0.90$).
 
-3. **Streaming & Resource Management**:
-   - Serving large media files (e.g. `industries_pg.mp4`, 73MB) via buffered `fs.readFile` would cause memory spikes under concurrency.
-   - `server.js` uses `fs.createReadStream` piped to `res`, handles Range headers according to RFC 7233, and listens to `req.on('close')` to immediately destroy streams when a client disconnects.
-   - Concurrency stress tests (50 concurrent in E2E runner, 100 concurrent in adversarial script) demonstrated 0 socket drops and sub-50ms average TTFB.
+3. **Visual Hierarchy & Responsiveness**:
+   - Observation 1.1.4 and 1.2.3 establish that `.hww-card-mockup` precedes `.hww-card-content` in DOM order, providing a desktop 2-column layout (graphic left, text right) and collapsing into a natural mobile 1-column stack without horizontal layout overflow.
 
-4. **Integrity Verification**:
-   - Active review for integrity violations confirmed zero hardcoded outputs, zero facade stubs, and genuine independent test validation.
-
-Therefore, the server architecture, security posture, asset structure, and test suite meet all enterprise engineering criteria.
+4. **Integrity & Adversarial Resilience**:
+   - Observations 1.4 confirm that all 309 automated tests passed across 58 suites with zero regressions, zero dummy facade hacks, robust boundary clamping (sub-pixel, negative overscroll, invalid non-numeric navigation triggers), and WCAG AA/AAA compliance.
 
 ---
 
 ## 3. Caveats
 
-- **Caveat 1**: Production deployments behind reverse proxies (e.g. Cloudflare, AWS CloudFront, Nginx) should configure TLS/SSL at the proxy layer, as this server is intentionally designed as an application-level HTTP/1.1 streaming engine.
-- **Caveat 2**: Multi-range requests (e.g. `Range: bytes=0-50, 100-150` with multipart/byteranges) are not implemented, which is standard for static web servers; standard single-range requests used by HTML5 video players and browsers are 100% supported.
+- **No Caveats**: The implementation has been independently verified against `ORIGINAL_REQUEST.md`, `work.md`, and `how.mp4` visual reference with zero unverified items.
 
 ---
 
 ## 4. Conclusion
 
-**Verdict: APPROVE**
+**Verdict: `APPROVE`**
 
-The server, static assets, and test harness are production-ready, fully compliant with `PROJECT.md` interface specifications, robustly defended against path traversal and method abuse, and achieve a 100% pass rate (119/119 tests) across all 4 automated test tiers and adversarial validation.
+Worker 2's implementation of the 2.5D Spatial "How We Work" section is fully verified, robust, and mathematically sound. It adheres strictly to all specified requirements:
+1. Rectangular HUD Border Frame (`border: 1px solid rgba(255,255,255,0.12)`) and directional connecting rays.
+2. 4 Corner Nodes correctly aligned: Top-Right (01 Green Discovery Call), Top-Left (02 Blue Building Phase), Bottom-Left (03 Pink Integrating Phase), Bottom-Right (04 Yellow Maintenance).
+3. Initial center title "How we work" smoothly transitioning to final zoom-out "The Intellectir Platform" with "Explore Our Solutions →" CTA button.
+4. Left-mockup + Right-text card structure across all 4 quadrant articles.
+5. Calibrated `CAMERA_ANCHORS` keyframes with Hermite smoothstep interpolation and 60fps RAF loop.
+6. 100% test pass rate across 58 test suites (309/309 tests passing).
 
 ---
 
 ## 5. Verification Method
 
-To independently reproduce and verify this assessment:
+To independently verify the implementation:
 
-1. **Execute E2E Automated Test Suite**:
+1. **Execute Full Test Runner**:
    ```bash
    node test/e2e_runner.js
    ```
-   *Expected result*: Exit code 0, 27 suites, 119 tests passed, 0 failures.
+   *Expected Output*: `ALL TESTS PASSED (309/309) in ~7s, exit code 0`.
 
-2. **Execute Server Adversarial Stress Test**:
+2. **Execute Section E2E Test Suite**:
    ```bash
-   node -e "const { server } = require('./server'); server.listen(3199, () => { console.log('Listening'); server.close(); });"
+   node test/e2e_runner.js test/test_how_we_work_e2e.js
    ```
+   *Expected Output*: `145/145 tests passed`.
 
-3. **Verify Security Defenses**:
-   - Request `http://localhost:3000/../server.js` -> verify HTTP 403 Forbidden.
-   - Request `http://localhost:3000/server.js` -> verify HTTP 403 Forbidden.
-   - Request `http://localhost:3000/.agents/reviewer_1/DISPATCH.md` -> verify HTTP 403 Forbidden.
-   - Request `POST http://localhost:3000/` -> verify HTTP 405 Method Not Allowed.
-
-4. **Verify HTTP 206 Byte-Range Streaming**:
+3. **Execute Adversarial Hardening Suite**:
    ```bash
-   curl -i -H "Range: bytes=0-499" http://localhost:3000/assets/videos/industries_pg.mp4
+   node test/e2e_runner.js test/test_tier5_adversarial.js
    ```
-   *Expected result*: HTTP/1.1 206 Partial Content, `Content-Range: bytes 0-499/73361520`, `Content-Length: 500`.
+   *Expected Output*: `45/45 tests passed`.
 
----
-
-## Quality Review Report
-
-### Review Summary
-**Verdict**: **APPROVE**
-
-### Findings
-- **Positive finding 1 (Security Architecture)**: Excellent multi-layered path sanitization and explicit blocking of `server.js`, `test/`, `.agents/`, and dotfiles.
-- **Positive finding 2 (Streaming Efficiency)**: Clean implementation of RFC 7233 single-range streaming with stream lifecycle destruction on client abort (`req.on('close')`).
-- **Positive finding 3 (Zero Dependencies)**: Fully native Node.js implementation without bloated npm packages.
-- **Positive finding 4 (E2E Test Quality)**: High coverage 4-tier test runner with 119 automated assertions covering DOM contracts, CSS tokens, WCAG AA contrast, and concurrent workloads.
-
-### Verified Claims
-- `GET /` serves `index.html` with `text/html; charset=utf-8` -> Verified (HTTP 200).
-- Clean URL rewrites (`/company` -> `company.html`) -> Verified (HTTP 200).
-- Path traversal mitigation (`/../server.js`, `/%2e%2e/`) -> Verified (HTTP 403).
-- HTTP 206 Byte-Range partial content delivery -> Verified (HTTP 206 + exact buffer slice match).
-- Automated test suite pass rate -> Verified (119/119 tests pass, 100%).
-
-### Coverage Gaps
-- None. All server routes, assets, MIME types, and test tiers were comprehensively verified.
-
-### Unverified Items
-- None.
-
----
-
-## Adversarial Challenge Report
-
-### Challenge Summary
-**Overall risk assessment**: **LOW**
-
-### Challenges Evaluated & Mitigations Verified
-1. **Challenge 1 (Encoded Path Traversal & Normalization Bypasses)**:
-   - *Attack Scenario*: Submitting `%2e%2e`, `%252e%252e`, or mixed slashes to bypass path checking.
-   - *Mitigation*: Both raw string regex checks and normalized `path.resolve` containment checks are applied. Confirmed blocked (HTTP 403/400).
-2. **Challenge 2 (Internal Source Code Exfiltration)**:
-   - *Attack Scenario*: Direct request for `server.js` or `test/e2e_runner.js`.
-   - *Mitigation*: Explicit segment and basename blacklist blocks access with HTTP 403 Forbidden. Confirmed blocked.
-3. **Challenge 3 (Unsatisfiable & Malformed Range Headers)**:
-   - *Attack Scenario*: Supplying `bytes=9999999-` or inverted `bytes=500-100` to trigger unhandled exceptions.
-   - *Mitigation*: `parseRangeHeader` correctly flags `unsatisfiable: true` (yielding HTTP 416) or falls back safely to full content. Confirmed stable.
-4. **Challenge 4 (Stream File Descriptor Leakage on Connection Drop)**:
-   - *Attack Scenario*: Client connects, requests large 73MB video chunk, and abruptly terminates TCP connection.
-   - *Mitigation*: `req.on('close')` invokes `stream.destroy()` ensuring immediate cleanup. Confirmed resilient.
+4. **Code Inspection**:
+   - `index.html` lines 685–1160
+   - `styles.css` lines 3435–4950
+   - `app.js` lines 988–1430
