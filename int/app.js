@@ -983,7 +983,426 @@
     })();
 
     /* ==========================================================================
-       9. INTELLECTIR NAMESPACE & LIFECYCLE INITIALIZER
+       9. HOW WE WORK: 2.5D SPATIAL MOTION & CAMERA CONTROLLER MODULE
+       ========================================================================== */
+    const HowWeWorkModule = (function () {
+        let isInitialized = false;
+        let sectionEl = null;
+        let trackEl = null;
+        let canvasEl = null;
+        let introFrameEl = null;
+        let scrubberProgressEl = null;
+        let navPills = [];
+        let cornerTags = [];
+        let quadrantCards = [];
+
+        let currentProgress = 0;
+        let targetProgress = 0;
+        let isLoopRunning = false;
+        let rafId = null;
+        let observer = null;
+        let boundScrollHandler = null;
+        let boundResizeHandler = null;
+        let activePhaseIndex = 1;
+
+        const LERP_FACTOR = 0.1; // Smooth jank-free damping bounded between 0.05 and 0.20
+
+        // 2.5D Camera Keyframe Waypoints (Stages 0 to 5)
+        const CAMERA_ANCHORS = [
+            { p: 0.00, scale: 1.00, x: 0,   y: 0,   stage: 0 },
+            { p: 0.08, scale: 1.00, x: 0,   y: 0,   stage: 0 },
+            { p: 0.25, scale: 1.85, x: 24,  y: 24,  stage: 1 },
+            { p: 0.45, scale: 1.85, x: -24, y: 24,  stage: 2 },
+            { p: 0.65, scale: 1.85, x: 24,  y: -24, stage: 3 },
+            { p: 0.825,scale: 1.85, x: -24, y: -24, stage: 4 },
+            { p: 0.95, scale: 1.00, x: 0,   y: 0,   stage: 5 },
+            { p: 1.00, scale: 1.00, x: 0,   y: 0,   stage: 5 }
+        ];
+
+        // Sanitize phase index input
+        function sanitizeGotoIndex(val) {
+            const num = parseInt(val, 10);
+            if (isNaN(num) || num < 1) return 1;
+            if (num > 4) return 4;
+            return num;
+        }
+
+        // Hermite smoothstep interpolation
+        function smoothstep(t) {
+            const clamped = Math.max(0, Math.min(1, t));
+            return clamped * clamped * (3 - 2 * clamped);
+        }
+
+        // Camera Matrix Calculation from Progress (0.00 to 1.00)
+        function computeCameraTransform(progress) {
+            const numP = (typeof progress === 'number' && !isNaN(progress)) ? progress : 0;
+            const clampedP = Math.max(0, Math.min(1, numP));
+
+            // Find segment in CAMERA_ANCHORS
+            let aCurrent = CAMERA_ANCHORS[0];
+            let aNext = CAMERA_ANCHORS[CAMERA_ANCHORS.length - 1];
+
+            for (let i = 0; i < CAMERA_ANCHORS.length - 1; i++) {
+                if (clampedP >= CAMERA_ANCHORS[i].p && clampedP <= CAMERA_ANCHORS[i + 1].p) {
+                    aCurrent = CAMERA_ANCHORS[i];
+                    aNext = CAMERA_ANCHORS[i + 1];
+                    break;
+                }
+            }
+
+            const range = aNext.p - aCurrent.p;
+            const t = range > 0 ? (clampedP - aCurrent.p) / range : 0;
+            const easedT = smoothstep(t);
+
+            const scale = aCurrent.scale + (aNext.scale - aCurrent.scale) * easedT;
+            const x = aCurrent.x + (aNext.x - aCurrent.x) * easedT;
+            const y = aCurrent.y + (aNext.y - aCurrent.y) * easedT;
+
+            // Determine stage based on progress boundaries
+            let currentStage = 0;
+            if (clampedP < 0.15) {
+                currentStage = 0;
+            } else if (clampedP < 0.35) {
+                currentStage = 1;
+            } else if (clampedP < 0.55) {
+                currentStage = 2;
+            } else if (clampedP < 0.75) {
+                currentStage = 3;
+            } else if (clampedP < 0.90) {
+                currentStage = 4;
+            } else {
+                currentStage = 5;
+            }
+
+            return {
+                stage: currentStage,
+                scale: parseFloat(scale.toFixed(4)),
+                translateX: parseFloat(x.toFixed(2)),
+                translateY: parseFloat(y.toFixed(2)),
+                transformString: `scale(${scale.toFixed(4)}) translate3d(${x.toFixed(2)}%, ${y.toFixed(2)}%, 0px)`
+            };
+        }
+
+        // Target scroll progress from current window position
+        function computeTargetProgress() {
+            if (!trackEl) return 0;
+            const rect = trackEl.getBoundingClientRect();
+            const viewportHeight = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 1;
+            const trackHeight = trackEl.offsetHeight || rect.height || 1;
+            const scrollableDistance = Math.max(1, trackHeight - viewportHeight);
+            const scrollY = -rect.top;
+            const rawProgress = scrollY / scrollableDistance;
+
+            if (isNaN(rawProgress)) return 0;
+            return Math.max(0, Math.min(1, rawProgress));
+        }
+
+        // Render one animation frame for visual synchronization
+        function renderFrame(progress) {
+            const matrix = computeCameraTransform(progress);
+            const stage = matrix.stage;
+
+            // Map stage to active phase (1 to 4)
+            if (stage === 0 || stage === 1) {
+                activePhaseIndex = 1;
+            } else if (stage === 2) {
+                activePhaseIndex = 2;
+            } else if (stage === 3) {
+                activePhaseIndex = 3;
+            } else {
+                activePhaseIndex = 4;
+            }
+
+            // 1. Camera Canvas Matrix Transformation
+            if (canvasEl && canvasEl.style) {
+                const prefersReducedMotion = typeof window !== 'undefined' &&
+                    window.matchMedia &&
+                    typeof window.matchMedia === 'function' &&
+                    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                const isMobileReflow = typeof window !== 'undefined' && window.innerWidth && window.innerWidth <= 992;
+
+                if (prefersReducedMotion) {
+                    canvasEl.style.transform = 'none';
+                } else if (isMobileReflow) {
+                    canvasEl.style.transform = '';
+                } else {
+                    canvasEl.style.transform = matrix.transformString;
+                }
+            }
+
+            // 2. Intro Center Frame Fade In / Out
+            if (introFrameEl) {
+                if (progress < 0.12) {
+                    if (introFrameEl.classList) introFrameEl.classList.remove('faded', 'hidden', 'is-dimmed');
+                    if (introFrameEl.style) {
+                        introFrameEl.style.opacity = '1';
+                        introFrameEl.style.pointerEvents = 'auto';
+                    }
+                } else {
+                    if (introFrameEl.classList) introFrameEl.classList.add('faded', 'hidden', 'is-dimmed');
+                    if (introFrameEl.style) {
+                        introFrameEl.style.opacity = '0';
+                        introFrameEl.style.pointerEvents = 'none';
+                    }
+                }
+            }
+
+            // 3. Scrubber Pills Active Synchronization
+            navPills.forEach(pill => {
+                if (!pill) return;
+                const goto = sanitizeGotoIndex(pill.getAttribute ? pill.getAttribute('data-hww-goto') : null);
+                const isActive = goto === activePhaseIndex;
+                if (pill.classList) pill.classList.toggle('active', isActive);
+                if (pill.setAttribute) pill.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            });
+
+            // 4. Scrubber Progress Line Width
+            if (scrubberProgressEl && scrubberProgressEl.style) {
+                const pct = Math.max(0, Math.min(100, progress * 100));
+                scrubberProgressEl.style.width = `${pct}%`;
+            }
+
+            // 5. HUD Corner Boundary Tags Illumination
+            // Stage 0 and Stage 5 illuminate all 4 corner tags; Stages 1-4 isolate specific active tag
+            const cornerTagMap = {
+                1: 'discovery',
+                2: 'building',
+                3: 'integrating',
+                4: 'maintenance'
+            };
+
+            cornerTags.forEach(tag => {
+                if (!tag) return;
+                const cornerName = tag.getAttribute ? tag.getAttribute('data-corner') : null;
+                if (stage === 0 || stage === 5) {
+                    if (tag.classList) tag.classList.add('active');
+                } else {
+                    const activeCornerName = cornerTagMap[activePhaseIndex];
+                    if (tag.classList) tag.classList.toggle('active', cornerName === activeCornerName);
+                }
+            });
+
+            // 6. Quadrant Cards Active Illumination
+            quadrantCards.forEach(card => {
+                if (!card) return;
+                const qNum = parseInt(card.getAttribute ? card.getAttribute('data-quadrant') : '', 10);
+                if (stage === 0 || stage === 5) {
+                    if (card.classList) card.classList.remove('active');
+                } else {
+                    if (card.classList) card.classList.toggle('active', qNum === activePhaseIndex);
+                }
+            });
+        }
+
+        // Cross-environment RAF wrappers
+        function requestNextFrame(callback) {
+            if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
+                return window.requestAnimationFrame(callback);
+            }
+            if (typeof requestAnimationFrame === 'function') {
+                return requestAnimationFrame(callback);
+            }
+            return setTimeout(callback, 16);
+        }
+
+        function cancelFrame(id) {
+            if (typeof window !== 'undefined' && typeof window.cancelAnimationFrame === 'function') {
+                window.cancelAnimationFrame(id);
+                return;
+            }
+            if (typeof cancelAnimationFrame === 'function') {
+                cancelAnimationFrame(id);
+                return;
+            }
+            clearTimeout(id);
+        }
+
+        // Animation Loop
+        function loop() {
+            if (!isLoopRunning) return;
+
+            const delta = targetProgress - currentProgress;
+            if (Math.abs(delta) < 0.0001) {
+                currentProgress = targetProgress;
+            } else {
+                currentProgress += delta * LERP_FACTOR;
+            }
+
+            renderFrame(currentProgress);
+
+            rafId = requestNextFrame(loop);
+        }
+
+        function startLoop() {
+            if (isLoopRunning) return;
+            isLoopRunning = true;
+            loop();
+        }
+
+        function stopLoop() {
+            isLoopRunning = false;
+            if (rafId) {
+                cancelFrame(rafId);
+                rafId = null;
+            }
+        }
+
+        // Scroll listener
+        function onScroll() {
+            targetProgress = computeTargetProgress();
+        }
+
+        // Resize listener
+        function onResize() {
+            targetProgress = computeTargetProgress();
+            renderFrame(currentProgress);
+        }
+
+        // Programmatic Scroll to Phase (1..4)
+        function scrollToPhase(phaseIndex) {
+            const sanitized = sanitizeGotoIndex(phaseIndex);
+            const targetPhaseProgressMap = {
+                1: 0.25,
+                2: 0.45,
+                3: 0.65,
+                4: 0.825
+            };
+            const phaseP = targetPhaseProgressMap[sanitized] || 0.25;
+
+            if (!trackEl) return;
+            const rect = trackEl.getBoundingClientRect();
+            const scrollY = (typeof window !== 'undefined' && window.pageYOffset) ? window.pageYOffset : (document.documentElement.scrollTop || 0);
+            const trackAbsoluteTop = scrollY + (rect ? rect.top : 0);
+            const viewportHeight = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 1;
+            const trackHeight = trackEl.offsetHeight || (rect ? rect.height : 1);
+            const scrollableDistance = Math.max(1, trackHeight - viewportHeight);
+
+            const targetScrollTop = trackAbsoluteTop + (phaseP * scrollableDistance);
+
+            if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+                window.scrollTo({
+                    top: targetScrollTop,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // Active Phase Query
+        function getActivePhase() {
+            return activePhaseIndex;
+        }
+
+        // Initialization
+        function init() {
+            if (typeof document === 'undefined') return { initialized: false, reason: 'Document missing' };
+
+            sectionEl = document.getElementById('how-we-work-section');
+            if (!sectionEl) return { initialized: false, reason: 'Root element missing' };
+
+            if (isInitialized) return { initialized: true, alreadyInitialized: true };
+            isInitialized = true;
+
+            trackEl = document.getElementById('hww-track') || (sectionEl.querySelector ? sectionEl.querySelector('.hww-track') : null);
+            canvasEl = document.getElementById('hww-spatial-canvas') || (sectionEl.querySelector ? sectionEl.querySelector('.hww-spatial-canvas') : null);
+            introFrameEl = document.getElementById('hww-intro-frame') || (sectionEl.querySelector ? sectionEl.querySelector('.hww-intro-frame') : null);
+            scrubberProgressEl = document.getElementById('hww-scrubber-progress');
+            navPills = sectionEl.querySelectorAll ? Array.from(sectionEl.querySelectorAll('.hww-nav-pill')) : [];
+            cornerTags = sectionEl.querySelectorAll ? Array.from(sectionEl.querySelectorAll('.hww-corner-tag')) : [];
+            quadrantCards = sectionEl.querySelectorAll ? Array.from(sectionEl.querySelectorAll('.hww-quadrant-card')) : [];
+
+            // Setup Scrubber Click Handlers
+            navPills.forEach(pill => {
+                if (!pill || !pill.addEventListener) return;
+                const handler = function (e) {
+                    if (e && e.preventDefault) e.preventDefault();
+                    const gotoVal = pill.getAttribute ? pill.getAttribute('data-hww-goto') : null;
+                    if (gotoVal !== null) {
+                        scrollToPhase(gotoVal);
+                    }
+                };
+                pill._hwwClickHandler = handler;
+                pill.addEventListener('click', handler);
+            });
+
+            // Bind Event Listeners
+            boundScrollHandler = onScroll;
+            boundResizeHandler = onResize;
+            if (typeof window !== 'undefined' && window.addEventListener) {
+                window.addEventListener('scroll', boundScrollHandler, { passive: true });
+                window.addEventListener('resize', boundResizeHandler, { passive: true });
+            }
+
+            // Initial Target & Frame Calculation
+            targetProgress = computeTargetProgress();
+            currentProgress = targetProgress;
+            renderFrame(currentProgress);
+
+            // IntersectionObserver Lifecycle for Performance
+            if (typeof window !== 'undefined' && 'IntersectionObserver' in window && typeof window.IntersectionObserver === 'function') {
+                observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            targetProgress = computeTargetProgress();
+                            startLoop();
+                        } else {
+                            stopLoop();
+                        }
+                    });
+                }, {
+                    root: null,
+                    threshold: [0, 0.05, 0.1]
+                });
+                observer.observe(sectionEl);
+            } else {
+                startLoop();
+            }
+
+            return { initialized: true };
+        }
+
+        // Cleanup & Teardown
+        function destroy() {
+            stopLoop();
+
+            if (observer) {
+                observer.disconnect();
+                observer = null;
+            }
+
+            if (typeof window !== 'undefined' && window.removeEventListener) {
+                if (boundScrollHandler) window.removeEventListener('scroll', boundScrollHandler);
+                if (boundResizeHandler) window.removeEventListener('resize', boundResizeHandler);
+            }
+
+            navPills.forEach(pill => {
+                if (pill && pill.removeEventListener && pill._hwwClickHandler) {
+                    pill.removeEventListener('click', pill._hwwClickHandler);
+                    delete pill._hwwClickHandler;
+                }
+            });
+
+            if (canvasEl && canvasEl.style) canvasEl.style.transform = '';
+            if (introFrameEl && introFrameEl.style) {
+                introFrameEl.style.opacity = '';
+                introFrameEl.style.pointerEvents = '';
+            }
+
+            isInitialized = false;
+        }
+
+        return {
+            init,
+            getActivePhase,
+            scrollToPhase,
+            destroy,
+            computeCameraTransform,
+            computeTargetProgress
+        };
+    })();
+
+    /* ==========================================================================
+       10. INTELLECTIR NAMESPACE & LIFECYCLE INITIALIZER
        ========================================================================== */
     window.Intellectir = {
         ToastModule,
@@ -994,6 +1413,7 @@
         AccordionModule,
         ScrollAnimationModule,
         InteractiveComponentsModule,
+        HowWeWorkModule,
         init: function () {
             ToastModule.init();
             HeaderNavModule.init();
@@ -1003,6 +1423,7 @@
             AccordionModule.init();
             ScrollAnimationModule.init();
             InteractiveComponentsModule.init();
+            HowWeWorkModule.init();
         }
     };
 
