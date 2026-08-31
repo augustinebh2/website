@@ -1,109 +1,228 @@
+/**
+ * Challenger 1: Adversarial Stress Testing & Empirical Validation Harness
+ * =========================================================================
+ * Target: Intellectir HowWeWorkModule & 2.5D Camera Controller
+ *
+ * Scope:
+ * 1. Extreme Math & Boundary Inputs ($progress < 0$, $0$, $1.0$, $> 1.0$, degenerate types, jitter)
+ * 2. 10,000-Step High-Resolution Sub-Pixel Monotonicity & Bounding Verification
+ * 3. Scrubber Jump Stress & High-Frequency Alternating Jitter
+ * 4. DOM Fault-Injection & Missing/Corrupted Element Resilience
+ * 5. Window Resize, Viewport Dimension Stress & Reduced-Motion Switching
+ * 6. Lifecycle & Concurrency Stress (Idempotency, Re-init, Rapid Teardown)
+ */
+
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
-const { describe, test, it, assert } = require('./e2e_runner');
+const { describe, it, assert } = require('./e2e_runner');
 
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 const appJsCode = fs.readFileSync(path.join(PROJECT_ROOT, 'app.js'), 'utf-8');
 
-function instantiateHowWeWork(customDom = {}) {
-  const windowObj = {
-    innerWidth: customDom.innerWidth !== undefined ? customDom.innerWidth : 1440,
-    innerHeight: customDom.innerHeight !== undefined ? customDom.innerHeight : 900,
-    pageYOffset: customDom.pageYOffset !== undefined ? customDom.pageYOffset : 0,
-    addEventListener: (evt, fn) => {
-      if (!windowObj._listeners) windowObj._listeners = {};
-      if (!windowObj._listeners[evt]) windowObj._listeners[evt] = [];
-      windowObj._listeners[evt].push(fn);
-    },
-    removeEventListener: (evt, fn) => {
-      if (windowObj._listeners && windowObj._listeners[evt]) {
-        windowObj._listeners[evt] = windowObj._listeners[evt].filter(f => f !== fn);
-      }
-    },
-    matchMedia: (query) => ({p��F6�W3�7W7F��F���&VGV6VD��F�����V�FVf��VB�7W7F��F���&VGV6VD��F����f�6R���VF��VW'��Ғ��67&���F���G2������b�v��F�t�&�����67&���F�v��F�t�&�����67&���F��G2������&WVW7D��F���g&�S��6"���6WEF��V�WB�6"����6�6V���F���g&�S���B���6�V%F��V�WB��B��Ӱ���ۜ�ܙX]S[���[[Y[�H
-Y�\�Ә[Y\�H�K]��H�K��[�[��H�JHO�
-�(�������(����х�9���耝%X��(���������1�����(������}����͕�聹�܁M�С�����9���̤�(���������聙չ�ѥ��������̤�쁍�̹������������ѡ�̹}����͕̹����������(������ɕ��ٔ聙չ�ѥ��������̤�쁍�̹������������ѡ�̹}����͕̹����є�������(������ѽ����聙չ�ѥ��������ɍ����(��������������ɍ�����չ����������(��������������ѡ�̹}����͕̹��̡����ѡ�̹}����͕̹����є���쁕�͔�ѡ�̹}����͕̹�������(��������􁕱͔�������ɍ����(����������ѡ�̹}����͕̹�������(��������􁕱͔��(����������ѡ�̹}����͕̹����є����(���������(��������ɕ��ɸ�ѡ�̹}����͕̹��̡���(��������(���������х���聙չ�ѥ�������ɕ��ɸ�ѡ�̹}����͕̹��̡����(������(������屔����(���������ɥ��є耡������������m�t����չ���������������m�t�聹ձ���(����͕���ɥ��є耡���ؤ����쁅����m�t��M�ɥ���ؤ���(����ɕ��ٕ��ɥ��є耡�(����쁑���є������m�t���(�������	�չ���������I���耠�����������[�[�˝�OOH[�Y�[�Y���[�[�˝������N���[�[�˘���HOOH[�Y�[�Y���[�[�˘���H�L�Y����[�[�˛Y�OOH[�Y�[�Y���[�[�˛Y����Y����[�[�˜�Y�OOH[�Y�[�Y���[�[�˜�Y��M��Y���[�[�˝�YOOH[�Y�[�Y���[�[�˝�Y�M�ZY����[�[�˚ZY�OOH[�Y�[�Y���[�[�˚ZY��L�JK�ٙ��]ZY����[�[�˚ZY�OOH[�Y�[�Y���[�[�˚ZY��L�ٙ��]�Y���[�[�˝�YOOH[�Y�[�Y���[�[�˝�Y�M�Y]�[�\�[�\���[��[ۊ]���HY�
-]\˗�]��H\˗�]��H�NY�
-]\˗�]���]�JH\˗�]���]�HH�N\˗�]���]�K�\�
-��NK��[[ݙQ]�[�\�[�\���[��[ۊ]���HY�
-\˗�]��	��\˗�]���]�JH\˗�]���]�HH\˗�]���]�K��[\��O��OOH��NB�K�]Y\�T�[X�܎�
+function instantiateHowWeWork(customOptions = {}) {
+  const eventListeners = {
+    window: {},
+    elements: {}
+  };
 
-HO��[�]Y\�T�[X�ܐ[�
+  const createMockElement = (id, classNames = [], attributes = {}, bounding = {}) => {
+    const classSet = new Set(classNames);
+    const attrMap = new Map(Object.entries(attributes));
+    const el = {
+      id,
+      tagName: 'DIV',
+      classList: {
+        add: (...cls) => cls.forEach(c => classSet.add(c)),
+        remove: (...cls) => cls.forEach(c => classSet.delete(c)),
+        toggle: (c, force) => {
+          if (force === undefined) {
+            if (classSet.has(c)) classSet.delete(c); else classSet.add(c);
+          } else if (force) {
+            classSet.add(c);
+          } else {
+            classSet.delete(c);
+          }
+          return classSet.has(c);
+        },
+        contains: (c) => classSet.has(c)
+      },
+      style: {},
+      getAttribute: (k) => attrMap.get(k) !== undefined ? attrMap.get(k) : null,
+      setAttribute: (k, v) => attrMap.set(k, String(v)),
+      removeAttribute: (k) => attrMap.delete(k),
+      getBoundingClientRect: () => ({
+        top: bounding.top !== undefined ? bounding.top : (customOptions.scrollTop !== undefined ? -customOptions.scrollTop : 0),
+        bottom: bounding.bottom !== undefined ? bounding.bottom : 5000,
+        left: bounding.left !== undefined ? bounding.left : 0,
+        right: bounding.right !== undefined ? bounding.right : 1440,
+        width: bounding.width !== undefined ? bounding.width : 1440,
+        height: bounding.height !== undefined ? bounding.height : 5000
+      }),
+      offsetHeight: bounding.height !== undefined ? bounding.height : 5000,
+      offsetWidth: bounding.width !== undefined ? bounding.width : 1440,
+      addEventListener: (evt, fn) => {
+        if (!eventListeners.elements[id]) eventListeners.elements[id] = {};
+        if (!eventListeners.elements[id][evt]) eventListeners.elements[id][evt] = [];
+        eventListeners.elements[id][evt].push(fn);
+      },
+      removeEventListener: (evt, fn) => {
+        if (eventListeners.elements[id] && eventListeners.elements[id][evt]) {
+          eventListeners.elements[id][evt] = eventListeners.elements[id][evt].filter(f => f !== fn);
+        }
+      },
+      querySelector: () => null,
+      querySelectorAll: () => []
+    };
+    return el;
+  };
 
-HO��B�JN��ۜ��X�[ۑ[H�\��Q�K����X�[ۈ��[�ܙX]S[���[[Y[�
-	���]�K]�ܚ�\�X�[ۉ�����]�K]�ܚ�\�X�[ۉ�JN�ۜ��X��[H�\��Q�K����X����[�ܙX]S[���[[Y[�
-	���]�X�������]�X���K�K�\��Q�K��X�Л�[�[���JN�ۜ��[��\�[H�\��Q�K����[��\���[�ܙX]S[���[[Y[�
-	���\�]X[X�[��\������\�]X[X�[��\��JN�ۜ�[��ќ�[YQ[H�\��Q�K���[��ќ�[YH��[�ܙX]S[���[[Y[�
-	���Z[���Y��[YI�����Z[���Y��[YI�JN�ۜ��]R[���[H�\��Q�K����]R[�����[�ܙX]S[���[[Y[�
-	���\�]KZ[�������]KZ[����JN�ۜ��]T]�ܛQ[H�\��Q�K����]T]�ܛH��[�ܙX]S[���[[Y[�
-	���\�]K\]�ܛI����]K\]�ܛI�JN�ۜ��ܝX��\���ܙ\��[H�\��Q�K����ܝX��\���[�ܙX]S[���[[Y[�
-	���\ܝX��\�\��ܙ\�������\�ܝX��\�\��ܙ\���JN��ۜ��]�[�H�K��K�X\
-HO�ܙX]S[���[[Y[�
-	���[�]�\[I�
-�K����[�]�\[	�K�	�]KZ��Y���Έ��[��JHJJN�ۜ��ܛ�\�Y��HܙX]S[���[[Y[�
-	�Y�LI�����X�ܛ�\�]Y��	��ܛ�\�]��K�	�]KX�ܛ�\�Έ	�\��ݙ\�I�JK�ܙX]S[���[[Y[�
-	�Y�L������X�ܛ�\�]Y��	��ܛ�\�]	�K�	�]KX�ܛ�\�Έ	؝Z[[���JK�ܙX]S[���[[Y[�
-	�Y�L������X�ܛ�\�]Y��	��ܛ�\�X�	�K�	�]KX�ܛ�\�Έ	�[�Yܘ][���JK�ܙX]S[���[[Y[�
-	�Y�M	�����X�ܛ�\�]Y��	��ܛ�\�X���K�	�]KX�ܛ�\�Έ	�XZ[�[�[��I�JB�N�ۜ�]XY�[��\��H�K��K�X\
-HO�ܙX]S[���[[Y[�
-	��\�I�
-�K����\]XY�[�X�\�	�K�	�]K\]XY�[�	Έ��[��JHJJN  if (sectionEl) {
-    sectionEl.querySelectorAll = (sel) => {
-      if (sel.includes('hww-nav-pill')) return navPills;
-      if (sel.includes('hww-corner-tag')) return cornerTags;
-      if (sel.includes('hww-quadrant-card')) return quadrantCards;
+  const sectionEl = customOptions.noSection ? null : createMockElement('how-we-work-section', ['how-we-work-section']);
+  const trackEl = customOptions.noTrack ? null : createMockElement('hww-track', ['hww-track'], {}, customOptions.trackBounding || {});
+  const canvasEl = customOptions.noCanvas ? null : createMockElement('hww-spatial-canvas', ['hww-spatial-canvas']);
+  const introFrameEl = customOptions.noIntroFrame ? null : createMockElement('hww-intro-frame', ['hww-intro-frame']);
+  const stateIntroEl = customOptions.noStateIntro ? null : createMockElement('hww-state-intro', ['state-intro']);
+  const statePlatformEl = customOptions.noStatePlatform ? null : createMockElement('hww-state-platform', ['state-platform']);
+  const scrubberProgressEl = customOptions.noScrubber ? null : createMockElement('hww-scrubber-progress', ['hww-scrubber-progress']);
+
+  const navPills = [1, 2, 3, 4].map(idx =>
+    createMockElement('hww-nav-pill-' + idx, ['hww-nav-pill'], { 'data-hww-goto': String(idx) })
+  );
+
+  const cornerTags = [
+    createMockElement('hww-tag-discovery', ['hww-corner-tag', 'corner-tr'], { 'data-corner': 'discovery' }),
+    createMockElement('hww-tag-building', ['hww-corner-tag', 'corner-tl'], { 'data-corner': 'building' }),
+    createMockElement('hww-tag-integrating', ['hww-corner-tag', 'corner-bl'], { 'data-corner': 'integrating' }),
+    createMockElement('hww-tag-maintenance', ['hww-corner-tag', 'corner-br'], { 'data-corner': 'maintenance' })
+  ];
+
+  const quadrantCards = [1, 2, 3, 4].map(idx =>
+    createMockElement('hww-quadrant-card-' + idx, ['hww-quadrant-card'], { 'data-quadrant': String(idx) })
+  );
+
+  if (sectionEl) {
+    sectionEl.querySelectorAll = (selector) => {
+      if (selector.includes('.hww-nav-pill')) return navPills;
+      if (selector.includes('.hww-corner-tag')) return cornerTags;
+      if (selector.includes('.hww-quadrant-card')) return quadrantCards;
       return [];
     };
-    sectionEl.querySelector = (sel) => {
-      if (sel.includes('hww-track')) return trackEl;
-      if (sel.includes('hww-spatial-canvas')) return canvasEl;
-      if (sel.includes('hww-intro-frame')) return introFrameEl;
+    sectionEl.querySelector = (selector) => {
+      if (selector.includes('.hww-track')) return trackEl;
+      if (selector.includes('.hww-spatial-canvas')) return canvasEl;
+      if (selector.includes('.hww-intro-frame')) return introFrameEl;
       return null;
     };
   }
 
-  const documentObj = {
-    getElementById: (id) => {
-      if (id === 'how-we-work-section') return sectionEl;
-      if (id === 'hww-track') return trackEl;
-      if (id === 'hww-spatial-canvas') return canvasEl;
-      if (id === 'hww-intro-frame') return introFrameEl;
-      if (id === 'hww-state-intro') return stateIntroEl;
-      if (id === 'hww-state-platform') return statePlatformEl;
-      if (id === 'hww-scrubber-progress') return scrubberProgressEl;
-      return null;
+  const elementsById = {
+    'how-we-work-section': sectionEl,
+    'hww-track': trackEl,
+    'hww-spatial-canvas': canvasEl,
+    'hww-intro-frame': introFrameEl,
+    'hww-state-intro': stateIntroEl,
+    'hww-state-platform': statePlatformEl,
+    'hww-scrubber-progress': scrubberProgressEl
+  };
+
+  let scrollPosition = customOptions.scrollTop || 0;
+  let rafCallback = null;
+  let rafHandleId = 100;
+  let activeRafIds = new Set();
+  let observerDisconnected = false;
+
+  class MockIntersectionObserver {
+    constructor(callback) {
+      this.callback = callback;
+    }
+    observe(target) {
+      if (customOptions.isIntersecting !== false) {
+        this.callback([{ isIntersecting: true, target }]);
+      }
+    }
+    unobserve() {}
+    disconnect() {
+      observerDisconnected = true;
+    }
+  }
+
+  const mockWindow = {
+    innerHeight: customOptions.innerHeight !== undefined ? customOptions.innerHeight : 900,
+    innerWidth: customOptions.innerWidth !== undefined ? customOptions.innerWidth : 1440,
+    pageYOffset: scrollPosition,
+    _listeners: eventListeners.window,
+    addEventListener: (evt, fn) => {
+      if (!eventListeners.window[evt]) eventListeners.window[evt] = [];
+      eventListeners.window[evt].push(fn);
     },
-    querySelectorAll: (sel) => {
-      if (sel.includes('hww-nav-pill')) return navPills;
-      if (sel.includes('hww-corner-tag')) return cornerTags;
-      if (sel.includes('hww-quadrant-card')) return quadrantCards;
-      return [];
+    removeEventListener: (evt, fn) => {
+      if (eventListeners.window[evt]) {
+        eventListeners.window[evt] = eventListeners.window[evt].filter(f => f !== fn);
+      }
     },
-    documentElement: { scrollTop: customDom.scrollTop || 0 }
+    scrollTo: (options) => {
+      if (customOptions.onScrollTo) {
+        customOptions.onScrollTo(options);
+      }
+      if (typeof options === 'object' && options.top !== undefined) {
+        scrollPosition = options.top;
+        mockWindow.pageYOffset = scrollPosition;
+      }
+    },
+    requestAnimationFrame: (cb) => {
+      const id = ++rafHandleId;
+      activeRafIds.add(id);
+      rafCallback = cb;
+      return id;
+    },
+    cancelAnimationFrame: (id) => {
+      activeRafIds.delete(id);
+      if (rafHandleId === id) rafCallback = null;
+    },
+    matchMedia: (query) => ({
+      matches: customOptions.reducedMotion && query.includes('prefers-reduced-motion') ? true : false,
+      media: query,
+      addListener: () => {},
+      removeListener: () => {}
+    }),
+    IntersectionObserver: MockIntersectionObserver
+  };
+
+  const mockDocument = {
+    readyState: 'complete',
+    getElementById: (id) => elementsById[id] || null,
+    querySelector: (sel) => null,
+    querySelectorAll: (sel) => [],
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    documentElement: { scrollTop: scrollPosition }
   };
 
   const sandbox = {
-    window: windowObj,
-    document: documentObj,
-    console: { log: () => {}, warn: () => {}, error: () => {} },
-    setTimeout: (cb, ms) => setTimeout(cb, ms),
-    clearTimeout: (id) => clearTimeout(id),
-    IntersectionObserver: function(callback) {
-      this.observe = () => {};
-      this.unobserve = () => {};
-      this.disconnect = () => {};
-    }
+    window: mockWindow,
+    document: mockDocument,
+    Math: Math,
+    parseInt: parseInt,
+    parseFloat: parseFloat,
+    isNaN: isNaN,
+    isFinite: isFinite,
+    setTimeout: setTimeout,
+    clearTimeout: clearTimeout,
+    Array: Array,
+    Set: Set,
+    Map: Map,
+    IntersectionObserver: MockIntersectionObserver,
+    console: { log: () => {}, warn: () => {}, error: () => {} }
   };
 
-  vm.createContext(sandbox);
-  vm.runInContext(appJsCode, sandbox);
+  const context = vm.createContext(sandbox);
+  vm.runInContext(appJsCode, context);
 
   return {
     sandbox,
-    module: sandbox.Intellectir.HowWeWorkModule,
-    window: windowObj,
-    document: documentObj,
+    module: sandbox.window.Intellectir.HowWeWorkModule,
+    window: mockWindow,
+    document: mockDocument,
     elements: {
       sectionEl,
       trackEl,
@@ -114,185 +233,338 @@ HO��B�JN��ۜ��X�[ۑ[H�\��Q�K����
       scrubberProgressEl,
       navPills,
       cornerTags,
-      quadrantCardp-���B�NB��\�ܚX�J	��[[��\�K�N�^�[YHX]	���[�\�H[�]�
-��ܙ\��K��K�Y�[�\�]H\\�I�
+      quadrantCards
+    }
+  };
+}
 
-HO��ۜ��[�[HHH[��[�X]R���U�ܚ�
-N�]
-	�K�K�N�[�\�^�[YH�Y�]]�H��ܙ\��
-��ܙ\��
-H�Y�[H�]�]�S��\��ܜ��
+describe('Challenger 1.1: Extreme Math & Boundary Inputs ($progress < 0, 0, 1.0, > 1.0, Degenerate Types)', () => {
+  const { module } = instantiateHowWeWork();
 
-HO��ۜ��Y�]]�\�H�R[��[�]KLYNKLLLLLKL�KL�KL�N�Y�]]�\˙�ܑXX�
-O��ۜ��[�ٛܛHH[�[K���\]P�[Y\�U�[�ٛܛJ
-N\��\����X�\]X[
-�[�ٛܛK��Y�K	әY�]]�H��ܙ\��	�
-�
-�	�]\��[\��Y�H	�N\��\����X�\]X[
-�[�ٛܛK���[KK�	әY�]]�H��ܙ\��	�
-�
-�	�]\�]�H��[HK�	�N\��\����X�\]X[
-�[�ٛܛK��[��]V	әY�]]�H��ܙ\��	�
-�
-�	�]\�]�H�[��]V	�N\��\����X�\]X[
-�[�ٛܛK��[��]VK	әY�]]�H��ܙ\��	�
-�
-�	�]\�]�H�[��]VH	�N\��\����Z\ӐS��[�ٛܛK���[JK	���[H]\����H�S��܈	�
-�
-N\��\����Z\ӐS��[�ٛܛK��[��]V
-K	��[��]V]\����H�S��܈	�
-�
-N\��\����Z\ӐS��[�ٛܛK��[��]VJK	��[��]VH]\����H�S��܈	�
-�
-NJNJN�]
-	�K�K���[�\�^X��\����ܙ\��
-��ܙ\��H�
-H�ܜ�X�I�
+  it('1.1.1: Handles extreme negative progress ($progress < 0) safely without NaN/errors', () => {
+    const negatives = [-Infinity, -1e9, -1000, -100, -1, -0.5, -0.000001, -0.0];
+    negatives.forEach(p => {
+      const transform = module.computeCameraTransform(p);
+      assert.strictEqual(transform.stage, 0, 'Negative progress ' + p + ' must clamp to stage 0');
+      assert.strictEqual(transform.scale, 1.00, 'Negative progress ' + p + ' must have scale 1.00');
+      assert.strictEqual(transform.translateX, 0, 'Negative progress ' + p + ' must have translateX 0');
+      assert.strictEqual(transform.translateY, 0, 'Negative progress ' + p + ' must have translateY 0');
+      assert.ok(!isNaN(transform.scale), 'Scale must not be NaN for ' + p);
+      assert.ok(!isNaN(transform.translateX), 'translateX must not be NaN for ' + p);
+      assert.ok(!isNaN(transform.translateY), 'translateY must not be NaN for ' + p);
+    });
+  });
 
-HO��ۜ��[�ٛܛHH[�[K���\]P�[Y\�U�[�ٛܛJ�
-N\��\����X�\]X[
-�[�ٛܛK��Y�K
-N\��\����X�\]X[
-�[�ٛܛK���[KK�
-N\��\����X�\]X[
-�[�ٛܛK��[��]V
-N\��\����X�\]X[
-�[�ٛܛK��[��]VK
-N\��\����X�\]X[
-�[�ٛܛK��[�ٛܛT��[��	���[JK�
-H�[��]L�
-�	K�	K0�
-I�NJN�]
-	�K�K�Έ[�\�^X�K���ܙ\��
-��ܙ\��HK�
-H�ܜ�X�I�
+  it('1.1.2: Handles exact zero progress ($progress = 0.0) correctly', () => {
+    const transform = module.computeCameraTransform(0.0);
+    assert.strictEqual(transform.stage, 0);
+    assert.strictEqual(transform.scale, 1.00);
+    assert.strictEqual(transform.translateX, 0);
+    assert.strictEqual(transform.translateY, 0);
+    assert.strictEqual(transform.transformString, 'scale(1.0000) translate3d(0.00%, 0.00%, 0px)');
+  });
 
-HO��ۜ��[�ٛܛHH[�[K���\]P�[Y\�U�[�ٛܛJK�
-N\��\����X�\]X[
-�[�ٛܛK��Y�KJN\��\����X�\]X[
-�[�ٛܛK���[KK�
-N\��\����X�\]X[
-�[�ٛܛK��[��]V
-N\��\����X�\]X[
-�[�ٛܛK��[��]VK
-N\��\����X�\]X[
-�[�ٛܛK��[�ٛܛT��[��	���[JK�
-H�[��]L�
-�	K�	K
-I�NJN�]
-	�K�K��[�\�^�[YH��]]�H��ܙ\��
-��ܙ\���K�
-H�Y�[H�]�]ݙ\�����
+  it('1.1.3: Handles exact 1.0 progress ($progress = 1.0) correctly', () => {
+    const transform = module.computeCameraTransform(1.0);
+    assert.strictEqual(transform.stage, 5);
+    assert.strictEqual(transform.scale, 1.00);
+    assert.strictEqual(transform.translateX, 0);
+    assert.strictEqual(transform.translateY, 0);
+    assert.strictEqual(transform.transformString, 'scale(1.0000) translate3d(0.00%, 0.00%, 0px)');
+  });
 
-HO��ۜ���]]�\�H�K�KK�KK�K��LYM�[��[�]WN��]]�\˙�ܑXX�
-O��ۜ��[�ٛܛHH[�[K���\]P�[Y\�U�[�ٛܛJ
-N\��\����X�\]X[
-�[�ٛܛK��Y�KK	���ܙ\��	�
-�
-�	�]\��[\��Y�HI�N\��\����X�\]X[
-�[�ٛܛK���[KK�	���ܙ\��	�
-�
-�	�]\��[\���[HK�	�N\��\����X�\]X[
-�[�ٛܛK��[��]V	���ܙ\��	�
-�
-�	�]\��[\��[��]V	�N\��\����X�\]X[
-�[�ٛܛK��[��]VK	���ܙ\��	�
-�
-�	�]\��[\��Y�HI�NJNJN�]
-	�K�K�N�[�\��ۋ[�[Y\�X�[�Y�[�\�]H\\�ܘX�Y�[I�
+  it('1.1.4: Handles extreme positive progress ($progress > 1.0) safely without overflow', () => {
+    const positives = [1.000001, 1.05, 1.5, 2.0, 100, 1e6, Infinity];
+    positives.forEach(p => {
+      const transform = module.computeCameraTransform(p);
+      assert.strictEqual(transform.stage, 5, 'Progress ' + p + ' must clamp to stage 5');
+      assert.strictEqual(transform.scale, 1.00, 'Progress ' + p + ' must clamp to scale 1.00');
+      assert.strictEqual(transform.translateX, 0, 'Progress ' + p + ' must clamp to translateX 0');
+      assert.strictEqual(transform.translateY, 0, 'Progress ' + p + ' must clamp to translateY 0');
+    });
+  });
 
-HO��ۜ�Y�[�\�]\�HӘS��[[�Y�[�Y	��I�	�[��[Y	��K�K�YK�[�WNY�[�\�]\˙�ܑXX�
-O��ۜ��[�ٛܛHH[�[K���\]P�[Y\�U�[�ٛܛJ
-N\��\�����[�ٛܛHOOH�[	��\[و�[�ٛܛHOOH	�ؚ�X�	�	�]\��]\��ؚ�X��܈	�
-�\[و
-N\��\����X�\]X[
-�[�ٛܛK��Y�K	�Y�[�\�]H[�]	�
-�
-�	�]\�Y�][�Y�[H��Y�H	�N\��\����X�\]X[
-�[�ٛܛK���[KK�
-N\��\����X�\]X[
-�[�ٛܛK��[��]V
-N\��\����X�\]X[
-�[�ٛܛK��[��]VK
-NJNJNJN�\�ܚX�J	��[[��\�K���LT�\Y�T�\��][ۈ�X�T^[[ۛ�ۚX�]H	���[�[���\�Y�X�][ۉ�
+  it('1.1.5: Handles non-numeric and degenerate types gracefully', () => {
+    const degenerates = [NaN, null, undefined, '0.5', 'invalid', {}, [], true, false];
+    degenerates.forEach(d => {
+      const transform = module.computeCameraTransform(d);
+      assert.ok(transform !== null && typeof transform === 'object', 'Must return object for ' + typeof d);
+      assert.strictEqual(transform.stage, 0, 'Degenerate input ' + d + ' must default safely to stage 0');
+      assert.strictEqual(transform.scale, 1.00);
+      assert.strictEqual(transform.translateX, 0);
+      assert.strictEqual(transform.translateY, 0);
+    });
+  });
+});
 
-HO��ۜ��[�[HHH[��[�X]R���U�ܚ�
-N�]
-	�K���N�]�[X]\�L�۝[�[�\��[\\����H��ܙ\��L�H�
-�K�H�]��X�[��\�X[���
+describe('Challenger 1.2: 10,000-Step High-Resolution Sub-Pixel Monotonicity & Bounding Verification', () => {
+  const { module } = instantiateHowWeWork();
 
-HO��ۜ��T�HL�ۜ�Z[�HL�N�ۜ�X^HK�N�ۜ��\�^�HH
-X^HZ[�
-H��T��]�]��[�ٛܛHH�[��܈
-]HH�HH�T��J��H�ۜ�HZ[�
-�H
-��\�^�N�ۜ�H[�[K���\]P�[Y\�U�[�ٛܛJ
-N���[��\�X[�N����S�܈[��\��\����Z\ӐS����[JK	���[H�S�]I�
-�
-N\��\����Z\ӐS���[��]V
-K	��[��]V�S�]I�
-�
-N\��\����Z\ӐS���[��]VJK	��[��]VH�S�]I�
-�
-N\��\����\њ[�]J���[JK	���[H�ۋY�[�]H]I�
-�
-N\��\����\њ[�]J��[��]V
-K	��[��]V�ۋY�[�]H]I�
-�
-N\��\����\њ[�]J��[��]VJK	��[��]VH�ۋY�[�]H]I�
-�
-N���[��\�X[����[YH�[��\\��\�������[H�H�NNNH	�����[HHK�LK	���[H�]و��[��	�
-����[H
-�	�]I�
-�
-N\��\������[��]V�HL��H	����[��]VH��K	��[��]V�]و��[��	�
-���[��]V
-�	�]I�
-�
-N\��\������[��]VH�HL��H	����[��]VHH��K	��[��]VH�]و��[��	�
-���[��]VH
-�	�]I�
-�
-N���[��\�X[�Έ�[Y�Y�H\�][ۂ�\��\�����K��WK�[��Y\���Y�JK	�[��[Y�Y�H	�
-���Y�H
-�	�]I�
-�
-N���[��\�X[���۝[�[�\�[H
-���[[\ܝ][ۈ��H\����\
-B�Y�
-�]��[�ٛܛH	���H	��HJH�ۜ���[HHX]�X�����[HH�]��[�ٛܛK���[JN�ۜ�HX]�X����[��]VH�]��[�ٛܛK��[��]V
-N�ۜ�HHX]�X����[��]VHH�]��[�ٛܛK��[��]VJN\��\������[H�K	�\��۝[�[�\���[H�[\	�
-���[H
-�	�]I�
-�
-N\��\�����K	�\��۝[�[�\��[\	�
-�
-�	�]I�
-�
-N\��\����H�K	�\��۝[�[�\�H�[\	�
-�H
-�	�]I�
-�
-NB���]��[�ٛܛHHB�JN�]
-	�K������Y�H�[��][ۈ�[��Y\�H��X�H��^Y��[YH�[��\��
+  it('1.2.1: Evaluates 10,000 continuous samples from progress -0.5 to +1.5 with strict invariants', () => {
+    const STEPS = 10000;
+    const minP = -0.5;
+    const maxP = 1.5;
+    const stepSize = (maxP - minP) / STEPS;
 
-HO�\��\����X�\]X[
-[�[K���\]P�[Y\�U�[�ٛܛJ�
-K��Y�K
-N\��\����X�\]X[
-[�[K���\]P�[Y\�U�[�ٛܛJ�M
-K��Y�K
-N�\��\����X�\]X[
-[�[K���\]P�[Y\�U�[�ٛܛJ�MJK��Y�KJN\��\����X�\]X[
-[�[K���\]P�[Y\�U�[�ٛܛJ��JK��Y�KJN�ۜ��TXZ�H[�[K���\]P�[Y\�U�[�ٛܛJ��JN\��\����X�\]X[
-�TXZ˜��[KK�JN\��\����X�\]X[
-�TXZ˝�[��]VL�
-N\��\����X�\]X[
-�TXZ˝�[��]VK�
-N�\��\����X�\]X[
-[�[K���\]P�[Y\�U�[�ٛܛJ��JK��Y�K�N\��\����X�\]X[
-[�[K���\]P�[Y\�U�[�ٛܛJ�JK��Y�K�N�ۜ�̔XZ�H[�[K���\]P�[Y\�U�[�ٛܛJ�JN\��\����X�\]X[
-̔XZ˜��[KK�JN\��\����X�\]X[
-̔XZ˝�[��]V�
-N\��\����X�\]X[
-�3%V��G&�6�FU��#B����76W'B�7G&�7DWV��GV�R�6��WFT6�W&G&�6f�&҃�SR��7FvR�2���76W'B�7G&�7DWV��GV�R�6��WFT6�W&G&�6f�&҃�cR��7FvR�2���6��7B35V����GV�R�6��WFT6�W&G&�6f�&҃�cR���76W'B�7G&�7DWV35V��66�R��R���76W'B�7G&�7DWV35V��G&�6�FU��#B���76W'B�7G&�7DWV¡��A�����Ʌ�ͱ�ѕd����Ф�((������͕�й��ɥ���Յ�����ձ�������ѕ���ɅQɅ�͙�ɴ����Ԥ��х����Ф�(������͕�й��ɥ���Յ�����ձ�������ѕ���ɅQɅ�͙�ɴ�����Ԥ��х����Ф�(��������Ё��A����􁵽�ձ�������ѕ���ɅQɅ�͙�ɴ�����Ԥ�(������͕�й��ɥ���Յ����A����͍�����ĸ�Ԥ�(������͕�й��ɥ���Յ����A�����Ʌ�ͱ�ѕ`����Ф�(������͕�й��ɥ���Յ����A�����Ʌ�ͱ�ѕd����Ф�((������͕�й��ɥ���Յ�����ձ�������ѕ���ɅQɅ�͙�ɴ��������х����Ԥ�(������͕�й��ɥ���Յ�����ձ�������ѕ���ɅQɅ�͙�ɴ����Ԥ��х����Ԥ�(������͕�й��ɥ���Յ�����ձ�������ѕ���ɅQɅ�͙�ɴ�ĸ�����х����Ԥ�(�����)���()��͍ɥ������������Ȁĸ��M��Չ��ȁ)յ�̀��!����ɕ�Օ����ѕɹ�ѥ���)��ѕȜ���������(���Р�ĸ̸��M��٥ٕ̀İ����Ʌ��������ѥ���յ��͕�Օ���́��ɽ�́���͕̜���������(��������Ё��؀􁥹�х�ѥ�ѕ!��]�]�ɬ���(������ع���ձ�����Р��((��������Ёхɝ��̀�lİ�Ȱ�̰�а��İ����԰���䰀�Ȝ���ձ���չ����������������̰�İ��t�(������Ё͍ɽ�����̀�mt�(������عݥ���ܹ}��M�ɽ��Q��􀡽��̤����͍ɽ�����̹��͠����̤�((������Ȁ���Ё����쁤�������쁤�����(����������ЁЀ�хɝ���m����хɝ��̹����ѡt�(��������ع���ձ��͍ɽ��Q�A��͔�Ф�(�����((������͕�й��ɥ���Յ��͍ɽ�����̹����Ѡ�����������������͍ɽ��Q�A��͔�����́���Ё�����э��������䜤�(����͍ɽ�����̹����������������(��������͕�й���������������ѽ����􀝹յ��Ȝ�������98������ѽ�����������є������ѽ�����Q�ɝ�Ё͍ɽ���ѽ�����Ё�������є��յ��Ȝ��(��������͕�й��ɥ���Յ�����������٥�Ȱ��͵��Ѡ���(�������((������ع���ձ������ɽ䠤�(�����((���Р�ĸ̸��!�����ɕ�Օ��䁅�ѕɹ�ѥ����ɽ�ɕ�́���ѕȁ�ɕ͕�ٕ́�хє����������х�����䜰��������(��������Ё��؀􁥹�х�ѥ�ѕ!��]�]�ɬ���(������ع���ձ�����Р��((������Ȁ���Ё����쁤������쁤�����(����������Ё��􀡤���Ȁ�����������Ԁ������(����������Ё�Ʌ�͙�ɴ�􁕹ع���ձ�������ѕ���ɅQɅ�͙�ɴ����(��������͕�й����Ʌ�͙�ɴ��х������������Ʌ�͙�ɴ��х������Ԥ�(�����((������ع���ձ������ɽ䠤�(�����)���()��͍ɥ������������Ȁĸ��=4��ձе%����ѥ�����5��ͥ��������ѕ�������ЁI�ͥ����������������(���Р�ĸи��Ʌ���ձ�䁡�����́���ͥ���ɽ�Ё������Ѐ����ܵݔ�ݽɬ�͕�ѥ�������������(��������Ё��؀􁥹�х�ѥ�ѕ!��]�]�ɬ�쁹�M��ѥ�����Ք����(��������Ёɕ̀􁕹ع���ձ�����Р��(������͕�й��ɥ���Յ��ɕ̹���ѥ���镐�����͔��(������͕�й��ɥ���Յ��ɕ̹ɕ�ͽ����I��Ё������Ё���ͥ�����(������͕�й����9��Q�ɽܠ��������ع���ձ������ɽ䠤��(�����((���Р�ĸи��Ʌ���ձ�䁡�����́���ͥ����Ʌ��������ܵ�Ʌ�������������(��������Ё��؀􁥹�х�ѥ�ѕ!��]�]�ɬ�쁹�QɅ�����Ք����(������͕�й����9��Q�ɽܠ��������ع���ձ�����Р���(��������Ё�ɽ�ɕ�̀􁕹ع���ձ�������ѕQ�ɝ��Aɽ�ɕ�̠��(������͕�й��ɥ���Յ���ɽ�ɕ�̰�����Q�ɝ�Ё�ɽ�ɕ�́͡�ձ�����������Ѽ���ݡ����Ʌ�����́���ͥ�����(������͕�й����9��Q�ɽܠ��������ع���ձ��͍ɽ��Q�A��͔�Ȥ��(������͕�й����9��Q�ɽܠ��������ع���ձ������ɽ䠤��(�����((���Р�ĸи��Ʌ���ձ�䁡�����́���ͥ������ѥ������م̀����ܵ���ѥ������م̤����������(��������Ё��؀􁥹�х�ѥ�ѕ!��]�]�ɬ�쁹���م����Ք����(������͕�й����9��Q�ɽܠ��������ع���ձ�����Р���(������͕�й����9��Q�ɽܠ��������ع���ձ������ɽ䠤��(�����((���Р�ĸи��Ʌ���ձ�䁡�����́���ͥ������ɼ��Ʌ�������ܵ���ɼ��Ʌ������������(��������Ё��؀􁥹�х�ѥ�ѕ!��]�]�ɬ�쁹�%��ɽɅ�����Ք����(������͕�й����9��Q�ɽܠ��������ع���ձ�����Р���(������͕�й����9��Q�ɽܠ��������ع���ձ������ɽ䠤��(�����((���Р�ĸи��Ʌ���ձ�䁡�����́���ͥ���͍�Չ��ȁ�ɽ�ɕ�̀����͍ܵ�Չ��ȵ�ɽ�ɕ�̤����������(��������Ё��؀􁥹�х�ѥ�ѕ!��]�]�ɬ�쁹�M��Չ������Ք����(������͕�й����9��Q�ɽܠ��������ع���ձ�����Р���(������͕�й����9��Q�ɽܠ��������ع���ձ������ɽ䠤��(�����((���Р�ĸи��Ʌ���ձ�䁡�����́������Ё�������х�����ɥ��ѕ̀��ձ�́����9�9̤����������(��������Ё��؀􁥹�х�ѥ�ѕ!��]�]�ɬ���(������ع�������̹���A���̹�������������������������ɥ��є�􀠤�����������ѕ�}م�Ք���(������ع�������̹��ɹ��Q��̹�������х�����х�������ɥ��є�􀠤�����ձ���(������ع�������̹�Յ�Ʌ���ɑ̹���������ɐ������ɐ������ɥ��є�􀠤��������}�}�յ��Ȝ��((������͕�й����9��Q�ɽܠ��������ع���ձ�����Р���(������͕�й����9��Q�ɽܠ��������ع���ձ������ɽ䠤��(�����)���()��͍ɥ������������Ȁĸ��]����܁I�ͥ锰�Y������Ё����ͥ���M�ɕ�̀��I��Ս���5�ѥ������������(���Р�ĸԸ��!�����́���ɕ���٥�����Ё�����ͥ��̀��������İ������������������ѥٔ�ѽ������������(��������Ё�����ͥ��̀�l(������쁥����]��Ѡ���������!���������ѽ����������������(������쁥����]��Ѡ�İ������!������İ�ѽ��������������ā��(������쁥����]��Ѡ�����������!�����������ѽ�耴��������������������(������쁥����]��Ѡ���ఁ�����!���������а�ѽ�耴��������������������(������쁥����]��Ѡ���Ȱ������!�����������ѽ�耴��������������������(������쁥����]��Ѡ������������!�����������ѽ�耴��������������������(������쁥����]��Ѡ������������!������������ѽ�耴��������������������(������쁥����]��Ѡ�������������!�������������ѽ�耴����������������������(����t�((���������ͥ��̹���������������(����������Ё��؀􁥹�х�ѥ�ѕ!��]�]�ɬ���(�������������]��Ѡ聑��������]��Ѡ�(�������������!�����聑��������!����а(���������Ʌ��	�չ������ѽ�聑���ѽ���������聑��������Ё�(���������(��������͕�й����9��Q�ɽܠ�������(����������ع���ձ�����Р��(������������Ё��􁕹ع���ձ�������ѕQ�ɝ��Aɽ�ɕ�̠��(����������͕�й������98��������������������İ��Aɽ�ɕ�̀�������������Ё���م������ɵ���镐�����М��(����������ع���ձ������ɽ䠤�(���������(�������(�����((���Р�ĸԸ��M��ձ�ѕ́Ʌ����ɕͥ锁�ٕ�Ё��ɕ���ݥѡ��Ё�����䁝ɽ�Ѡ��ȁչ���������ፕ�ѥ��̜���������(��������Ё��؀􁥹�х�ѥ�ѕ!��]�]�ɬ���(������ع���ձ�����Р��((������Ȁ���Ё����쁤������쁤�����(��������عݥ���ܹ�����]��Ѡ�����������������(��������عݥ���ܹ�����!����Ѐ������������Ԥ�(������������عݥ���ܹ}���ѕ���̀�����عݥ���ܹ}���ѕ����l�ɕͥ锝t���(����������عݥ���ܹ}���ѕ����l�ɕͥ锝t��������������������(�������(�����((������͕�й����9��Q�ɽܠ��������ع���ձ������ɽ䠤��(�����((���Р�ĸԸ��I��Ս�����ѥ��������ͥ�����䁵������ͅ���́���م́�Ʌ�͙�ɵ̜���������(��������Ё��؀􁥹�х�ѥ�ѕ!��]�]�ɬ��ɕ�Ս��5�ѥ�����Ք����(������ع���ձ�����Р��((������͕�й��ɥ���Յ����ع�������̹���م�����屔��Ʌ�͙�ɴ�������������م́�Ʌ�͙�ɴ����Ё����������չ��ȁ�ɕ���̵ɕ�Ս�����ѥ�����(������ع���ձ������ɽ䠤�(�����((���Р�ĸԸ��5������ɕ���܁�����������]��Ѡ�����Ȥ�ɕ͕�́����������م́�Ʌ�͙�ɴ����������(��������Ё��؀􁥹�х�ѥ�ѕ!��]�]�ɬ�쁥����]��Ѡ��������(������ع���ձ�����Р��((������͕�й��ɥ���Յ����ع�������̹���م�����屔��Ʌ�͙�ɴ���������م́�Ʌ�͙�ɴ����Ё���ɕ͕Ёչ��ȁ�������ɕ���܀����������(������ع���ձ������ɽ䠤�(�����)���()��͍ɥ������������Ȁĸ��1����危��������ɕ��䀘�%�����ѕ���M�ɕ�̜���������(���Р�ĸظ���������͕��ѥٔ����Р���������ɽ䠤��危�́�ᕍ�є�ݥѡ��Ё����́�ȁ�хє�������ѥ������������(��������Ё��؀􁥹�х�ѥ�ѕ!��]�]�ɬ���(������Ȁ���Ё����쁤������쁤�����(����������Ёɕ�%��Ѐ􁕹ع���ձ�����Р��(��������͕�й��ɥ���Յ��ɕ�%��й���ѥ���镐����Ք��(��������͕�й����9��Q�ɽܠ��������ع���ձ������ɽ䠤��(�����(�����((���Р�ĸظ������������Р��ɕ���ѕ���ݥѡ��Ё����ɽ䠤�ɕ��ɹ́��ɕ���%��ѥ���镐����������(��������Ё��؀􁥹�х�ѥ�ѕ!��]�]�ɬ���(��������Ё����Ѐ􁕹ع���ձ�����Р��(������͕�й��ɥ���Յ������й���ѥ���镐����Ք��(������͕�й��ɥ���Յ������й��ɕ���%��ѥ���镐��չ���������((��������Ё͕�����􁕹ع���ձ�����Р��(������͕�й��ɥ���Յ��͕��������ѥ���镐����Ք��(������͕�й��ɥ���Յ��͕�������ɕ���%��ѥ���镐����Ք��((��������Ёѡ�ɐ�􁕹ع���ձ�����Р��(������͕�й��ɥ���Յ��ѡ�ɐ����ѥ���镐����Ք��(������͕�й��ɥ���Յ��ѡ�ɐ���ɕ���%��ѥ���镐����Ք��((������ع���ձ������ɽ䠤�(�����((���Р�ĸظ�������������ɽ䠤����չ���ѥ���镐����ձ�����́��Ёѡɽܜ���������(��������Ё��؀􁥹�х�ѥ�ѕ!��]�]�ɬ���(������͕�й����9��Q�ɽܠ��������ع���ձ������ɽ䠤��(������͕�й����9��Q�ɽܠ��������ع���ձ������ɽ䠤��(�����)���
+    let prevTransform = null;
+
+    for (let i = 0; i <= STEPS; i++) {
+      const p = minP + i * stepSize;
+      const t = module.computeCameraTransform(p);
+
+      // Invariant 1: No NaN or Infs
+      assert.ok(!isNaN(t.scale), 'Scale NaN at p=' + p);
+      assert.ok(!isNaN(t.translateX), 'translateX NaN at p=' + p);
+      assert.ok(!isNaN(t.translateY), 'translateY NaN at p=' + p);
+      assert.ok(isFinite(t.scale), 'Scale non-finite at p=' + p);
+      assert.ok(isFinite(t.translateX), 'translateX non-finite at p=' + p);
+      assert.ok(isFinite(t.translateY), 'translateY non-finite at p=' + p);
+
+      // Invariant 2: Value ranges
+      assert.ok(t.scale >= 0.9999 && t.scale <= 1.8501, 'Scale out of bounds ' + t.scale + ' at p=' + p);
+      assert.ok(t.translateX >= -24.01 && t.translateX <= 24.01, 'translateX out of bounds ' + t.translateX + ' at p=' + p);
+      assert.ok(t.translateY >= -24.01 && t.translateY <= 24.01, 'translateY out of bounds ' + t.translateY + ' at p=' + p);
+
+      // Invariant 3: Valid stage partition
+      assert.ok([0, 1, 2, 3, 4, 5].includes(t.stage), 'Invalid stage ' + t.stage + ' at p=' + p);
+
+      // Invariant 4: Continuous delta (no wild teleportation > 0.5 per 0.0002 step)
+      if (prevTransform && p >= 0 && p <= 1) {
+        const dScale = Math.abs(t.scale - prevTransform.scale);
+        const dX = Math.abs(t.translateX - prevTransform.translateX);
+        const dY = Math.abs(t.translateY - prevTransform.translateY);
+        assert.ok(dScale < 0.05, 'Discontinuous scale jump ' + dScale + ' at p=' + p);
+        assert.ok(dX < 0.5, 'Discontinuous X jump ' + dX + ' at p=' + p);
+        assert.ok(dY < 0.5, 'Discontinuous Y jump ' + dY + ' at p=' + p);
+      }
+
+      prevTransform = t;
+    }
+  });
+
+  it('1.2.2: Stage transition points adhere strictly to keyframe ranges', () => {
+    // Stage 0: 0.00 <= p < 0.15
+    assert.strictEqual(module.computeCameraTransform(0.00).stage, 0);
+    assert.strictEqual(module.computeCameraTransform(0.14).stage, 0);
+
+    // Stage 1 (Top-Right Discovery): 0.15 <= p < 0.35 (peak at 0.25: x=-24, y=24)
+    assert.strictEqual(module.computeCameraTransform(0.15).stage, 1);
+    assert.strictEqual(module.computeCameraTransform(0.25).stage, 1);
+    const s1Peak = module.computeCameraTransform(0.25);
+    assert.strictEqual(s1Peak.scale, 1.85);
+    assert.strictEqual(s1Peak.translateX, -24);
+    assert.strictEqual(s1Peak.translateY, 24);
+
+    // Stage 2 (Top-Left Building): 0.35 <= p < 0.55 (peak at 0.45: x=24, y=24)
+    assert.strictEqual(module.computeCameraTransform(0.35).stage, 2);
+    assert.strictEqual(module.computeCameraTransform(0.45).stage, 2);
+    const s2Peak = module.computeCameraTransform(0.45);
+    assert.strictEqual(s2Peak.scale, 1.85);
+    assert.strictEqual(s2Peak.translateX, 24);
+    assert.strictEqual(s2Peak.translateY, 24);
+
+    // Stage 3 (Bottom-Left Integrating): 0.55 <= p < 0.75 (peak at 0.65: x=24, y=-24)
+    assert.strictEqual(module.computeCameraTransform(0.55).stage, 3);
+    assert.strictEqual(module.computeCameraTransform(0.65).stage, 3);
+    const s3Peak = module.computeCameraTransform(0.65);
+    assert.strictEqual(s3Peak.scale, 1.85);
+    assert.strictEqual(s3Peak.translateX, 24);
+    assert.strictEqual(s3Peak.translateY, -24);
+
+    // Stage 4 (Bottom-Right Maintenance): 0.75 <= p < 0.90 (peak at 0.825: x=-24, y=-24)
+    assert.strictEqual(module.computeCameraTransform(0.75).stage, 4);
+    assert.strictEqual(module.computeCameraTransform(0.825).stage, 4);
+    const s4Peak = module.computeCameraTransform(0.825);
+    assert.strictEqual(s4Peak.scale, 1.85);
+    assert.strictEqual(s4Peak.translateX, -24);
+    assert.strictEqual(s4Peak.translateY, -24);
+
+    // Stage 5 (Ecosystem Zoom-Out): p >= 0.90 (peak at 1.00: scale=1.00, x=0, y=0)
+    assert.strictEqual(module.computeCameraTransform(0.90).stage, 5);
+    assert.strictEqual(module.computeCameraTransform(0.95).stage, 5);
+    assert.strictEqual(module.computeCameraTransform(1.00).stage, 5);
+  });
+});
+
+describe('Challenger 1.3: Scrubber Jumps & High-Frequency Alternating Jitter', () => {
+  it('1.3.1: Survives 1,000 rapid chaotic jump sequences across phases', () => {
+    let scrollCalls = [];
+    const env = instantiateHowWeWork({
+      onScrollTo: (opts) => scrollCalls.push(opts)
+    });
+    env.module.init();
+
+    const targets = [1, 2, 3, 4, -1, 0, 5, 999, '2', null, undefined, 'abc', 3, 1, 4];
+
+    for (let i = 0; i < 1000; i++) {
+      const t = targets[i % targets.length];
+      env.module.scrollToPhase(t);
+    }
+
+    assert.strictEqual(scrollCalls.length, 1000, 'All 1000 scrollToPhase calls must dispatch cleanly');
+    scrollCalls.forEach(call => {
+      assert.ok(typeof call.top === 'number' && !isNaN(call.top) && isFinite(call.top), 'Target scroll top must be finite number');
+      assert.strictEqual(call.behavior, 'smooth');
+    });
+
+    env.module.destroy();
+  });
+
+  it('1.3.2: High-frequency alternating progress jitter preserves state machine stability', () => {
+    const env = instantiateHowWeWork();
+    env.module.init();
+
+    // Alternate rapidly between 0.05 and 0.98
+    for (let i = 0; i < 500; i++) {
+      const p = (i % 2 === 0) ? 0.05 : 0.98;
+      const transform = env.module.computeCameraTransform(p);
+      assert.ok(transform.stage === 0 || transform.stage === 5);
+    }
+
+    env.module.destroy();
+  });
+});
+
+describe('Challenger 1.4: DOM Fault-Injection & Missing/Corrupted Element Resilience', () => {
+  it('1.4.1: Gracefully handles missing root element (#how-we-work-section)', () => {
+    const env = instantiateHowWeWork({ noSection: true });
+    const res = env.module.init();
+    assert.strictEqual(res.initialized, false);
+    assert.strictEqual(res.reason, 'Root element missing');
+    assert.doesNotThrow(() => env.module.destroy());
+  });
+
+  it('1.4.2: Gracefully handles missing trackEl (#hww-track)', () => {
+    const env = instantiateHowWeWork({ noTrack: true });
+    assert.doesNotThrow(() => env.module.init());
+    const progress = env.module.computeTargetProgress();
+    assert.strictEqual(progress, 0, 'Target progress should fallback to 0 when trackEl is missing');
+    assert.doesNotThrow(() => env.module.scrollToPhase(2));
+    assert.doesNotThrow(() => env.module.destroy());
+  });
+
+  it('1.4.3: Gracefully handles missing spatial canvas (#hww-spatial-canvas)', () => {
+    const env = instantiateHowWeWork({ noCanvas: true });
+    assert.doesNotThrow(() => env.module.init());
+    assert.doesNotThrow(() => env.module.destroy());
+  });
+
+  it('1.4.4: Gracefully handles missing intro frame (#hww-intro-frame)', () => {
+    const env = instantiateHowWeWork({ noIntroFrame: true });
+    assert.doesNotThrow(() => env.module.init());
+    assert.doesNotThrow(() => env.module.destroy());
+  });
+
+  it('1.4.5: Gracefully handles missing scrubber progress (#hww-scrubber-progress)', () => {
+    const env = instantiateHowWeWork({ noScrubber: true });
+    assert.doesNotThrow(() => env.module.init());
+    assert.doesNotThrow(() => env.module.destroy());
+  });
+
+  it('1.4.6: Gracefully handles corrupt pill / tag attributes (nulls and NaNs)', () => {
+    const env = instantiateHowWeWork();
+    env.elements.navPills.forEach(p => p.getAttribute = () => 'corrupted_value');
+    env.elements.cornerTags.forEach(t => t.getAttribute = () => null);
+    env.elements.quadrantCards.forEach(c => c.getAttribute = () => 'not_a_number');
+
+    assert.doesNotThrow(() => env.module.init());
+    assert.doesNotThrow(() => env.module.destroy());
+  });
+});
+
+describe('Challenger 1.5: Window Resize, Viewport Dimension Stress & Reduced Motion', () => {
+  it('1.5.1: Handles extreme viewport dimensions (0x0, 1x1, 10000x10000, negative top)', () => {
+    const dimensions = [
+      { innerWidth: 0, innerHeight: 0, top: 0, height: 0 },
+      { innerWidth: 1, innerHeight: 1, top: 100, height: 1 },
+      { innerWidth: 320, innerHeight: 480, top: -1500, height: 3000 },
+      { innerWidth: 768, innerHeight: 1024, top: -2500, height: 4000 },
+      { innerWidth: 992, innerHeight: 800, top: -2000, height: 4500 },
+      { innerWidth: 1440, innerHeight: 900, top: -3500, height: 5000 },
+      { innerWidth: 2560, innerHeight: 1440, top: -4500, height: 6000 },
+      { innerWidth: 10000, innerHeight: 10000, top: -50000, height: 100000 }
+    ];
+
+    dimensions.forEach(dim => {
+      const env = instantiateHowWeWork({
+        innerWidth: dim.innerWidth,
+        innerHeight: dim.innerHeight,
+        trackBounding: { top: dim.top, height: dim.height }
+      });
+      assert.doesNotThrow(() => {
+        env.module.init();
+        const p = env.module.computeTargetProgress();
+        assert.ok(!isNaN(p) && p >= 0 && p <= 1, 'Progress ' + p + ' must be valid normalized float');
+        env.module.destroy();
+      });
+    });
+  });
+
+  it('1.5.2: Simulates rapid resize event stream without memory growth or unhandled exceptions', () => {
+    const env = instantiateHowWeWork();
+    env.module.init();
+
+    // Trigger 200 rapid resize events
+    for (let i = 0; i < 200; i++) {
+      env.window.innerWidth = 320 + (i * 10);
+      env.window.innerHeight = 480 + (i * 5);
+      if (env.window._listeners && env.window._listeners['resize']) {
+        env.window._listeners['resize'].forEach(fn => fn());
+      }
+    }
+
+    assert.doesNotThrow(() => env.module.destroy());
+  });
+
+  it('1.5.3: Reduced-motion accessibility mode disables canvas transforms', () => {
+    const env = instantiateHowWeWork({ reducedMotion: true });
+    env.module.init();
+
+    assert.strictEqual(env.elements.canvasEl.style.transform, 'none', 'Canvas transform must be "none" under prefers-reduced-motion');
+    env.module.destroy();
+  });
+
+  it('1.5.4: Mobile reflow mode (innerWidth <= 992) resets inline canvas transform', () => {
+    const env = instantiateHowWeWork({ innerWidth: 768 });
+    env.module.init();
+
+    assert.strictEqual(env.elements.canvasEl.style.transform, '', 'Canvas transform must be reset under mobile reflow <= 992px');
+    env.module.destroy();
+  });
+});
+
+describe('Challenger 1.6: Lifecycle, Concurrency & Idempotency Stress', () => {
+  it('1.6.1: 100 consecutive init() -> destroy() cycles execute without leaks or state corruption', () => {
+    const env = instantiateHowWeWork();
+    for (let i = 0; i < 100; i++) {
+      const resInit = env.module.init();
+      assert.strictEqual(resInit.initialized, true);
+      assert.doesNotThrow(() => env.module.destroy());
+    }
+  });
+
+  it('1.6.2: Calling init() repeatedly without destroy() returns alreadyInitialized', () => {
+    const env = instantiateHowWeWork();
+    env.module.destroy(); // reset initial load
+
+    const first = env.module.init();
+    assert.strictEqual(first.initialized, true);
+    assert.strictEqual(first.alreadyInitialized, undefined);
+
+    const second = env.module.init();
+    assert.strictEqual(second.initialized, true);
+    assert.strictEqual(second.alreadyInitialized, true);
+
+    const third = env.module.init();
+    assert.strictEqual(third.initialized, true);
+    assert.strictEqual(third.alreadyInitialized, true);
+
+    env.module.destroy();
+  });
+
+  it('1.6.3: Calling destroy() on uninitialized module does not throw', () => {
+    const env = instantiateHowWeWork();
+    assert.doesNotThrow(() => env.module.destroy());
+    assert.doesNotThrow(() => env.module.destroy());
+  });
+});
