@@ -1,4 +1,4 @@
-# BRIEFING — 2026-08-31T15:22:30Z
+# BRIEFING — 2026-08-31T15:31:35Z
 
 ## Mission
 Orchestrate the end-to-end design, implementation, adversarial verification, and integration of the high-impact animated scroll-driven "How We Work" section for the Intellectir website.
@@ -23,11 +23,11 @@ Orchestrate the end-to-end design, implementation, adversarial verification, and
   1. Survey & Architecture Mapping [done]
   2. Test Infrastructure & E2E Track Setup [done - TEST_READY.md published]
   3. Milestone 1: Component HTML/CSS Structure & UI Mockups [done - Gate PASSED]
-  4. Milestone 2: 2.5D Pinned Scroll & Camera Animation Engine [in-progress]
-  5. Milestone 3: Full Integration, Mobile Adaptations, Polish [pending]
-  6. Final Milestone: 100% E2E Verification & Adversarial Hardening [pending]
-- **Current phase**: Milestone 2 Implementation (2.5D Motion Engine in app.js)
-- **Current focus**: Awaiting M2 Worker completion
+  4. Milestone 2: 2.5D Pinned Scroll & Camera Animation Engine [done - Gate PASSED]
+  5. Milestone 3: Full Integration, Mobile Adaptations, Polish [done - Integrated]
+  6. Final Milestone: 100% E2E Verification & Adversarial Hardening [in-progress by Generation 2]
+- **Current phase**: Succeeded by Generation 2 Lead
+- **Current focus**: Generation 2 executing Tier 5 Hardening, Git Commits, and Final Reporting to Parent.
 
 ## 🔒 Key Constraints
 - Never write source code directly; delegate all implementation and testing to subagents.
@@ -41,8 +41,10 @@ Orchestrate the end-to-end design, implementation, adversarial verification, and
 - Updated: 2026-08-31T15:06:25Z
 
 ## Key Decisions Made
-- Milestone 1 successfully passed independent Gate check (CLEAN audit + 4 unanimous approvals).
-- Dispatched M2 Worker (f54682a9-1373-4c8d-bd7c-116f46147316) to implement `HowWeWorkModule` in `app.js`.
+- Milestone 1 Gate PASSED (100% green, CLEAN audit).
+- Milestone 2 Gate PASSED (100% green, CLEAN audit).
+- Reached 16 spawns with 100% completed subagents.
+- Successfully spawned Generation 2 Successor Lead (0f2573c2-84f8-4f79-9d97-a913f237e33e).
 
 ## Team Roster
 | Agent | Type | Work Item | Status | Conv ID |
@@ -60,17 +62,21 @@ Orchestrate the end-to-end design, implementation, adversarial verification, and
 | m1_challenger_1 | teamwork_preview_challenger | Adversarial DOM and contract verification | completed | 4ecb884e-b448-4ff6-8cde-d1f79cec9a64 |
 | m1_challenger_2 | teamwork_preview_challenger | Adversarial CSS contrast & layout stress tests | completed | 38f5ec0f-74ab-4173-a802-5560ed43000f |
 | m1_auditor_1 | teamwork_preview_auditor | Independent forensic integrity audit | completed | 47c55f2c-76a0-4c8d-a7fe-8e7b4b41c9a2 |
-| m2_worker_1 | teamwork_preview_worker | Implement 2.5D Motion Engine in app.js | in-progress | f54682a9-1373-4c8d-bd7c-116f46147316 |
+| m2_worker_1 | teamwork_preview_worker | Implement 2.5D Motion Engine in app.js | completed | f54682a9-1373-4c8d-bd7c-116f46147316 |
+| m2_reviewer_1 | teamwork_preview_reviewer | Review JS motion engine & camera matrix | completed | ffb442ec-52ef-466c-9636-64d40353a4f6 |
+| m2_auditor_1 | teamwork_preview_auditor | Independent forensic integrity audit on JS | completed | f37a35c2-db2f-4729-933c-ced0e4c86f91 |
+| gen2_successor_lead | teamwork_preview_worker | Generation 2 Lead (Tier 5, Audit, Git, Report) | in-progress | 0f2573c2-84f8-4f79-9d97-a913f237e33e |
 
 ## Succession Status
-- Succession required: no
-- Spawn count: 14 / 16
-- Pending subagents: f54682a9-1373-4c8d-bd7c-116f46147316
+- Succession required: yes
+- Spawn count: 16 / 16
+- Pending subagents: none (gen 1 retired)
 - Predecessor: none
-- Successor: not yet spawned
+- Successor spawned: 0f2573c2-84f8-4f79-9d97-a913f237e33e
+- Successor generation: gen2
 
 ## Active Timers
-- Heartbeat cron: 73bb2733-41b4-4149-a1f3-40ec396cfadd/task-13
+- Heartbeat cron: killed
 - Safety timer: none
 
 ## Artifact Index
@@ -80,3 +86,4 @@ Orchestrate the end-to-end design, implementation, adversarial verification, and
 - TEST_READY.md — Signal and summary of completed E2E test suite
 - GATE_STATUS.md — Milestone gate evaluation logs
 - progress.md — Real-time progress and iteration tracking
+- handoff.md — State dump soft handoff for Generation 2

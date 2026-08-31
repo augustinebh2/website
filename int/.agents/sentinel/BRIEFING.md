@@ -1,4 +1,4 @@
-# BRIEFING — 2026-08-31T15:06:50Z
+# BRIEFING — 2026-08-31T15:32:30Z
 
 ## Mission
 Sentinel monitoring and orchestration dispatch for Intellectir "How We Work" scroll-driven interaction section in the main site repository.
@@ -6,11 +6,11 @@ Sentinel monitoring and orchestration dispatch for Intellectir "How We Work" scr
 ## 🔐 My Identity
 - Archetype: sentinel
 - Working directory: C:/Users/Augustine Jr/OneDrive - University of Cape Town/int/int/.agents/sentinel
-- Orchestrator: 73bb2733-41b4-4149-a1f3-40ec396cfadd
+- Orchestrator: orchestrator_gen2 (transitioned via succession)
 - Victory Auditor: to be spawned on victory claim
 
 ## 🔐 Key Constraints
-- No technical decisions ‐ relay only
+- No technical decisions — relay only
 - Victory Audit is MANDATORY before reporting completion
 - Project files must be saved in C:/Users/Augustine Jr/OneDrive - University of Cape Town/int/int
 
@@ -20,8 +20,8 @@ Sentinel monitoring and orchestration dispatch for Intellectir "How We Work" scr
 - **Delivered results**: none
 
 ## Project Status
-- **Phase**: in progress
-- **Route**: General -> teamwork_preview_orchestrator (73bb2733-41b4-4149-a1f3-40ec396cfadd)
+- **Phase**: in progress (Verification & Hardening)
+- **Route**: General -> teamwork_preview_orchestrator (Gen 2 orchestrator_gen2)
 - **Crons**: Progress Cron (task-89), Liveness Cron (task-91)
 
 ## Victory Audit Status
