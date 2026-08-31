@@ -1,89 +1,69 @@
-# BRIEFING — 2026-08-31T15:31:35Z
+# BRIEFING — 2026-08-31T18:54:45+02:00
 
 ## Mission
-Orchestrate the end-to-end design, implementation, adversarial verification, and integration of the high-impact animated scroll-driven "How We Work" section for the Intellectir website.
+Finalize how.mp4 alignment and test reconciliation in test/test_how_we_work_e2e.js to ensure 309/309 tests pass and commit cleanly to git.
 
 ## 🔒 My Identity
-- Archetype: orchestrator
+- Archetype: teamwork_preview_orchestrator
 - Roles: orchestrator, user_liaison, human_reporter, successor
-- Working directory: C:/Users/Augustine Jr/OneDrive - University of Cape Town/int/int/.agents/orchestrator
-- Original parent: top-level (bcfcb5f4-0611-4b66-8f1c-a106939fedfc)
+- Working directory: C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int\.agents\orchestrator
+- Original parent: parent
 - Original parent conversation ID: bcfcb5f4-0611-4b66-8f1c-a106939fedfc
 
 ## 🔒 My Workflow
-- **Pattern**: Project Orchestration
-- **Scope document**: C:/Users/Augustine Jr/OneDrive - University of Cape Town/int/int/PROJECT.md
-1. **Decompose**: Survey codebase with Explorers & Spec Miner, decompose into Milestones (Component Architecture, Mockup UIs & Visual Styling, Scroll & 2.5D Camera Interaction, Responsive/Mobile layout & Performance, Integration & E2E Verification).
+- **Pattern**: Project Pattern (2B Iteration Loop for test reconciliation milestone)
+- **Scope document**: C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int\.agents\orchestrator\PROJECT.md
+1. **Decompose**: Assessed scope - single milestone: Test reconciliation for how.mp4 alignment (corner mappings TR/TL/BL/BR and pink accent #ec4899), full test execution verification, git commit.
 2. **Dispatch & Execute**:
-   - Top-level orchestrator dispatches Explorers -> Workers -> Reviewers -> Challengers -> Auditors for each milestone / track.
-   - Dual track: Implementation Track + E2E Testing Track.
-3. **On failure**: Retry -> Replace -> Skip (if non-critical) -> Redistribute -> Redesign.
-4. **Succession**: Self-succeed at 16 spawns.
+   - Step 1: Dispatched Explorers (3) - Completed.
+   - Step 2: Dispatched Worker (1) with Explorer findings to update test/test_how_we_work_e2e.js, verify node test/e2e_runner.js (309/309 pass), and perform git commit.
+   - Step 3: Dispatch Reviewers (2), Challengers (2), and Forensic Auditor (1) to verify correctness and integrity.
+   - Step 4: Gate check & report back.
+3. **On failure**: Retry -> Replace -> Skip -> Redistribute -> Redesign -> Escalate
+4. **Succession**: Spawn successor if threshold (16 spawns) reached.
 - **Work items**:
-  1. Survey & Architecture Mapping [done]
-  2. Test Infrastructure & E2E Track Setup [done - TEST_READY.md published]
-  3. Milestone 1: Component HTML/CSS Structure & UI Mockups [done - Gate PASSED]
-  4. Milestone 2: 2.5D Pinned Scroll & Camera Animation Engine [done - Gate PASSED]
-  5. Milestone 3: Full Integration, Mobile Adaptations, Polish [done - Integrated]
-  6. Final Milestone: 100% E2E Verification & Adversarial Hardening [in-progress by Generation 2]
-- **Current phase**: Succeeded by Generation 2 Lead
-- **Current focus**: Generation 2 executing Tier 5 Hardening, Git Commits, and Final Reporting to Parent.
+  1. Test reconciliation and test run verification [in-progress]
+  2. Git commit and parent report [pending]
+- **Current phase**: 2B Iteration Loop - Implementation
+- **Current focus**: Milestone 1 - Test Reconciliation & Verification
 
 ## 🔒 Key Constraints
-- Never write source code directly; delegate all implementation and testing to subagents.
-- Never run build/test commands directly; require workers to do so.
-- Audit enforcement: Forensic auditor verdict is a binary veto.
-- Maintain work strictly inside `C:/Users/Augustine Jr/OneDrive - University of Cape Town/int/int`.
-- Never reuse subagents after handoff.
+- NEVER write, modify, or create source code files directly.
+- NEVER run build/test commands yourself — delegate to workers/subagents.
+- Verify 309/309 tests pass with exit code 0.
+- Ensure all git changes are committed cleanly.
+- Report back to parent (bcfcb5f4-0611-4b66-8f1c-a106939fedfc) via send_message.
 
 ## Current Parent
 - Conversation ID: bcfcb5f4-0611-4b66-8f1c-a106939fedfc
-- Updated: 2026-08-31T15:06:25Z
+- Updated: 2026-08-31T18:48:32+02:00
 
 ## Key Decisions Made
-- Milestone 1 Gate PASSED (100% green, CLEAN audit).
-- Milestone 2 Gate PASSED (100% green, CLEAN audit).
-- Reached 16 spawns with 100% completed subagents.
-- Successfully spawned Generation 2 Successor Lead (0f2573c2-84f8-4f79-9d97-a913f237e33e).
+- Scoped to 1 focused test reconciliation milestone.
+- Dispatched 3 parallel Explorers.
+- Dispatched Worker 1 for implementation, test verification, and git commit.
 
 ## Team Roster
 | Agent | Type | Work Item | Status | Conv ID |
 |-------|------|-----------|--------|---------|
-| spec_miner_survey | teamwork_preview_spec_miner | Extract exact content copy & mockup specs | completed | 78475fe6-0ba6-4ff0-bb39-c42872b6cdd7 |
-| explorer_codebase_survey | teamwork_preview_explorer | Analyze existing HTML/CSS/JS and insertion | completed | 13b823a9-ba1f-435a-967b-ea947a4bdcf2 |
-| explorer_motion_survey | teamwork_preview_explorer | 2.5D spatial layout, scroll mechanics, 60fps | completed | e4f3d5a0-aed2-4547-b682-6359ab70c65a |
-| test_writer_e2e | teamwork_preview_test_writer | Author comprehensive E2E test suites (Tiers 1-4) | completed | 1dfc5073-98f6-480f-89fd-4b32ac19bbe5 |
-| m1_explorer_1 | teamwork_preview_explorer | Plan HTML DOM structure & semantic tags | completed | c3487e67-2937-48f2-a4db-76efb86aa3fb |
-| m1_explorer_2 | teamwork_preview_explorer | Plan 4 interactive UI mockups & blueprints | completed | 14750767-c606-4bb1-8797-6500c527c817 |
-| m1_explorer_3 | teamwork_preview_explorer | Plan scoped CSS & quad-neon design tokens | completed | 902cb6bf-3e4d-4abb-b6e0-13b8c872d880 |
-| m1_worker_1 | teamwork_preview_worker | Implement DOM markup & scoped CSS rules | completed | ff097b34-96ba-4dde-ac21-ca1a25561ee5 |
-| m1_reviewer_1 | teamwork_preview_reviewer | Review DOM, verbatim copy & visual tokens | completed | b771f405-8acd-46b0-a16c-314612c286b4 |
-| m1_reviewer_2 | teamwork_preview_reviewer | Review scoped CSS, mockups & responsiveness | completed | 01f692a3-774c-47f4-ad77-7fb8439634de |
-| m1_challenger_1 | teamwork_preview_challenger | Adversarial DOM and contract verification | completed | 4ecb884e-b448-4ff6-8cde-d1f79cec9a64 |
-| m1_challenger_2 | teamwork_preview_challenger | Adversarial CSS contrast & layout stress tests | completed | 38f5ec0f-74ab-4173-a802-5560ed43000f |
-| m1_auditor_1 | teamwork_preview_auditor | Independent forensic integrity audit | completed | 47c55f2c-76a0-4c8d-a7fe-8e7b4b41c9a2 |
-| m2_worker_1 | teamwork_preview_worker | Implement 2.5D Motion Engine in app.js | completed | f54682a9-1373-4c8d-bd7c-116f46147316 |
-| m2_reviewer_1 | teamwork_preview_reviewer | Review JS motion engine & camera matrix | completed | ffb442ec-52ef-466c-9636-64d40353a4f6 |
-| m2_auditor_1 | teamwork_preview_auditor | Independent forensic integrity audit on JS | completed | f37a35c2-db2f-4729-933c-ced0e4c86f91 |
-| gen2_successor_lead | teamwork_preview_worker | Generation 2 Lead (Tier 5, Audit, Git, Report) | in-progress | 0f2573c2-84f8-4f79-9d97-a913f237e33e |
+| explorer_1 | teamwork_preview_explorer | Test Suite Explorer | completed | 9c01c48a-b594-4ff3-9514-3b92497c7e10 |
+| explorer_2 | teamwork_preview_explorer | DOM & Style Explorer | completed | 20fc3633-6fd7-44e1-a039-ce165f25c246 |
+| explorer_3 | teamwork_preview_explorer | Reconciliation Strategy | completed | 8c1c15da-2a3c-476e-842e-d8e18a3fc694 |
+| worker_1 | teamwork_preview_worker | Test Reconciliation & Git | in-progress | b4157ee2-e408-4cda-a6f1-0bcc3c4e8709 |
 
 ## Succession Status
-- Succession required: yes
-- Spawn count: 16 / 16
-- Pending subagents: none (gen 1 retired)
+- Succession required: no
+- Spawn count: 4 / 16
+- Pending subagents: b4157ee2-e408-4cda-a6f1-0bcc3c4e8709
 - Predecessor: none
-- Successor spawned: 0f2573c2-84f8-4f79-9d97-a913f237e33e
-- Successor generation: gen2
+- Successor: not yet spawned
 
 ## Active Timers
-- Heartbeat cron: killed
+- Heartbeat cron: task-17
 - Safety timer: none
 
 ## Artifact Index
-- ORIGINAL_REQUEST.md — Original verbatim user request
-- PROJECT.md — Master project architecture, inventory, and milestones
-- TEST_INFRA.md — Master E2E testing methodology and tier thresholds
-- TEST_READY.md — Signal and summary of completed E2E test suite
-- GATE_STATUS.md — Milestone gate evaluation logs
-- progress.md — Real-time progress and iteration tracking
-- handoff.md — State dump soft handoff for Generation 2
+- ORIGINAL_REQUEST.md — Original request record
+- PROJECT.md — Project scope and architecture
+- progress.md — Liveness and status checkpoint
+- GATE_STATUS.md — Gate verdicts

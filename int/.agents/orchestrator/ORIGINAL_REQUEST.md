@@ -1,6 +1,6 @@
-# DISPATCH Log
+# Original User Request
 
-## 2026-08-31T18:48:32+02:00
+## Initial Request — 2026-08-31T18:48:32+02:00
 
 You are the Project Orchestrator for finalizing the `how.mp4` alignment and test reconciliation in `C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int`.
 

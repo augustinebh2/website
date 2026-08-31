@@ -991,6 +991,8 @@
         let trackEl = null;
         let canvasEl = null;
         let introFrameEl = null;
+        let stateIntroEl = null;
+        let statePlatformEl = null;
         let scrubberProgressEl = null;
         let navPills = [];
         let cornerTags = [];
@@ -1008,11 +1010,17 @@
         const LERP_FACTOR = 0.1; // Smooth jank-free damping bounded between 0.05 and 0.20
 
         // 2.5D Camera Keyframe Waypoints (Stages 0 to 5)
+        // Stage 0: Overview (scale 1.00, x: 0, y: 0)
+        // Stage 1: Top-Right (Discovery Call) -> translateX -24%, translateY +24%
+        // Stage 2: Top-Left (Building Phase) -> translateX +24%, translateY +24%
+        // Stage 3: Bottom-Left (Integrating Phase) -> translateX +24%, translateY -24%
+        // Stage 4: Bottom-Right (Maintenance) -> translateX -24%, translateY -24%
+        // Stage 5: Ecosystem Zoom-Out Overview -> scale 1.00, x: 0, y: 0
         const CAMERA_ANCHORS = [
             { p: 0.00, scale: 1.00, x: 0,   y: 0,   stage: 0 },
             { p: 0.08, scale: 1.00, x: 0,   y: 0,   stage: 0 },
-            { p: 0.25, scale: 1.85, x: 24,  y: 24,  stage: 1 },
-            { p: 0.45, scale: 1.85, x: -24, y: 24,  stage: 2 },
+            { p: 0.25, scale: 1.85, x: -24, y: 24,  stage: 1 },
+            { p: 0.45, scale: 1.85, x: 24,  y: 24,  stage: 2 },
             { p: 0.65, scale: 1.85, x: 24,  y: -24, stage: 3 },
             { p: 0.825,scale: 1.85, x: -24, y: -24, stage: 4 },
             { p: 0.95, scale: 1.00, x: 0,   y: 0,   stage: 5 },
@@ -1131,19 +1139,35 @@
                 }
             }
 
-            // 2. Intro Center Frame Fade In / Out
+            // 2. Intro / Outro Center Frame State Switching
             if (introFrameEl) {
                 if (progress < 0.12) {
+                    // Stage 0: Initial "How we work" view
                     if (introFrameEl.classList) introFrameEl.classList.remove('faded', 'hidden', 'is-dimmed');
                     if (introFrameEl.style) {
                         introFrameEl.style.opacity = '1';
                         introFrameEl.style.pointerEvents = 'auto';
+                        introFrameEl.style.visibility = 'visible';
                     }
+                    if (stateIntroEl && stateIntroEl.style) stateIntroEl.style.display = 'block';
+                    if (statePlatformEl && statePlatformEl.style) statePlatformEl.style.display = 'none';
+                } else if (progress > 0.90) {
+                    // Stage 5: Final Ecosystem "The Intellectir Platform" & Explore Solutions CTA
+                    if (introFrameEl.classList) introFrameEl.classList.remove('faded', 'hidden', 'is-dimmed');
+                    if (introFrameEl.style) {
+                        introFrameEl.style.opacity = '1';
+                        introFrameEl.style.pointerEvents = 'auto';
+                        introFrameEl.style.visibility = 'visible';
+                    }
+                    if (stateIntroEl && stateIntroEl.style) stateIntroEl.style.display = 'none';
+                    if (statePlatformEl && statePlatformEl.style) statePlatformEl.style.display = 'block';
                 } else {
+                    // Stages 1–4: Panned focus onto active quadrant card
                     if (introFrameEl.classList) introFrameEl.classList.add('faded', 'hidden', 'is-dimmed');
                     if (introFrameEl.style) {
                         introFrameEl.style.opacity = '0';
                         introFrameEl.style.pointerEvents = 'none';
+                        introFrameEl.style.visibility = 'hidden';
                     }
                 }
             }
@@ -1306,6 +1330,8 @@
             trackEl = document.getElementById('hww-track') || (sectionEl.querySelector ? sectionEl.querySelector('.hww-track') : null);
             canvasEl = document.getElementById('hww-spatial-canvas') || (sectionEl.querySelector ? sectionEl.querySelector('.hww-spatial-canvas') : null);
             introFrameEl = document.getElementById('hww-intro-frame') || (sectionEl.querySelector ? sectionEl.querySelector('.hww-intro-frame') : null);
+            stateIntroEl = document.getElementById('hww-state-intro') || (introFrameEl && introFrameEl.querySelector ? introFrameEl.querySelector('.state-intro') : null);
+            statePlatformEl = document.getElementById('hww-state-platform') || (introFrameEl && introFrameEl.querySelector ? introFrameEl.querySelector('.state-platform') : null);
             scrubberProgressEl = document.getElementById('hww-scrubber-progress');
             navPills = sectionEl.querySelectorAll ? Array.from(sectionEl.querySelectorAll('.hww-nav-pill')) : [];
             cornerTags = sectionEl.querySelectorAll ? Array.from(sectionEl.querySelectorAll('.hww-corner-tag')) : [];
@@ -1386,7 +1412,10 @@
             if (introFrameEl && introFrameEl.style) {
                 introFrameEl.style.opacity = '';
                 introFrameEl.style.pointerEvents = '';
+                introFrameEl.style.visibility = '';
             }
+            if (stateIntroEl && stateIntroEl.style) stateIntroEl.style.display = '';
+            if (statePlatformEl && statePlatformEl.style) statePlatformEl.style.display = '';
 
             isInitialized = false;
         }

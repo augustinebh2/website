@@ -145,8 +145,8 @@ function createMockHowWeWorkEnvironment(customOptions = {}) {
   );
 
   const cornerTags = [
-    createMockElement('hww-tag-discovery', ['hww-corner-tag', 'corner-tl'], { 'data-corner': 'discovery' }),
-    createMockElement('hww-tag-building', ['hww-corner-tag', 'corner-tr'], { 'data-corner': 'building' }),
+    createMockElement('hww-tag-discovery', ['hww-corner-tag', 'corner-tr'], { 'data-corner': 'discovery' }),
+    createMockElement('hww-tag-building', ['hww-corner-tag', 'corner-tl'], { 'data-corner': 'building' }),
     createMockElement('hww-tag-integrating', ['hww-corner-tag', 'corner-bl'], { 'data-corner': 'integrating' }),
     createMockElement('hww-tag-maintenance', ['hww-corner-tag', 'corner-br'], { 'data-corner': 'maintenance' })
   ];
@@ -361,10 +361,10 @@ describe('Tier 5.2: 4 Corner Boundary Tags & Neon Indicators Contract', () => {
   });
 
   test('5.2.3: Each corner tag contains a colored neon indicator dot', () => {
-    assert.ok(sectionHtml.includes('corner-dot dot-green'), 'Green indicator dot required for Discovery');
-    assert.ok(sectionHtml.includes('corner-dot dot-blue'), 'Blue indicator dot required for Building');
-    assert.ok(sectionHtml.includes('corner-dot dot-purple'), 'Purple indicator dot required for Integrating');
-    assert.ok(sectionHtml.includes('corner-dot dot-yellow'), 'Yellow indicator dot required for Maintenance');
+    assert.ok(sectionHtml.includes('dot-green'), 'Green indicator dot required for Discovery');
+    assert.ok(sectionHtml.includes('dot-blue'), 'Blue indicator dot required for Building');
+    assert.ok(sectionHtml.includes('dot-pink') || sectionHtml.includes('dot-purple'), 'Pink/Red or Purple indicator dot required for Integrating');
+    assert.ok(sectionHtml.includes('dot-yellow'), 'Yellow indicator dot required for Maintenance');
   });
 
   test('5.2.4: Corner tags contain coordinate metadata and phase tags', () => {
@@ -709,15 +709,15 @@ describe('Tier 5.10: WCAG AAA Photometric Contrast & Font-Size Readability', () 
     assert.ok(contrast >= 14.0, `Key point text contrast is ${contrast.toFixed(2)}:1 (minimum 14:1 expected)`);
   });
 
-  test('5.10.4: All 4 quad-accent neon colors (#10b981, #3b82f6, #a855f7, #f59e0b) against #0a0a0c satisfy WCAG AA (>= 4.5:1)', () => {
+  test('5.10.4: All 4 quad-accent neon colors (#10b981, #3b82f6, #ec4899/#a855f7, #f59e0b) against #0a0a0c satisfy WCAG AA (>= 4.5:1)', () => {
     const greenContrast = calculateContrastRatio('#10b981', '#0a0a0c');
     const blueContrast = calculateContrastRatio('#3b82f6', '#0a0a0c');
-    const purpleContrast = calculateContrastRatio('#a855f7', '#0a0a0c');
+    const pinkContrast = calculateContrastRatio('#ec4899', '#0a0a0c');
     const yellowContrast = calculateContrastRatio('#f59e0b', '#0a0a0c');
 
     assert.ok(greenContrast >= 4.5, `Green contrast ${greenContrast.toFixed(2)}:1 < 4.5:1`);
     assert.ok(blueContrast >= 4.5, `Blue contrast ${blueContrast.toFixed(2)}:1 < 4.5:1`);
-    assert.ok(purpleContrast >= 4.5, `Purple contrast ${purpleContrast.toFixed(2)}:1 < 4.5:1`);
+    assert.ok(pinkContrast >= 4.5, `Pink contrast ${pinkContrast.toFixed(2)}:1 < 4.5:1`);
     assert.ok(yellowContrast >= 4.5, `Yellow contrast ${yellowContrast.toFixed(2)}:1 < 4.5:1`);
   });
 

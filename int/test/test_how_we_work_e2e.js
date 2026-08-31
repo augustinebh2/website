@@ -52,7 +52,7 @@ const HOW_WE_WORK_SPEC = {
       cornerTag: 'Discovery',
       colorName: 'green',
       hexColor: '#10b981',
-      quadrant: 'top-left',
+      quadrant: 'top-right',
       depositPercent: '40%',
       description: 'We get on a call with you so you can explain to us what problems you are facing and what outcomes you want.',
       keyPoints: [
@@ -70,7 +70,7 @@ const HOW_WE_WORK_SPEC = {
       cornerTag: 'Building',
       colorName: 'blue',
       hexColor: '#3b82f6',
-      quadrant: 'top-right',
+      quadrant: 'top-left',
       durationWeeks: '1 - 4 weeks',
       description: 'We build the systems designed specifically for your needs, and blends into your operating system',
       keyPoints: [
@@ -85,8 +85,8 @@ const HOW_WE_WORK_SPEC = {
       id: 'phase-3',
       title: 'Integrating phase',
       cornerTag: 'Integrating',
-      colorName: 'purple',
-      hexColor: '#a855f7',
+      colorName: 'pink',
+      hexColor: '#ec4899',
       quadrant: 'bottom-left',
       finalPaymentPercent: '60%',
       description: "We plug your new intelligent system into your company's existing tools, softwares, databases and operational setup",
@@ -119,14 +119,15 @@ const HOW_WE_WORK_SPEC = {
   themeColors: {
     green: '#10b981',
     blue: '#3b82f6',
-    purple: '#a855f7',
+    pink: '#ec4899',
+    purple: '#ec4899',
     yellow: '#f59e0b',
     background: '#0a0a0c'
   },
   stages: [
     { stage: 0, name: 'Overview', target: 'overview', scale: 0.65, x: 0, y: 0 },
-    { stage: 1, name: 'Phase 1 Focus', target: 'quadrant-1', scale: 1.0, x: 25, y: 25 },
-    { stage: 2, name: 'Phase 2 Focus', target: 'quadrant-2', scale: 1.0, x: -25, y: 25 },
+    { stage: 1, name: 'Phase 1 Focus', target: 'quadrant-1', scale: 1.0, x: -25, y: 25 },
+    { stage: 2, name: 'Phase 2 Focus', target: 'quadrant-2', scale: 1.0, x: 25, y: 25 },
     { stage: 3, name: 'Phase 3 Focus', target: 'quadrant-3', scale: 1.0, x: 25, y: -25 },
     { stage: 4, name: 'Phase 4 Focus', target: 'quadrant-4', scale: 1.0, x: -25, y: -25 },
     { stage: 5, name: 'Ecosystem Zoom-out', target: 'ecosystem', scale: 0.55, x: 0, y: 0 }
@@ -281,9 +282,9 @@ describe('Tier 1.2: Feature 2 - Phase 1 (Discovery Call) Verbatim Copy & Badging
     assert.ok(req.includes('40% upfront payment'));
   });
 
-  test('1.2.6: Phase 1 has 4 key points total, mapped to Top-Left quadrant with green accent', () => {
+  test('1.2.6: Phase 1 has 4 key points total, mapped to Top-Right quadrant with green accent', () => {
     assert.strictEqual(p1.keyPoints.length, 4);
-    assert.strictEqual(p1.quadrant, 'top-left');
+    assert.strictEqual(p1.quadrant, 'top-right');
     assert.strictEqual(p1.colorName, 'green');
     assert.strictEqual(p1.hexColor, '#10b981');
   });
@@ -324,9 +325,9 @@ describe('Tier 1.3: Feature 3 - Phase 2 (Building Phase) Verbatim Copy & Badging
     assert.ok(req.includes('Engineering state-of-the-art architecture'));
   });
 
-  test('1.3.6: Phase 2 has 3 key points total, mapped to Top-Right quadrant with blue accent', () => {
+  test('1.3.6: Phase 2 has 3 key points total, mapped to Top-Left quadrant with blue accent', () => {
     assert.strictEqual(p2.keyPoints.length, 3);
-    assert.strictEqual(p2.quadrant, 'top-right');
+    assert.strictEqual(p2.quadrant, 'top-left');
     assert.strictEqual(p2.colorName, 'blue');
     assert.strictEqual(p2.hexColor, '#3b82f6');
   });
@@ -367,11 +368,11 @@ describe('Tier 1.4: Feature 4 - Phase 3 (Integrating phase) Verbatim Copy & Badg
     assert.ok(req.includes('60% final payment'));
   });
 
-  test('1.4.6: Phase 3 has 3 key points total, mapped to Bottom-Left quadrant with purple accent', () => {
+  test('1.4.6: Phase 3 has 3 key points total, mapped to Bottom-Left quadrant with pink accent', () => {
     assert.strictEqual(p3.keyPoints.length, 3);
     assert.strictEqual(p3.quadrant, 'bottom-left');
-    assert.strictEqual(p3.colorName, 'purple');
-    assert.strictEqual(p3.hexColor, '#a855f7');
+    assert.strictEqual(p3.colorName, 'pink');
+    assert.strictEqual(p3.hexColor, '#ec4899');
   });
 });
 
@@ -425,16 +426,16 @@ describe('Tier 1.6: Feature 6 - 4 Corner Boundary Node Tags', () => {
     assert.deepStrictEqual(HOW_WE_WORK_SPEC.cornerTags, ['Discovery', 'Building', 'Integrating', 'Maintenance']);
   });
 
-  test('1.6.2: Discovery corner tag corresponds to Top-Left spatial frame', () => {
+  test('1.6.2: Discovery corner tag corresponds to Top-Right spatial frame', () => {
     const discoveryPhase = HOW_WE_WORK_SPEC.phases.find(p => p.cornerTag === 'Discovery');
     assert.ok(discoveryPhase, 'Discovery corner tag must be defined');
-    assert.strictEqual(discoveryPhase.quadrant, 'top-left');
+    assert.strictEqual(discoveryPhase.quadrant, 'top-right');
   });
 
-  test('1.6.3: Building corner tag corresponds to Top-Right spatial frame', () => {
+  test('1.6.3: Building corner tag corresponds to Top-Left spatial frame', () => {
     const buildingPhase = HOW_WE_WORK_SPEC.phases.find(p => p.cornerTag === 'Building');
     assert.ok(buildingPhase);
-    assert.strictEqual(buildingPhase.quadrant, 'top-right');
+    assert.strictEqual(buildingPhase.quadrant, 'top-left');
   });
 
   test('1.6.4: Integrating corner tag corresponds to Bottom-Left spatial frame', () => {
@@ -460,8 +461,8 @@ describe('Tier 1.7: Feature 7 - Quad-Color Neon Theme Tokens', () => {
     assert.strictEqual(HOW_WE_WORK_SPEC.themeColors.blue, '#3b82f6');
   });
 
-  test('1.7.3: Neon Purple token (#a855f7) is defined for Integrating phase', () => {
-    assert.strictEqual(HOW_WE_WORK_SPEC.themeColors.purple, '#a855f7');
+  test('1.7.3: Neon Pink/Red token (#ec4899) is defined for Integrating phase', () => {
+    assert.strictEqual(HOW_WE_WORK_SPEC.themeColors.pink, '#ec4899');
   });
 
   test('1.7.4: Neon Yellow token (#f59e0b) is defined for Maintenance phase', () => {
@@ -589,9 +590,9 @@ describe('Tier 1.10: Feature 10 - UI Mockup Phase 3 (Integrations Hub & QA)', ()
     assert.strictEqual(p3.finalPaymentPercent, '60%');
   });
 
-  test('1.10.5: Mockup 3 interface defines purple neon accent styling (#a855f7)', () => {
+  test('1.10.5: Mockup 3 interface defines pink/red neon accent styling (#ec4899)', () => {
     const p3 = HOW_WE_WORK_SPEC.phases[2];
-    assert.strictEqual(p3.hexColor, '#a855f7');
+    assert.strictEqual(p3.hexColor, '#ec4899');
   });
 });
 
@@ -680,18 +681,18 @@ describe('Tier 1.13: Feature 13 - 5-Stage Camera Choreography Engine', () => {
     assert.ok(s0.scale < 1.0);
   });
 
-  test('1.13.3: Stage 1 targets Top-Left Quadrant 1 (Discovery Call)', () => {
+  test('1.13.3: Stage 1 targets Top-Right Quadrant 1 (Discovery Call)', () => {
     const s1 = HOW_WE_WORK_SPEC.stages[1];
     assert.strictEqual(s1.stage, 1);
     assert.strictEqual(s1.target, 'quadrant-1');
-    assert.ok(s1.x > 0 && s1.y > 0);
+    assert.ok(s1.x < 0 && s1.y > 0);
   });
 
-  test('1.13.4: Stage 2 targets Top-Right Quadrant 2 (Building Phase)', () => {
+  test('1.13.4: Stage 2 targets Top-Left Quadrant 2 (Building Phase)', () => {
     const s2 = HOW_WE_WORK_SPEC.stages[2];
     assert.strictEqual(s2.stage, 2);
     assert.strictEqual(s2.target, 'quadrant-2');
-    assert.ok(s2.x < 0 && s2.y > 0);
+    assert.ok(s2.x > 0 && s2.y > 0);
   });
 
   test('1.13.5: Stage 3 targets Bottom-Left Quadrant 3 (Integrating phase)', () => {
@@ -1091,7 +1092,7 @@ describe('Tier 3: Cross-Feature Combinations & State Consistency', () => {
     const activePhase = HOW_WE_WORK_SPEC.phases[stage - 1];
     assert.strictEqual(activePhase.title, 'Integrating phase');
     assert.strictEqual(activePhase.cornerTag, 'Integrating');
-    assert.strictEqual(activePhase.hexColor, '#a855f7');
+    assert.strictEqual(activePhase.hexColor, '#ec4899');
   });
 
   test('3.4: Scrubber Jump to Phase 4 syncs active quadrant 4 and Maintenance tag', () => {
@@ -1182,15 +1183,15 @@ describe('Tier 3: Cross-Feature Combinations & State Consistency', () => {
   });
 
   // 4. Spatial Matrix Geometry vs Quadrant Alignment
-  test('3.13: Q1 camera offset (+x, +y) centers top-left quadrant on screen', () => {
+  test('3.13: Q1 camera offset (-x, +y) centers top-right quadrant on screen', () => {
     const s1 = HOW_WE_WORK_SPEC.stages[1];
-    assert.ok(s1.x > 0);
+    assert.ok(s1.x < 0);
     assert.ok(s1.y > 0);
   });
 
-  test('3.14: Q2 camera offset (-x, +y) centers top-right quadrant on screen', () => {
+  test('3.14: Q2 camera offset (+x, +y) centers top-left quadrant on screen', () => {
     const s2 = HOW_WE_WORK_SPEC.stages[2];
-    assert.ok(s2.x < 0);
+    assert.ok(s2.x > 0);
     assert.ok(s2.y > 0);
   });
 

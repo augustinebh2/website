@@ -1,13 +1,13 @@
-# BRIEFING — 2026-08-31T15:38:30Z
+# BRIEFING — 2026-08-31T16:48:30Z
 
 ## Mission
-Sentinel monitoring and orchestration dispatch for Intellectir "How We Work" scroll-driven interaction section in the main site repository.
+Sentinel monitoring and orchestration dispatch for Intellectir "How We Work" scroll-driven interaction section refinement per how.mp4.
 
 ## 🔐 My Identity
 - Archetype: sentinel
 - Working directory: C:/Users/Augustine Jr/OneDrive - University of Cape Town/int/int/.agents/sentinel
-- Orchestrator: orchestrator_gen2 / 73bb2733-41b4-4149-a1f3-40ec396cfadd
-- Victory Auditor: 4ed05924-e855-4757-a09c-1046edba60bf
+- Orchestrator: 6bc7d286-8fae-453b-8235-4c397c052345
+- Victory Auditor: to be spawned on victory claim
 
 ## 🔐 Key Constraints
 - No technical decisions — relay only
@@ -15,19 +15,18 @@ Sentinel monitoring and orchestration dispatch for Intellectir "How We Work" scr
 - Project files must be saved in C:/Users/Augustine Jr/OneDrive - University of Cape Town/int/int
 
 ## User Context
-- **Last user request**: Resume implementation in main site repo C:/Users/Augustine Jr/OneDrive - University of Cape Town/int/int for "How We Work" 4-phase scroll-driven section and 2.5D canvas spatial animation.
+- **Last user request**: Apply exact how.mp4 refinements: 4-corner connected rectangular border, sequential camera zoom & fade-in/fade-out keyframes (TR Discovery, TL Building, BL Integrating, BR Maintenance), and final zoom-out to "The Intellectir Platform" with "Plug into our solutions" CTA.
 - **Pending clarifications**: none
-- **Delivered results**: Full 4-phase interactive scroll-driven "How We Work" section, spatial 2.5D canvas animation, 309/309 passing e2e tests, git commit, and confirmed Victory Audit.
-
+- **Delivered results**: none
 
 ## Project Status
-- **Phase**: complete
-- **Route**: General -> teamwork_preview_orchestrator
-- **Crons**: Terminated
+- **Phase**: in progress
+- **Route**: General -> teamwork_preview_orchestrator (6bc7d286-8fae-453b-8235-4c397c052345)
+- **Crons**: Progress Cron (task-171), Liveness Cron (task-173)
 
 ## Victory Audit Status
-- **Triggered**: yes
-- **Verdict**: VICTORY CONFIRMED
+- **Triggered**: no
+- **Verdict**: pending
 - **Retry count**: 0
 
 ## Artifact Index
