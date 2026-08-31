@@ -1,38 +1,33 @@
-# BRIEFING — 2026-08-24T12:44:30Z
+# BRIEFING — 2026-08-31T15:06:50Z
 
 ## Mission
-Coordinate full website overhaul for project in `c:\Users\Augustine Jr\OneDrive - University of Cape Town\int\web` by routing to Project Orchestrator and performing victory audit upon completion.
+Sentinel monitoring and orchestration dispatch for Intellectir "How We Work" scroll-driven interaction section in the main site repository.
 
-## 🔒 My Identity
+## 🔐 My Identity
 - Archetype: sentinel
-- Working directory: c:\Users\Augustine Jr\OneDrive - University of Cape Town\int\web\.agents\sentinel
-- Orchestrator: 3d4b65cc-d485-4c2f-abc7-6a6446c82341 (Completed)
-- Victory Auditor: 4c2ef836-bf90-4b79-8913-3b7a18f5c543 (VICTORY CONFIRMED)
+- Working directory: C:/Users/Augustine Jr/OneDrive - University of Cape Town/int/int/.agents/sentinel
+- Orchestrator: 73bb2733-41b4-4149-a1f3-40ec396cfadd
+- Victory Auditor: to be spawned on victory claim
 
-## 🔒 Key Constraints
-- No technical decisions — relay only
+## 🔐 Key Constraints
+- No technical decisions ‐ relay only
 - Victory Audit is MANDATORY before reporting completion
-- Keep context ultra-light
+- Project files must be saved in C:/Users/Augustine Jr/OneDrive - University of Cape Town/int/int
 
 ## User Context
-- **Last user request**: Full website overhaul (redesign, codebase restructure, performance & responsiveness, automated server verification)
+- **Last user request**: Resume implementation in main site repo C:/Users/Augustine Jr/OneDrive - University of Cape Town/int/int for "How We Work" 4-phase scroll-driven section and 2.5D canvas spatial animation.
 - **Pending clarifications**: none
-- **Delivered results**: Full website overhaul complete, 100% verified across 27 test suites / 119 tests, VICTORY CONFIRMED by independent Victory Auditor.
+- **Delivered results**: none
 
 ## Project Status
-- **Phase**: complete
-- **Route**: General (teamwork_preview_orchestrator)
-- **Active Orchestrator**: None (Cleaned up)
+- **Phase**: in progress
+- **Route**: General -> teamwork_preview_orchestrator (73bb2733-41b4-4149-a1f3-40ec396cfadd)
+- **Crons**: Progress Cron (task-89), Liveness Cron (task-91)
 
 ## Victory Audit Status
-- **Triggered**: yes
-- **Auditor ID**: 4c2ef836-bf90-4b79-8913-3b7a18f5c543
-- **Verdict**: VICTORY CONFIRMED
+- **Triggered**: no
+- **Verdict**: pending
 - **Retry count**: 0
 
 ## Artifact Index
-- `.agents/ORIGINAL_REQUEST.md` — Authoritative original user request
-- `.agents/sentinel/BRIEFING.md` — Persistent sentinel working memory
-- `.agents/sentinel/handoff.md` — Final sentinel handoff report
-- `PROJECT.md` — Project specification & milestone tracking
-- `TEST_READY.md` — Verification test suite documentation
+- C:/Users/Augustine Jr/OneDrive - University of Cape Town/int/int/ORIGINAL_REQUEST.md — Original User Request

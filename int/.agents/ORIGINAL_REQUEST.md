@@ -39,3 +39,23 @@ Optimize asset loading, layout rendering, and interactive elements to ensure fas
 - [ ] All 5 main HTML pages display a cohesive, modern visual theme and responsive layout.
 - [ ] CSS stylesheet (`styles.css`) utilizes clean structural rules, CSS variables, and media queries for mobile devices.
 - [ ] Navigation header and footer remain uniform and fully accessible across all pages.
+
+
+## Resume & Target Directory Sync — 2026-08-31T15:05:28Z
+
+Target Workspace & Codebase Location:
+`C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int`
+
+Requirements to execute in `C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int`:
+1. Integrate the 4-phase "How We Work" scroll section into `index.html` (or modular JS/CSS component linked to `styles.css` & `app.js`).
+2. Content Copy (`work.md`):
+   - Phase 1: Discovery Call (Vent about problems, OS analysis, Credential Handover, 40% upfront payment)
+   - Phase 2: Building Phase (1-4 weeks, live dashboard, state-of-the-art architecture)
+   - Phase 3: Integrating phase (Plug into tools/software/databases/ops, documentation, final testing, 60% final payment)
+   - Phase 4: Maintenance (Monthly retainer option, real-time agent updates/training, continuous exponential improvement)
+3. Animation & Layout (`demo.mp4`):
+   - Ultra-dark theme (`#0a0a0c`), sleek border containers, 4 corner node badges.
+   - Pinned 2.5D canvas scroll interaction zooming and panning across the 4 quadrant cards with interactive mockup visuals.
+   - Final zoom-out showing full 4-phase ecosystem.
+
+Please verify the changes, test the page responsiveness, and report back when finished.

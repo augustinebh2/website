@@ -513,15 +513,15 @@ async function main() {
       }
     }
   } else {
-    // Auto-discover test_tier*.js
+    // Auto-discover test_tier*.js and test_how_we_work_e2e.js (all test_*.js files)
     const files = fs.readdirSync(testDir);
-    const tierFiles = files
-      .filter(f => f.startsWith('test_tier') && f.endsWith('.js'))
+    const testFiles = files
+      .filter(f => f.startsWith('test_') && f.endsWith('.js'))
       .sort();
 
-    for (const f of tierFiles) {
+    for (const f of testFiles) {
       if (TIER_FILTER) {
-        if (f.includes(`tier${TIER_FILTER}`)) {
+        if (f.includes(`tier${TIER_FILTER}`) || (f.includes('how_we_work') && String(TIER_FILTER).toLowerCase() === 'all')) {
           filesToRun.push(path.join(testDir, f));
         }
       } else {
