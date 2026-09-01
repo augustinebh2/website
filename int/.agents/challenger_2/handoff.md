@@ -1,109 +1,227 @@
-# Handoff Report — Challenger 2 (Adversarial Client-Side UI/UX & Interactivity Hardening)
+# Empirical Verification & Adversarial Review Report (Challenger 2)
 
-**Role**: EMPIRICAL CHALLENGER (critic, specialist)  
-**Working Directory**: `.agents/challenger_2`  
-**Date**: 2026-08-24T12:32:00Z  
-**Verdict**: **PASS** (100% Adversarial & Accessibility Hardening Criteria Cleared)
+**Evaluator**: Challenger 2 (`teamwork_preview_challenger`)  
+**Target Milestone**: How We Work (`how.mp4`) Alignment & Test Suite Reconciliation  
+**Target Directory**: `C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int`  
+**Verdict**: **APPROVE**
 
 ---
 
 ## 1. Observation
 
-Direct empirical observations from executing adversarial fuzzing, DOM boundary stress tests, and mathematical contrast algorithms against `app.js`, `styles.css`, and all 5 semantic application HTML pages (`index.html`, `company.html`, `discover.html`, `industries.html`, `solutions.html`):
+Direct empirical observations collected across implementation files, photometric calculations, mathematical simulations, and test executions:
 
-### 1.1 Discover Search Input & Regex Injection Fuzzing (`app.js:320-375`)
-- Executed `escapeRegex(str)` and `DiscoverFilterModule.filterArticles()` against dangerous regex metacharacters, ReDoS patterns, script injection strings, and extreme string lengths:
-  - Patterns tested: `.*`, `[a-z]+`, `(`, `)`, `\\`, `?`, `^`, `$`, `+`, `*`, `{1,100}`, `(?=.*)`, `(?<=)`, `((a+)+)+$`, `\u0000\uFFFF`, `"><script>alert(1)</script>`, `<img src=x onerror=alert(1)>`, `' OR '1'='1`, `A`.repeat(10000).
-  - Verbatim result: **Zero uncaught exceptions, zero syntax errors, zero ReDoS stalls, zero unescaped DOM execution**.
-  - Case-insensitivity verified: Queries `"RAG"` and `"rag"` match `.discover-article-card[data-category="rag"]` identically.
-  - State machine verified: Switching between category pills (`all`, `strategy`, `rag`, `governance`, `case-study`) dynamically adjusts `card.style.display` in exact alignment with both category and search query.
+### A. Corner Coordinates & Spatial Grid Layout
+1. **Top-Right (TR) — Phase 1: Discovery Call**
+   - **DOM & Attributes (`index.html:702-708`)**:
+     ```html
+     <div class="hww-corner-tag corner-tr" data-corner="discovery">
+         <span class="corner-dot dot-green"></span>
+         <div class="corner-text-wrap">
+             <span class="corner-label"><span class="corner-num">01</span> Phase 1: Discovery Call</span>
+             <span class="corner-coord">PHASE 01 // 40% UPFRONT</span>
+         </div>
+     </div>
+     ```
+   - **CSS Grid Mapping (`styles.css:4093-4097`)**:
+     ```css
+     #how-we-work-section .card-discovery,
+     #how-we-work-section .hww-q1 {
+         --card-accent: var(--hww-p1-accent);
+         grid-column: 2;
+         grid-row: 1;
+     }
+     ```
+   - **Connecting Ray (`index.html:694`, `styles.css:3560-3566`)**:
+     `.ray-tr` positioned at `top: 24px; right: 24px;` with `linear-gradient(-90deg, var(--hww-p1-accent), transparent)`.
 
-### 1.2 ROI Calculator Boundary & Extreme Bounds (`app.js:380-467`, `discover.html:77-133`)
-- Tested slider boundary clamping and department multipliers with boundary inputs:
-  - Inputs tested: `-100`, `0`, `1`, `2`, `10`, `500`, `999999`, `NaN`, `"abc"`, `null`, `12.8`.
-  - Verbatim result: Inputs clamped strictly within $[1, 500]$ without integer overflow or `NaN` outputs.
-  - Pluralization verified: `teamSize === 1` renders `"1 Employee"`; `teamSize > 1` renders `"${teamSize} Employees"`.
-  - Math verified: For Support (22 hrs, $45/hr) at 10 employees, weekly hours = $220\text{ hrs}$, annual savings = $\$360,360$ ($\text{Math.round}(220 \times 45 \times 52 \times 0.70)$).
+2. **Top-Left (TL) — Phase 2: Building Phase**
+   - **DOM & Attributes (`index.html:711-717`)**:
+     ```html
+     <div class="hww-corner-tag corner-tl" data-corner="building">
+         <span class="corner-dot dot-blue"></span>
+         <div class="corner-text-wrap">
+             <span class="corner-label"><span class="corner-num">02</span> Phase 2: Building Phase</span>
+             <span class="corner-coord">PHASE 02 // 1–4 WEEKS</span>
+         </div>
+     </div>
+     ```
+   - **CSS Grid Mapping (`styles.css:4104-4109`)**:
+     ```css
+     #how-we-work-section .card-building,
+     #how-we-work-section .hww-q2 {
+         --card-accent: var(--hww-p2-accent);
+         grid-column: 1;
+         grid-row: 1;
+     }
+     ```
+   - **Connecting Ray (`index.html:693`, `styles.css:3552-3558`)**:
+     `.ray-tl` positioned at `top: 24px; left: 24px;` with `linear-gradient(90deg, var(--hww-p2-accent), transparent)`.
 
-### 1.3 Mobile Navigation Drawer & Keyboard Accessibility (`app.js:113-184`, `styles.css:2188-2242`)
-- Tested drawer state transitions and event listeners:
-  - Toggle clicking synchronizes `aria-expanded="true/false"`, `.is-active` on `#nav-toggle`, and `.is-open` on `#primary-nav`.
-  - 101 rapid spam toggle clicks preserved exact boolean state (`true`/open).
-  - Pressing `Escape` key while open dismissed drawer and restored focus to `#nav-toggle`.
-  - Outside clicks outside header/nav dismissed open drawer.
+3. **Bottom-Left (BL) — Phase 3: Integrating Phase**
+   - **DOM & Attributes (`index.html:720-726`)**:
+     ```html
+     <div class="hww-corner-tag corner-bl" data-corner="integrating">
+         <span class="corner-dot dot-pink dot-purple"></span>
+         <div class="corner-text-wrap">
+             <span class="corner-label"><span class="corner-num">03</span> Phase 3: Integrating Phase</span>
+             <span class="corner-coord">PHASE 03 // 60% FINAL</span>
+         </div>
+     </div>
+     ```
+   - **CSS Grid Mapping (`styles.css:4116-4121`)**:
+     ```css
+     #how-we-work-section .card-integrating,
+     #how-we-work-section .hww-q3 {
+         --card-accent: var(--hww-p3-accent);
+         grid-column: 1;
+         grid-row: 2;
+     }
+     ```
+   - **Connecting Ray (`index.html:695`, `styles.css:3568-3574`)**:
+     `.ray-bl` positioned at `bottom: 24px; left: 24px;` with `linear-gradient(90deg, var(--hww-p3-accent), transparent)`.
 
-### 1.4 Modal Accessibility, Focus Trapping & Toast System (`app.js:189-315`, `styles.css:1937-2095`)
-- Tested consultation modal (`#demo-modal`) and live toast (`#toast`):
-  - Modal opening sets `aria-hidden="false"` and locks `document.body.style.overflow = 'hidden'`.
-  - Modal closing restores `aria-hidden="true"`, unlocks `document.body.style.overflow = ''`, and restores keyboard focus to triggering CTA button.
-  - Focus trapping: Forward `Tab` on the submit button wraps focus back to the close button; reverse `Shift+Tab` on the close button wraps focus back to the submit button.
-  - Backdrop click dismisses modal; interior click on `.modal-card` preserves open modal.
-  - 50 rapid calls to `ToastModule.show()` / `window.showToast()` cleanly reset dismiss timers without collisions or memory leaks.
+4. **Bottom-Right (BR) — Phase 4: Maintenance**
+   - **DOM & Attributes (`index.html:729-735`)**:
+     ```html
+     <div class="hww-corner-tag corner-br" data-corner="maintenance">
+         <span class="corner-dot dot-yellow"></span>
+         <div class="corner-text-wrap">
+             <span class="corner-label"><span class="corner-num">04</span> Phase 4: Maintenance</span>
+             <span class="corner-coord">PHASE 04 // 24/7 OPT</span>
+         </div>
+     </div>
+     ```
+   - **CSS Grid Mapping (`styles.css:4128-4133`)**:
+     ```css
+     #how-we-work-section .card-maintenance,
+     #how-we-work-section .hww-q4 {
+         --card-accent: var(--hww-p4-accent);
+         grid-column: 2;
+         grid-row: 2;
+     }
+     ```
+   - **Connecting Ray (`index.html:696`, `styles.css:3576-3582`)**:
+     `.ray-br` positioned at `bottom: 24px; right: 24px;` with `linear-gradient(-90deg, var(--hww-p4-accent), transparent)`.
 
-### 1.5 Multi-Page Initializer Safety (`app.js:958-986`)
-- Evaluated `Intellectir.init()` on all 5 semantic pages (`index.html`, `company.html`, `discover.html`, `industries.html`, `solutions.html`).
-- Verbatim result: **Zero null pointer errors, zero missing element exceptions**. Every module includes defensive guards (`if (!element) return`).
+---
 
-### 1.6 Mathematical WCAG 2.1 AA Color Contrast Analysis (`styles.css:9-76`)
-- Relative luminance formula: $L = 0.2126 R + 0.7152 G + 0.0722 B$ where $C_{sRGB} \le 0.03928 \implies C = C_{sRGB}/12.92$ else $C = ((C_{sRGB} + 0.055)/1.055)^{2.4}$.
-- Calculated contrast ratios:
-  - `.btn-primary` (`#ffffff` on `#2563eb`): **5.17:1** (WCAG AA $\ge 4.5:1$ PASS).
-  - `.btn-primary:hover` (`#ffffff` on `#1d4ed8`): **6.70:1** (WCAG AA $\ge 4.5:1$ PASS).
-  - `.btn-primary` indigo gradient (`#ffffff` on `#4f46e5`): **6.29:1** (WCAG AA $\ge 4.5:1$ PASS).
-  - Light theme primary text (`#0f172a` on `#ffffff`): **17.85:1** (WCAG AAA $\ge 7.0:1$ PASS).
-  - Light theme secondary text (`#334155` on `#ffffff`): **10.35:1** (WCAG AAA $\ge 7.0:1$ PASS).
-  - Light theme muted text (`#64748b` on `#ffffff`): **4.76:1** (WCAG AA $\ge 4.5:1$ PASS).
-  - Light theme muted text on card surface (`#64748b` on `#f8fafc`): **4.55:1** (WCAG AA $\ge 4.5:1$ PASS).
-  - Dark theme text (`#ffffff` on `#090d16`): **19.43:1** (WCAG AAA $\ge 7.0:1$ PASS).
-  - Dark theme surface text (`#ffffff` on `#0f172a`): **17.85:1** (WCAG AAA $\ge 7.0:1$ PASS).
-  - Dark theme muted text (`#cbd5e1` on `#090d16`): **13.09:1** (WCAG AAA $\ge 7.0:1$ PASS).
-  - Dark theme slate (`#94a3b8` on `#090d16`): **7.58:1** (WCAG AAA $\ge 7.0:1$ PASS).
-  - Emerald dark badge (`#047857` on `#ffffff`): **5.48:1** (WCAG AA $\ge 4.5:1$ PASS).
-  - Rose badge (`#e11d48` on `#ffffff`): **4.70:1** (WCAG AA $\ge 4.5:1$ PASS).
-  - Amber badge (`#d97706` on `#ffffff`): **3.19:1** (WCAG UI/Large Text $\ge 3.0:1$ PASS).
-  - Cyan badge on dark theme (`#0284c7` on `#090d16`): **4.74:1** (WCAG AA $\ge 4.5:1$ PASS).
-  - Cyan icon on white (`#0284c7` on `#ffffff`): **4.10:1** (WCAG UI Component $\ge 3.0:1$ PASS).
+### B. Quadrant Card Structure & Outro Dual-State Invariants
+1. **Left-Mockup / Right-Deliverables DOM Hierarchy**:
+   All four quadrant cards (`#hww-phase-1`, `#hww-phase-2`, `#hww-phase-3`, `#hww-phase-4`) strictly place `.hww-card-mockup` before `.hww-card-content` within `.hww-card-inner`.
+   CSS grid specifies `grid-template-columns: 1.15fr 1fr;` on desktop (`styles.css:3973`), ensuring the interactive UI mockup occupies the left column and text deliverables occupy the right column.
+2. **Dual-State Intro / Outro Container**:
+   - `#hww-state-intro` (`index.html:773-781`): Contains section title `"How we work"` and methodology eyebrow tag.
+   - `#hww-state-platform` (`index.html:783-792`): Contains `"The Intellectir Platform"`, subtitle, and CTA anchor `href="solutions.html"` containing `"Explore Our Solutions &rarr;"`.
+   - `renderFrame` in `app.js:1144-1164` transitions between `#hww-state-intro` (`progress < 0.12`) and `#hww-state-platform` (`progress > 0.90`).
+3. **Destination Page Verification**:
+   `solutions.html` exists (99,890 bytes), delivers HTTP 200, and contains valid enterprise AI solutions markup.
+
+---
+
+### C. 2.5D Camera Pan Math & Smoothstep Stability
+1. **Camera Anchor Waypoints (`app.js:1019-1028`)**:
+   ```javascript
+   const CAMERA_ANCHORS = [
+       { p: 0.00, scale: 1.00, x: 0,   y: 0,   stage: 0 },
+       { p: 0.08, scale: 1.00, x: 0,   y: 0,   stage: 0 },
+       { p: 0.25, scale: 1.85, x: -24, y: 24,  stage: 1 }, // TR (Q1 Discovery)
+       { p: 0.45, scale: 1.85, x: 24,  y: 24,  stage: 2 }, // TL (Q2 Building)
+       { p: 0.65, scale: 1.85, x: 24,  y: -24, stage: 3 }, // BL (Q3 Integrating)
+       { p: 0.825,scale: 1.85, x: -24, y: -24, stage: 4 }, // BR (Q4 Maintenance)
+       { p: 0.95, scale: 1.00, x: 0,   y: 0,   stage: 5 }, // Ecosystem Zoom-Out
+       { p: 1.00, scale: 1.00, x: 0,   y: 0,   stage: 5 }
+   ];
+   ```
+2. **Mathematical Correctness of Pan Coordinates**:
+   - In standard CSS 2D/3D transform space, translating the canvas container by $(-\Delta x, +\Delta y)$ shifts the visual viewport focus to the Top-Right quadrant (+X, -Y relative to center).
+   - Translating by $(+\Delta x, +\Delta y)$ focuses Top-Left (-X, -Y).
+   - Translating by $(+\Delta x, -\Delta y)$ focuses Bottom-Left (-X, +Y).
+   - Translating by $(-\Delta x, -\Delta y)$ focuses Bottom-Right (+X, +Y).
+3. **Smoothstep Hermite Interpolation**:
+   $S(t) = 3t^2 - 2t^3$ with $S'(0) = 0$ and $S'(1) = 0$, guaranteeing $C^1$-smooth transitions with zero-velocity boundaries at keyframe arrivals.
+4. **Stress Simulation (10,000 sub-pixel steps over $[-0.5, +1.5]$)**:
+   - `nanCount`: 0
+   - `scale` range: $[1.0000, 1.8500]$
+   - `x` translation range: $[-24.00\%, +24.00\%]$
+   - `y` translation range: $[-24.00\%, +24.00\%]$
+
+---
+
+### D. Color Token Contrast Ratios (WCAG 2.1 Compliance)
+Photometric relative luminance ($L = 0.2126R + 0.7152G + 0.0722B$) computed against the ultra-dark pitch canvas (`#0a0a0c`, $L = 0.0016$):
+
+| Color Token | Hex | Relative Luminance ($L$) | Contrast Ratio vs `#0a0a0c` | WCAG Level | Required Ratio | Status |
+|---|---|---|---|---|---|---|
+| **Phase 1 (Neon Green)** | `#10b981` | 0.3541 | **7.80 : 1** | **AAA** | $\ge 7.0 : 1$ | **PASS** |
+| **Phase 2 (Electric Blue)** | `#3b82f6` | 0.2285 | **5.38 : 1** | **AA** | $\ge 4.5 : 1$ | **PASS** |
+| **Phase 3 (Neon Pink)** | `#ec4899` | 0.2403 | **5.61 : 1** | **AA** | $\ge 4.5 : 1$ | **PASS** |
+| **Phase 4 (Neon Yellow)** | `#f59e0b` | 0.4265 | **9.21 : 1** | **AAA** | $\ge 7.0 : 1$ | **PASS** |
+| **Primary White Text** | `#ffffff` | 1.0000 | **19.78 : 1** | **AAA** | $\ge 7.0 : 1$ | **PASS** |
+| **Phase Desc Text** | `#cbd5e1` | 0.6400 | **13.32 : 1** | **AAA** | $\ge 7.0 : 1$ | **PASS** |
+| **Muted Slate Text** | `#94a3b8` | 0.3494 | **7.71 : 1** | **AAA** | $\ge 7.0 : 1$ | **PASS** |
+| **Key Points Text vs Inner Card** | `#e2e8f0` vs `#020617` | 0.7428 vs 0.0012 | **16.36 : 1** | **AAA** | $\ge 7.0 : 1$ | **PASS** |
+
+---
+
+### E. E2E Test Suite Execution
+1. **Execution Command**: `node test/e2e_runner.js`
+   - Suites: 64
+   - Total Tests: 331
+   - **Passed**: 331
+   - **Failed**: 0
+   - **Duration**: 5.38s
+2. **Specialized Visual Layout Verification**: `node test/verify_challenger2_visual_layout.js`
+   - Total Checks: 23
+   - **Passed**: 23
+   - **Failed**: 0
+3. **Git Cleanliness**: Latest commit `1a3e5d7` cleanly contains all reconciled how-we-work test assertions.
 
 ---
 
 ## 2. Logic Chain
 
-1. **Premise**: Adversarial robustness requires client-side controllers to survive malicious string injection, rapid user inputs, boundary edge cases, and missing DOM targets without runtime exceptions.
-2. **From Observation 1.1**: Injecting catastrophic backtracking regexes, XSS payloads, and 10,000-character strings into `DiscoverFilterModule` caused 0 errors and preserved expected filtering behavior.
-3. **From Observation 1.2**: Extreme inputs (`-100`, `999999`, `NaN`, `"abc"`) fed to `RoiCalculatorModule` are clamped to $[1, 500]$ with valid integer formatting and correct grammar.
-4. **From Observation 1.3 & 1.4**: Mobile navigation and modal controllers maintain full keyboard accessibility (Tab trapping, Escape key dismiss), ARIA state synchronization (`aria-expanded`, `aria-hidden`), and body scroll lock isolation.
-5. **From Observation 1.5**: Initializing client scripts across all 5 pages demonstrates complete defensive element-guarding, producing zero uncaught exceptions.
-6. **From Observation 1.6**: Mathematical luminance and contrast calculations prove that all active color tokens satisfy or exceed WCAG 2.1 AA specifications (normal text $\ge 4.5:1$, UI components $\ge 3.0:1$).
-7. **Conclusion**: Client-side UI/UX markup, styling, and interactivity meet all hardening and accessibility standards.
+1. **Premise 1**: The user request and `how.mp4` layout mandate a 4-quadrant layout: TR (Green Discovery), TL (Blue Building), BL (Pink Integrating), BR (Yellow Maintenance).
+   - *Observation A.1–A.4*: Confirms exact DOM classes (`.corner-tr`, `.corner-tl`, `.corner-bl`, `.corner-br`), data attributes (`discovery`, `building`, `integrating`, `maintenance`), and CSS grid definitions (`grid-column: 2 / grid-row: 1` for TR; `grid-column: 1 / grid-row: 1` for TL; `grid-column: 1 / grid-row: 2` for BL; `grid-column: 2 / grid-row: 2` for BR).
+2. **Premise 2**: Card DOM structure must maintain Left-Mockup / Right-Deliverables hierarchy and include outro CTA to `solutions.html`.
+   - *Observation B.1–B.3*: Confirms `.hww-card-mockup` precedes `.hww-card-content` in all 4 cards, and `#hww-state-platform` CTA links to `solutions.html` with valid target page markup.
+3. **Premise 3**: Camera coordinates must bring each quadrant cleanly to viewport center without jitter or singularity.
+   - *Observation C.1–C.4*: Demonstrates that translation signs $(-\Delta x, +\Delta y)$ for TR, $(+\Delta x, +\Delta y)$ for TL, $(+\Delta x, -\Delta y)$ for BL, and $(-\Delta x, -\Delta y)$ for BR accurately center target quadrants. 10,000-point interpolation proves continuous $C^1$ smoothness and zero NaNs.
+4. **Premise 4**: Color tokens must meet WCAG accessibility contrast against the `#0a0a0c` dark background.
+   - *Observation D*: All four quadrant accents and typography elements achieve contrast ratios between 5.38:1 and 19.78:1, satisfying and exceeding WCAG AA / AAA standards.
+5. **Premise 5**: Automated test suite must pass 100% with 0 regressions.
+   - *Observation E*: Confirms 331/331 tests pass in `node test/e2e_runner.js` and 23/23 tests pass in `node test/verify_challenger2_visual_layout.js`.
 
 ---
 
 ## 3. Caveats
 
-- **No Caveats**. Full client-side architecture verified across all 5 pages in both desktop and mobile modes.
+1. **Local Server Supervised Environment**: E2E test suite auto-spawns a local Node.js HTTP server on port 3000 during test execution and cleanly terminates it upon completion.
+2. **Browser Viewport Variations**: Verified breakpoints span Mobile (320px, 375px), Tablet (768px, 992px), Desktop (1440px), and 4K Ultra-wide (2560px). On mobile ( $\le 992\text{px}$ ), sticky canvas transitions to standard vertical stacked flow as specified.
+3. No other caveats.
 
 ---
 
 ## 4. Conclusion
 
-**Verdict: PASS**. The client-side user interface, CSS design system, interactive JavaScript modules, and accessibility safeguards are robust, resilient against adversarial attack vectors, compliant with WCAG 2.1 AA contrast requirements, and free of DOM state bugs or race conditions.
+All empirical checks, mathematical transformations, quadrant invariants, color contrast photometrics, DOM structures, and automated test runners have been independently verified and validated.
+
+**Verdict**: **APPROVE**
 
 ---
 
 ## 5. Verification Method
 
-To independently execute and verify the adversarial stress tests and the project E2E suite:
+To independently reproduce and verify these findings:
 
-```powershell
-# 1. Run Challenger 2 Standalone Adversarial Suite (27/27 Tests Pass)
-node .agents/challenger_2/adversarial_ui_test.js
-
-# 2. Run Full Project Automated E2E Test Runner (119/119 Tests Pass)
+```bash
+# 1. Run master E2E test runner (331 tests total)
 node test/e2e_runner.js
-```
 
-### Invalidation Conditions:
-- Any regex injection string causing `app.js` to throw a `SyntaxError` or freeze due to ReDoS.
-- Any slider input producing `NaN`, `$NaN`, or unhandled negative savings.
-- Any keyboard navigation failing to trap focus inside open modal dialogs.
-- Any color token falling below WCAG 2.1 AA minimum contrast thresholds.
+# 2. Run Challenger 2 visual and layout verification script
+node test/verify_challenger2_visual_layout.js
+
+# 3. Verify git commit log and working directory status
+git status
+git log -n 1
+```

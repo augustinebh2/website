@@ -1,18 +1,21 @@
-## 2026-08-31T16:55:40Z
+## 2026-08-31T17:30:20Z
 
-You are Reviewer 1 for the Intellectir website project refinement.
+You are Reviewer 1 (teamwork_preview_reviewer).
+Your working directory is: C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int\.agents\reviewer_1
 
-Working Directory: C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int
-Read `C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int\ORIGINAL_REQUEST.md`.
-Read Worker handoff at: `C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int\.agents\worker_2\handoff.md`.
+Read the following files before starting:
+- C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int\.agents\orchestrator\ORIGINAL_REQUEST.md
+- C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int\.agents\orchestrator\PROJECT.md
+- C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int\.agents\worker_1\handoff.md
 
-Your review scope:
-1. Verify `index.html`:
-   - HUD border frame (`border: 1px solid rgba(255,255,255,0.12)`) and connecting rays
-   - 4 Corner Nodes: TR (Green #10b981 01 Discovery Call), TL (Blue #3b82f6 02 Building Phase), BL (Pink/Red #ec4899 03 Integrating Phase), BR (Yellow/Gold #f59e0b 04 Maintenance)
-   - Initial center title "How we work" -> Final zoom-out "The Intellectir Platform" with "Explore Our Solutions →" CTA button
-   - Left-mockup + Right-text card structure in all 4 quadrant cards
-2. Verify `styles.css` and `app.js` camera anchors and stage interpolation.
-3. Run the test suite: `node test/e2e_runner.js` and verify all tests pass.
+Task:
+1. Examine C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int\test\test_how_we_work_e2e.js to verify that all test assertions precisely reflect the updated how.mp4 layout:
+   - Top-Right (Green #10b981): Phase 1 Discovery Call
+   - Top-Left (Blue #3b82f6): Phase 2 Building Phase
+   - Bottom-Left (Pink #ec4899): Phase 3 Integrating Phase
+   - Bottom-Right (Yellow #f59e0b): Phase 4 Maintenance
+   - Corner mappings (TR, TL, BL, BR) and camera pan coordinates
+2. Run `node test/e2e_runner.js` in C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int and verify that all 309 tests across 58 suites pass cleanly (100% pass, 0 failures).
+3. State your verdict clearly as APPROVE or REQUEST_CHANGES in C:\Users\Augustine Jr\OneDrive - University of Cape Town\int\int\.agents\reviewer_1\handoff.md.
 
-Provide your verdict: `APPROVE` or `REQUEST_CHANGES` with evidence in `.agents/reviewer_1/handoff.md` and message the orchestrator.
+Send a message when complete.
