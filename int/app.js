@@ -1428,25 +1428,22 @@
             computeCameraTransform,
             computeTargetProgress
         };
-    })();
-
-    /* ==========================================================================
-       10. DISCOVER ROBOT HERO MODULE (Mouse-tracking Robot & Glow Effect)
+    })();    /* ==========================================================================
+       10. DISCOVER 3D ROBOT HERO MODULE (3D Mouse-tracking & Glow Effect)
        ========================================================================== */
     const RobotHeroModule = (function () {
-        let heroSection, glowEl, upperBody, robotHead, robotSvg;
+        let heroSection, glowEl, robotContainer, splineViewer;
         let mouseX = 0, mouseY = 0;
         let glowX = 0, glowY = 0;
-        let currentRotate = 0, currentTiltX = 0, currentTiltY = 0;
+        let targetTiltX = 0, targetTiltY = 0;
+        let currentTiltX = 0, currentTiltY = 0;
         let animFrameId = null;
         let isInitialized = false;
 
-        // Constraints
-        const UPPER_BODY_MAX_ROTATE = 6;   // max degrees rotation for torso+arms
-        const UPPER_BODY_MAX_SHIFT_X = 12; // max px horizontal shift
-        const UPPER_BODY_MAX_SHIFT_Y = 6;  // max px vertical shift
-        const HEAD_EXTRA_ROTATE = 5;       // head rotates more than body
-        const LERP_SPEED = 0.06;           // smoothing factor
+        // 3D Tilt Constraints
+        const MAX_TILT_Y = 18; // Degrees left/right (yaw)
+        const MAX_TILT_X = 14; // Degrees up/down (pitch)
+        const LERP_SPEED = 0.08;
 
         function lerp(a, b, t) {
             return a + (b - a) * t;
@@ -1457,66 +1454,50 @@
         }
 
         function onMouseMove(e) {
+            if (!heroSection) return;
             const rect = heroSection.getBoundingClientRect();
             mouseX = e.clientX - rect.left;
             mouseY = e.clientY - rect.top;
         }
 
         function onMouseLeave() {
-            // Smoothly return to center
+            if (!heroSection) return;
             mouseX = heroSection.offsetWidth / 2;
             mouseY = heroSection.offsetHeight / 2;
         }
 
         function animate() {
-            // --- Glow follow ---
-            glowX = lerp(glowX, mouseX, 0.08);
-            glowY = lerp(glowY, mouseY, 0.08);
-            glowEl.style.left = glowX + 'px';
-            glowEl.style.top = glowY + 'px';
-
-            // --- Calculate direction from robot center to mouse ---
-            const robotRect = robotSvg.getBoundingClientRect();
-            const heroRect = heroSection.getBoundingClientRect();
-            const robotCenterX = robotRect.left + robotRect.width / 2 - heroRect.left;
-            const robotCenterY = robotRect.top + robotRect.height * 0.35 - heroRect.top;
-
-            const dx = mouseX - robotCenterX;
-            const dy = mouseY - robotCenterY;
-            const heroW = heroSection.offsetWidth || 1;
-            const heroH = heroSection.offsetHeight || 1;
-
-            // Normalize to -1..1 range based on hero section size
-            const normalizedX = clamp(dx / (heroW * 0.5), -1, 1);
-            const normalizedY = clamp(dy / (heroH * 0.5), -1, 1);
-
-            // Target values
-            const targetRotate = normalizedX * UPPER_BODY_MAX_ROTATE;
-            const targetShiftX = normalizedX * UPPER_BODY_MAX_SHIFT_X;
-            const targetShiftY = normalizedY * UPPER_BODY_MAX_SHIFT_Y;
-
-            // Smooth lerp toward target
-            currentRotate = lerp(currentRotate, targetRotate, LERP_SPEED);
-            currentTiltX = lerp(currentTiltX, targetShiftX, LERP_SPEED);
-            currentTiltY = lerp(currentTiltY, targetShiftY, LERP_SPEED);
-
-            // --- Apply upper body transform (torso + arms + head) ---
-            if (upperBody) {
-                upperBody.style.transform =
-                    'translateX(' + currentTiltX + 'px) ' +
-                    'translateY(' + currentTiltY + 'px) ' +
-                    'rotate(' + currentRotate + 'deg)';
-                upperBody.style.transformOrigin = '250px 305px'; // pivot at waist
+            // Smoothly move background lighting glow
+            glowX = lerp(glowX, mouseX, LERP_SPEED);
+            glowY = lerp(glowY, mouseY, LERP_SPEED);
+            if (glowEl) {
+                glowEl.style.left = glowX + 'px';
+                glowEl.style.top = glowY + 'px';
             }
 
-            // --- Head rotates a bit extra ---
-            if (robotHead) {
-                const headExtraRotate = normalizedX * HEAD_EXTRA_ROTATE;
-                const headTiltY = normalizedY * 3;
-                robotHead.style.transform =
-                    'rotate(' + headExtraRotate + 'deg) ' +
-                    'translateY(' + headTiltY + 'px)';
-                robotHead.style.transformOrigin = '250px 72px'; // pivot at head center
+            // Calculate 3D viewport angles relative to center of hero section
+            if (heroSection) {
+                const heroW = heroSection.offsetWidth || 1;
+                const heroH = heroSection.offsetHeight || 1;
+
+                const normX = clamp((mouseX - heroW / 2) / (heroW / 2), -1, 1);
+                const normY = clamp((mouseY - heroH / 2) / (heroH / 2), -1, 1);
+
+                targetTiltY = normX * MAX_TILT_Y;   // Yaw rotation
+                targetTiltX = -normY * MAX_TILT_X;  // Pitch rotation
+            }
+
+            currentTiltX = lerp(currentTiltX, targetTiltX, LERP_SPEED);
+            currentTiltY = lerp(currentTiltY, targetTiltY, LERP_SPEED);
+
+            // Apply 3D perspective rotation matrix to robot container
+            const targetEl = splineViewer || robotContainer;
+            if (targetEl && targetEl.style) {
+                targetEl.style.transform =
+                    'perspective(1200px) ' +
+                    'rotateX(' + currentTiltX.toFixed(2) + 'deg) ' +
+                    'rotateY(' + currentTiltY.toFixed(2) + 'deg) ' +
+                    'translateZ(20px)';
             }
 
             animFrameId = requestAnimationFrame(animate);
@@ -1527,13 +1508,9 @@
             if (!heroSection) return;
 
             glowEl = document.getElementById('discover-hero-glow');
-            upperBody = document.getElementById('robot-upper-body');
-            robotHead = document.getElementById('robot-head');
-            robotSvg = document.getElementById('robot-svg');
+            robotContainer = document.getElementById('discover-hero-robot');
+            splineViewer = document.getElementById('spline-robot-viewer');
 
-            if (!glowEl || !robotSvg) return;
-
-            // Set initial position to center
             mouseX = heroSection.offsetWidth / 2;
             mouseY = heroSection.offsetHeight / 2;
             glowX = mouseX;
@@ -1560,42 +1537,6 @@
     })();
 
     /* ==========================================================================
-       10B. VIDEO AUTOPLAY INTERSECTION OBSERVER MODULE
-       ========================================================================== */
-    const VideoAutoplayModule = (function () {
-        let observer = null;
-
-        function init() {
-            const videoEls = document.querySelectorAll('.discover-video, #discover-robot-video, .awareness-video');
-            if (!videoEls.length) return;
-
-            if ('IntersectionObserver' in window) {
-                observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        const video = entry.target;
-                        if (entry.isIntersecting) {
-                            const playPromise = video.play();
-                            if (playPromise !== undefined) {
-                                playPromise.catch(() => {
-                                    /* Autoplay policy fallbacks */
-                                });
-                            }
-                        } else {
-                            if (!video.paused) {
-                                video.pause();
-                            }
-                        }
-                    });
-                }, { threshold: 0.25 });
-
-                videoEls.forEach(v => observer.observe(v));
-            }
-        }
-
-        return { init };
-    })();
-
-    /* ==========================================================================
        11. INTELLECTIR NAMESPACE & LIFECYCLE INITIALIZER
        ========================================================================== */
     window.Intellectir = {
@@ -1609,7 +1550,6 @@
         InteractiveComponentsModule,
         HowWeWorkModule,
         RobotHeroModule,
-        VideoAutoplayModule,
         init: function () {
             ToastModule.init();
             HeaderNavModule.init();
@@ -1621,7 +1561,6 @@
             InteractiveComponentsModule.init();
             HowWeWorkModule.init();
             RobotHeroModule.init();
-            VideoAutoplayModule.init();
         }
     };
 

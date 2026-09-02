@@ -6719,83 +6719,27 @@ body.dark-theme .ind-agent-tag {
 
 /* ---- Robot Side ---- */
 .discover-hero-robot {
-    flex: 0 0 auto;
-    width: 340px;
-    height: auto;
+    flex: 1 1 500px;
+    width: 100%;
+    max-width: 580px;
+    height: 540px;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    perspective: 1200px;
+    transform-style: preserve-3d;
 }
 
-.robot-svg {
+#spline-robot-viewer,
+.discover-hero-robot spline-viewer {
     width: 100%;
-    height: auto;
-    max-height: 85vh;
+    height: 100%;
+    border: none;
+    background: transparent;
+    border-radius: 20px;
+    pointer-events: auto;
     transition: transform 0.15s ease-out;
-}
-
-/* Robot eye glow animation */
-.robot-eye {
-    animation: eyePulse 4s ease-in-out infinite;
-}
-
-@keyframes eyePulse {
-
-    0%,
-    100% {
-        opacity: 0.85;
-    }
-
-    50% {
-        opacity: 1;
-    }
-}
-
-/* Robot pupils — moved via JS */
-.robot-pupil {
-    transition: cx 0.08s ease-out, cy 0.08s ease-out;
-}
-
-/* Subtle idle arm float */
-.robot-arm-left {
-    animation: armFloatLeft 5s ease-in-out infinite;
-    transform-origin: 122px 220px;
-}
-
-.robot-arm-right {
-    animation: armFloatRight 5s ease-in-out infinite;
-    transform-origin: 278px 220px;
-}
-
-@keyframes armFloatLeft {
-
-    0%,
-    100% {
-        transform: rotate(0deg);
-    }
-
-    50% {
-        transform: rotate(-2deg);
-    }
-}
-
-@keyframes armFloatRight {
-
-    0%,
-    100% {
-        transform: rotate(0deg);
-    }
-
-    50% {
-        transform: rotate(2deg);
-    }
-}
-
-/* Robot head group — rotated via JS */
-#robot-head {
-    transform-origin: 200px 112px;
-    transition: transform 0.12s ease-out;
 }
 
 /* ---- Responsive ---- */
@@ -6812,7 +6756,9 @@ body.dark-theme .ind-agent-tag {
     }
 
     .discover-hero-robot {
-        width: 260px;
+        width: 100%;
+        max-width: 480px;
+        height: 420px;
         order: 2;
     }
 
@@ -6828,7 +6774,8 @@ body.dark-theme .ind-agent-tag {
     }
 
     .discover-hero-robot {
-        width: 200px;
+        width: 100%;
+        height: 340px;
     }
 
     .discover-hero-glow {
@@ -6863,146 +6810,4 @@ body.dark-theme .ind-agent-tag {
 .watermark-flex-container {
     position: relative !important;
     z-index: 1 !important;
-}
-
-/* ==========================================================================
-   DISCOVER PAGE ROBOT VIDEO SHOWCASE SECTION
-   ========================================================================== */
-
-.discover-video-section {
-    position: relative;
-    width: 100%;
-    background-color: #050508;
-    padding: 3rem 1.5rem;
-    overflow: hidden;
-}
-
-.discover-video-container {
-    position: relative;
-    max-width: 1320px;
-    margin: 0 auto;
-    border-radius: 24px;
-    overflow: hidden;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), 0 0 40px rgba(37, 99, 235, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    aspect-ratio: 16 / 9;
-    max-height: 650px;
-    background: #000000;
-}
-
-.discover-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.discover-video-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        180deg,
-        rgba(5, 5, 8, 0.4) 0%,
-        rgba(5, 5, 8, 0.2) 40%,
-        rgba(5, 5, 8, 0.75) 100%
-    );
-    pointer-events: none;
-}
-
-.discover-video-glass-card {
-    position: absolute;
-    bottom: 2.5rem;
-    left: 2.5rem;
-    max-width: 540px;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 18px;
-    padding: 2rem;
-    color: #ffffff;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-    z-index: 10;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.discover-video-glass-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(37, 99, 235, 0.4);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 25px rgba(37, 99, 235, 0.2);
-}
-
-.discover-video-badge {
-    background: rgba(37, 99, 235, 0.15) !important;
-    color: #60a5fa !important;
-    border: 1px solid rgba(59, 130, 246, 0.3) !important;
-    margin-bottom: 1rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    padding: 0.35rem 0.85rem;
-    border-radius: 9999px;
-}
-
-.discover-video-title {
-    font-family: 'Outfit', sans-serif;
-    font-size: clamp(1.4rem, 2.5vw, 1.85rem);
-    font-weight: 700;
-    line-height: 1.25;
-    color: #ffffff;
-    margin-bottom: 0.75rem;
-    letter-spacing: -0.02em;
-}
-
-.discover-video-desc {
-    font-size: clamp(0.875rem, 1.2vw, 1rem);
-    line-height: 1.6;
-    color: #cbd5e1;
-    margin: 0;
-}
-
-@media (max-width: 768px) {
-    .discover-video-section {
-        padding: 2rem 1rem;
-    }
-
-    .discover-video-container {
-        aspect-ratio: 4 / 3;
-        border-radius: 16px;
-        max-height: 480px;
-    }
-
-    .discover-video-glass-card {
-        bottom: 1.25rem;
-        left: 1.25rem;
-        right: 1.25rem;
-        max-width: calc(100% - 2.5rem);
-        padding: 1.25rem;
-    }
-
-    .discover-video-title {
-        font-size: 1.25rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .discover-video-container {
-        aspect-ratio: 1 / 1;
-        max-height: 380px;
-    }
-
-    .discover-video-glass-card {
-        bottom: 0.75rem;
-        left: 0.75rem;
-        right: 0.75rem;
-        max-width: calc(100% - 1.5rem);
-        padding: 1rem;
-    }
-
-    .discover-video-desc {
-        font-size: 0.825rem;
-    }
 }
