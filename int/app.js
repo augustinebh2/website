@@ -1431,70 +1431,118 @@
     })();
 
     /* ==========================================================================
-       10. DISCOVER ROBOT HERO MODULE (Mouse-tracking Robot & Glow Effect)
+       10. DISCOVER ROBOT HERO MODULE (Mouse-tracking 3D Robot & Spotlight Orb)
        ========================================================================== */
     const RobotHeroModule = (function () {
-        let heroSection, glowEl, robotHead, pupilLeft, pupilRight, robotSvg;
+        let heroSection, glowEl, upperBody, robotHead, leftArm, rightArm, robotSvg;
         let mouseX = 0, mouseY = 0;
         let glowX = 0, glowY = 0;
+        let currentRotate = 0, currentTiltX = 0, currentTiltY = 0;
+        let currentHeadRotate = 0, currentHeadTiltY = 0;
+        let currentLeftArmAngle = 0, currentRightArmAngle = 0;
         let animFrameId = null;
         let isInitialized = false;
 
-        // Pupil default positions (SVG coords)
-        const PUPIL_LEFT_CX = 176, PUPIL_LEFT_CY = 108;
-        const PUPIL_RIGHT_CX = 224, PUPIL_RIGHT_CY = 108;
-        const PUPIL_RANGE = 6; // max px offset from center
-        const HEAD_MAX_ROTATE = 8; // max degrees of head rotation
+        // Dynamic motion parameters
+        const UPPER_BODY_MAX_ROTATE = 8.5;  // max degrees rotation for torso+arms
+        const UPPER_BODY_MAX_SHIFT_X = 15;  // max px horizontal shift
+        const UPPER_BODY_MAX_SHIFT_Y = 10;  // max px vertical shift
+        const HEAD_EXTRA_ROTATE = 7;        // head rotates extra towards cursor
+        const ARM_MAX_WANDER = 9;           // wandering arms dynamic reaction degrees
+        const LERP_SPEED = 0.08;            // smoothing factor
 
         function lerp(a, b, t) {
             return a + (b - a) * t;
         }
 
+        function clamp(val, min, max) {
+            return Math.max(min, Math.min(max, val));
+        }
+
         function onMouseMove(e) {
+            if (!heroSection) return;
             const rect = heroSection.getBoundingClientRect();
             mouseX = e.clientX - rect.left;
             mouseY = e.clientY - rect.top;
         }
 
         function onMouseLeave() {
-            // Smoothly return to center
-            mouseX = heroSection.offsetWidth / 2;
-            mouseY = heroSection.offsetHeight / 2;
+            if (!heroSection) return;
+            // Smoothly return to center resting pose
+            mouseX = heroSection.offsetWidth * 0.45;
+            mouseY = heroSection.offsetHeight * 0.35;
         }
 
         function animate() {
-            // Smooth glow follow with lerp
-            glowX = lerp(glowX, mouseX, 0.08);
-            glowY = lerp(glowY, mouseY, 0.08);
+            if (!heroSection || !glowEl) return;
+
+            // --- 1. Luminous Spotlight Orb Follow (Smooth Lerp) ---
+            glowX = lerp(glowX, mouseX, 0.12);
+            glowY = lerp(glowY, mouseY, 0.12);
             glowEl.style.left = glowX + 'px';
             glowEl.style.top = glowY + 'px';
 
-            // Calculate robot center in page coords
-            const robotRect = robotSvg.getBoundingClientRect();
-            const heroRect = heroSection.getBoundingClientRect();
-            const robotCenterX = robotRect.left + robotRect.width / 2 - heroRect.left;
-            const robotCenterY = robotRect.top + robotRect.height * 0.16 - heroRect.top; // approximate head center
+            // --- 2. Calculate Angle & Distance from Robot Center to Mouse ---
+            if (robotSvg) {
+                const robotRect = robotSvg.getBoundingClientRect();
+                const heroRect = heroSection.getBoundingClientRect();
+                const robotCenterX = (robotRect.left + robotRect.width / 2) - heroRect.left;
+                const robotCenterY = (robotRect.top + robotRect.height * 0.35) - heroRect.top;
 
-            // Direction from robot head to mouse
-            const dx = mouseX - robotCenterX;
-            const dy = mouseY - robotCenterY;
-            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-            const normX = dx / dist;
-            const normY = dy / dist;
+                const dx = mouseX - robotCenterX;
+                const dy = mouseY - robotCenterY;
+                const heroW = heroSection.offsetWidth || 1;
+                const heroH = heroSection.offsetHeight || 1;
 
-            // Move pupils
-            if (pupilLeft && pupilRight) {
-                pupilLeft.setAttribute('cx', PUPIL_LEFT_CX + normX * PUPIL_RANGE);
-                pupilLeft.setAttribute('cy', PUPIL_LEFT_CY + normY * PUPIL_RANGE * 0.6);
-                pupilRight.setAttribute('cx', PUPIL_RIGHT_CX + normX * PUPIL_RANGE);
-                pupilRight.setAttribute('cy', PUPIL_RIGHT_CY + normY * PUPIL_RANGE * 0.6);
-            }
+                // Normalized coordinate offsets (-1 to +1)
+                const normX = clamp(dx / (heroW * 0.45), -1, 1);
+                const normY = clamp(dy / (heroH * 0.45), -1, 1);
 
-            // Rotate head slightly toward mouse
-            if (robotHead) {
-                const headAngle = normX * HEAD_MAX_ROTATE;
-                const headTiltY = normY * 3;
-                robotHead.style.transform = 'rotate(' + headAngle + 'deg) translateY(' + headTiltY + 'px)';
+                // Target rotational and translational transforms
+                const targetRotate = normX * UPPER_BODY_MAX_ROTATE;
+                const targetShiftX = normX * UPPER_BODY_MAX_SHIFT_X;
+                const targetShiftY = normY * UPPER_BODY_MAX_SHIFT_Y;
+
+                const targetHeadRotate = normX * HEAD_EXTRA_ROTATE;
+                const targetHeadTiltY = normY * 4.5;
+
+                // Wandering arms react dynamically to cursor
+                const targetLeftArm = (-normX * ARM_MAX_WANDER) + (normY * 4);
+                const targetRightArm = (-normX * ARM_MAX_WANDER) - (normY * 4);
+
+                // Smooth low-pass filter interpolation
+                currentRotate = lerp(currentRotate, targetRotate, LERP_SPEED);
+                currentTiltX = lerp(currentTiltX, targetShiftX, LERP_SPEED);
+                currentTiltY = lerp(currentTiltY, targetShiftY, LERP_SPEED);
+
+                currentHeadRotate = lerp(currentHeadRotate, targetHeadRotate, LERP_SPEED * 1.2);
+                currentHeadTiltY = lerp(currentHeadTiltY, targetHeadTiltY, LERP_SPEED * 1.2);
+
+                currentLeftArmAngle = lerp(currentLeftArmAngle, targetLeftArm, LERP_SPEED);
+                currentRightArmAngle = lerp(currentRightArmAngle, targetRightArm, LERP_SPEED);
+
+                // --- 3. Apply Upper Body Transforms ---
+                if (upperBody) {
+                    upperBody.style.transform =
+                        'translateX(' + currentTiltX.toFixed(2) + 'px) ' +
+                        'translateY(' + currentTiltY.toFixed(2) + 'px) ' +
+                        'rotate(' + currentRotate.toFixed(2) + 'deg)';
+                }
+
+                // --- 4. Apply Head Extra Rotation ---
+                if (robotHead) {
+                    robotHead.style.transform =
+                        'rotate(' + currentHeadRotate.toFixed(2) + 'deg) ' +
+                        'translateY(' + currentHeadTiltY.toFixed(2) + 'px)';
+                }
+
+                // --- 5. Apply Wandering Arms Movement ---
+                if (leftArm) {
+                    leftArm.style.transform = 'rotate(' + currentLeftArmAngle.toFixed(2) + 'deg)';
+                }
+                if (rightArm) {
+                    rightArm.style.transform = 'rotate(' + currentRightArmAngle.toFixed(2) + 'deg)';
+                }
             }
 
             animFrameId = requestAnimationFrame(animate);
@@ -1505,21 +1553,22 @@
             if (!heroSection) return;
 
             glowEl = document.getElementById('discover-hero-glow');
+            upperBody = document.getElementById('robot-upper-body');
             robotHead = document.getElementById('robot-head');
-            pupilLeft = document.getElementById('robot-pupil-left');
-            pupilRight = document.getElementById('robot-pupil-right');
+            leftArm = document.getElementById('robot-arm-left');
+            rightArm = document.getElementById('robot-arm-right');
             robotSvg = document.getElementById('robot-svg');
 
             if (!glowEl || !robotSvg) return;
 
-            // Set initial glow position to center
-            mouseX = heroSection.offsetWidth / 2;
-            mouseY = heroSection.offsetHeight / 2;
+            // Set initial position towards top-left / center (matches reference composition)
+            mouseX = heroSection.offsetWidth * 0.25;
+            mouseY = heroSection.offsetHeight * 0.25;
             glowX = mouseX;
             glowY = mouseY;
 
-            heroSection.addEventListener('mousemove', onMouseMove);
-            heroSection.addEventListener('mouseleave', onMouseLeave);
+            heroSection.addEventListener('mousemove', onMouseMove, { passive: true });
+            heroSection.addEventListener('mouseleave', onMouseLeave, { passive: true });
 
             animFrameId = requestAnimationFrame(animate);
             isInitialized = true;

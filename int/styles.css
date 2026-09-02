@@ -5986,7 +5986,7 @@ body.dark-theme .ind-agent-tag {
 }
 
 /* ==========================================================================
-   DISCOVER PAGE — ROBOT HERO SECTION
+   DISCOVER PAGE — 3D ROBOT HERO SECTION
    ========================================================================== */
 
 .discover-robot-hero {
@@ -5997,57 +5997,55 @@ body.dark-theme .ind-agent-tag {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    padding: 7rem 2rem 4rem;
-    cursor: none;
+    padding: 8rem 2rem 5rem;
+    cursor: default;
 }
 
-/* White cloudy mouse-following glow */
+/* Mouse-following bright white glowing spotlight orb (floats directly ON TOP of text and robot) */
 .discover-hero-glow {
     position: absolute;
     top: 0;
     left: 0;
-    width: 450px;
-    height: 450px;
+    width: 280px;
+    height: 280px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 30%, rgba(255, 255, 255, 0.02) 60%, transparent 80%);
-    filter: blur(60px);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.65) 18%, rgba(255, 255, 255, 0.22) 42%, rgba(255, 255, 255, 0.05) 68%, transparent 82%);
+    filter: blur(20px);
     pointer-events: none;
-    z-index: 2;
+    z-index: 10; /* Crucial: floats on top of text and interface */
     transform: translate(-50%, -50%);
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    will-change: transform;
-}
-
-.discover-robot-hero:hover .discover-hero-glow {
     opacity: 1;
+    mix-blend-mode: screen;
+    will-change: left, top, transform;
+    transition: opacity 0.4s ease;
 }
 
 /* Inner layout: title left, robot right */
 .discover-hero-inner {
     position: relative;
-    z-index: 3;
+    z-index: 2;
     display: flex;
     align-items: center;
     justify-content: space-between;
     max-width: var(--container-width);
     width: 100%;
-    gap: 3rem;
+    gap: 4rem;
 }
 
 /* ---- Title Side ---- */
 .discover-hero-text {
-    flex: 1;
-    max-width: 580px;
+    flex: 1 1 540px;
+    max-width: 620px;
+    user-select: none;
 }
 
 .discover-hero-title {
     font-family: var(--font-heading);
-    font-size: clamp(3rem, 6.5vw, 5.5rem);
+    font-size: clamp(3.2rem, 6.5vw, 5.6rem);
     font-weight: 800;
     color: #ffffff;
-    line-height: 1.05;
-    letter-spacing: -0.03em;
+    line-height: 1.04;
+    letter-spacing: -0.035em;
     margin: 0;
     padding: 0;
 }
@@ -6057,24 +6055,34 @@ body.dark-theme .ind-agent-tag {
     color: rgba(255, 255, 255, 0.65);
 }
 
-/* Each line animates in */
+.discover-hero-subtitle {
+    font-family: var(--font-sans);
+    font-size: clamp(1.05rem, 1.8vw, 1.22rem);
+    color: rgba(255, 255, 255, 0.68);
+    line-height: 1.62;
+    margin-top: 1.75rem;
+    max-width: 500px;
+    font-weight: 400;
+}
+
+/* Staggered line reveal */
 .title-line {
     display: block;
     overflow: hidden;
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(35px);
     animation: titleLineReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.title-line-1 { animation-delay: 0.15s; }
-.title-line-2 { animation-delay: 0.35s; }
-.title-line-3 { animation-delay: 0.55s; }
-.title-line-4 { animation-delay: 0.75s; }
+.title-line-1 { animation-delay: 0.12s; }
+.title-line-2 { animation-delay: 0.28s; }
+.title-line-3 { animation-delay: 0.44s; }
+.title-line-4 { animation-delay: 0.60s; }
 
 @keyframes titleLineReveal {
     0% {
         opacity: 0;
-        transform: translateY(40px);
+        transform: translateY(35px);
     }
     100% {
         opacity: 1;
@@ -6085,74 +6093,70 @@ body.dark-theme .ind-agent-tag {
 /* ---- Robot Side ---- */
 .discover-hero-robot {
     flex: 0 0 auto;
-    width: 340px;
+    width: clamp(360px, 42vw, 540px);
     height: auto;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    user-select: none;
+    pointer-events: none;
 }
 
 .robot-svg {
     width: 100%;
     height: auto;
     max-height: 85vh;
-    transition: transform 0.15s ease-out;
+    overflow: visible;
 }
 
-/* Robot eye glow animation */
-.robot-eye {
-    animation: eyePulse 4s ease-in-out infinite;
+/* Upper body transform pivot */
+#robot-upper-body {
+    transform-origin: 270px 326px;
+    will-change: transform;
 }
 
-@keyframes eyePulse {
-    0%, 100% { opacity: 0.85; }
-    50% { opacity: 1; }
-}
-
-/* Robot pupils — moved via JS */
-.robot-pupil {
-    transition: cx 0.08s ease-out, cy 0.08s ease-out;
-}
-
-/* Subtle idle arm float */
-.robot-arm-left {
-    animation: armFloatLeft 5s ease-in-out infinite;
-    transform-origin: 122px 220px;
-}
-.robot-arm-right {
-    animation: armFloatRight 5s ease-in-out infinite;
-    transform-origin: 278px 220px;
-}
-
-@keyframes armFloatLeft {
-    0%, 100% { transform: rotate(0deg); }
-    50% { transform: rotate(-2deg); }
-}
-@keyframes armFloatRight {
-    0%, 100% { transform: rotate(0deg); }
-    50% { transform: rotate(2deg); }
-}
-
-/* Robot head group — rotated via JS */
+/* Head transform pivot */
 #robot-head {
-    transform-origin: 200px 112px;
-    transition: transform 0.12s ease-out;
+    transform-origin: 270px 68px;
+    will-change: transform;
 }
 
-/* ---- Responsive ---- */
+/* Wandering arms independent reactions */
+.robot-wandering-arm {
+    will-change: transform;
+}
+
+#robot-arm-left {
+    transform-origin: 192px 158px;
+}
+
+#robot-arm-right {
+    transform-origin: 348px 158px;
+}
+
+/* Chest Logo High Visibility */
+.robot-chest-logo {
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.25));
+}
+
+/* ---- Responsive Layout ---- */
 @media (max-width: 968px) {
     .discover-hero-inner {
         flex-direction: column;
         text-align: center;
-        gap: 3rem;
+        gap: 3.5rem;
     }
     .discover-hero-text {
         max-width: 100%;
         order: 1;
     }
+    .discover-hero-subtitle {
+        margin-left: auto;
+        margin-right: auto;
+    }
     .discover-hero-robot {
-        width: 260px;
+        width: 320px;
         order: 2;
     }
     .discover-hero-title {
@@ -6162,15 +6166,15 @@ body.dark-theme .ind-agent-tag {
 
 @media (max-width: 480px) {
     .discover-robot-hero {
-        padding: 6rem 1.25rem 3rem;
+        padding: 6.5rem 1.25rem 3.5rem;
         min-height: auto;
     }
     .discover-hero-robot {
-        width: 200px;
+        width: 260px;
     }
     .discover-hero-glow {
-        width: 250px;
-        height: 250px;
+        width: 200px;
+        height: 200px;
     }
 }
 
@@ -6183,7 +6187,7 @@ body.dark-theme .ind-agent-tag {
     position: relative !important;
 }
 
-/* Make the inner watermark area slightly darker with a subtle inset effect */
+/* Make the inner watermark area noticeably darker than the surrounding domain */
 .watermark-section .wrapper.center {
     position: relative !important;
 }
@@ -6191,8 +6195,8 @@ body.dark-theme .ind-agent-tag {
 .watermark-section .wrapper.center::before {
     content: '' !important;
     position: absolute !important;
-    inset: -2rem -4rem !important;
-    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6) 0%, transparent 70%) !important;
+    inset: -3rem -5rem !important;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 80%) !important;
     pointer-events: none !important;
     z-index: 0 !important;
 }
@@ -6201,3 +6205,4 @@ body.dark-theme .ind-agent-tag {
     position: relative !important;
     z-index: 1 !important;
 }
+
