@@ -1429,28 +1429,43 @@
             computeTargetProgress
         };
     })();    /* ==========================================================================
-       10. DISCOVER 3D ROBOT HERO MODULE (3D Mouse-tracking & Glow Effect)
+       10. DISCOVER ROBOT HERO MODULE (Lighting Glow & Spline Watermark Cleanup)
        ========================================================================== */
     const RobotHeroModule = (function () {
-        let heroSection, glowEl, robotContainer, splineViewer;
+        let heroSection, glowEl, splineViewer;
         let mouseX = 0, mouseY = 0;
         let glowX = 0, glowY = 0;
-        let targetTiltX = 0, targetTiltY = 0;
-        let currentTiltX = 0, currentTiltY = 0;
         let animFrameId = null;
         let isInitialized = false;
 
-        // 3D Tilt Constraints
-        const MAX_TILT_Y = 18; // Degrees left/right (yaw)
-        const MAX_TILT_X = 14; // Degrees up/down (pitch)
         const LERP_SPEED = 0.08;
 
         function lerp(a, b, t) {
             return a + (b - a) * t;
         }
 
-        function clamp(val, min, max) {
-            return Math.max(min, Math.min(max, val));
+        function removeSplineWatermark() {
+            if (!splineViewer) return;
+            const hideLogo = () => {
+                try {
+                    const shadow = splineViewer.shadowRoot;
+                    if (shadow) {
+                        const logo = shadow.querySelector('#logo, a#logo, a[href*="spline.design"], .watermark, #spline-logo');
+                        if (logo) {
+                            logo.style.display = 'none';
+                            logo.style.opacity = '0';
+                            logo.style.pointerEvents = 'none';
+                            logo.style.visibility = 'hidden';
+                        }
+                    }
+                } catch (e) {
+                    /* ignore shadow root locks */
+                }
+            };
+
+            hideLogo();
+            const interval = setInterval(hideLogo, 300);
+            setTimeout(() => clearInterval(interval), 10000);
         }
 
         function onMouseMove(e) {
@@ -1467,37 +1482,12 @@
         }
 
         function animate() {
-            // Smoothly move background lighting glow
+            // Smoothly move background lighting glow (Robot container does not rotate)
             glowX = lerp(glowX, mouseX, LERP_SPEED);
             glowY = lerp(glowY, mouseY, LERP_SPEED);
             if (glowEl) {
                 glowEl.style.left = glowX + 'px';
                 glowEl.style.top = glowY + 'px';
-            }
-
-            // Calculate 3D viewport angles relative to center of hero section
-            if (heroSection) {
-                const heroW = heroSection.offsetWidth || 1;
-                const heroH = heroSection.offsetHeight || 1;
-
-                const normX = clamp((mouseX - heroW / 2) / (heroW / 2), -1, 1);
-                const normY = clamp((mouseY - heroH / 2) / (heroH / 2), -1, 1);
-
-                targetTiltY = normX * MAX_TILT_Y;   // Yaw rotation
-                targetTiltX = -normY * MAX_TILT_X;  // Pitch rotation
-            }
-
-            currentTiltX = lerp(currentTiltX, targetTiltX, LERP_SPEED);
-            currentTiltY = lerp(currentTiltY, targetTiltY, LERP_SPEED);
-
-            // Apply 3D perspective rotation matrix to robot container
-            const targetEl = splineViewer || robotContainer;
-            if (targetEl && targetEl.style) {
-                targetEl.style.transform =
-                    'perspective(1200px) ' +
-                    'rotateX(' + currentTiltX.toFixed(2) + 'deg) ' +
-                    'rotateY(' + currentTiltY.toFixed(2) + 'deg) ' +
-                    'translateZ(20px)';
             }
 
             animFrameId = requestAnimationFrame(animate);
@@ -1508,7 +1498,6 @@
             if (!heroSection) return;
 
             glowEl = document.getElementById('discover-hero-glow');
-            robotContainer = document.getElementById('discover-hero-robot');
             splineViewer = document.getElementById('spline-robot-viewer');
 
             mouseX = heroSection.offsetWidth / 2;
@@ -1518,6 +1507,8 @@
 
             heroSection.addEventListener('mousemove', onMouseMove);
             heroSection.addEventListener('mouseleave', onMouseLeave);
+
+            removeSplineWatermark();
 
             animFrameId = requestAnimationFrame(animate);
             isInitialized = true;
