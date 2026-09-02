@@ -6758,31 +6758,26 @@ spline-viewer a[href*="spline.design"] {
     height: 0 !important;
 }
 
-/* White IR Logo Emblem on Robot Chest */
-.robot-chest-logo-badge {
+/* White Embedded 'ir' Letters on Robot Chest (No Logo Box/Border) */
+.robot-chest-letters {
     position: absolute;
-    top: 47%;
-    left: 50%;
+    top: 46.5%;
+    left: 50.2%;
     transform: translate(-50%, -50%);
-    width: 54px;
-    height: 54px;
-    background: rgba(10, 10, 14, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 12px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 7px;
-    box-shadow: 0 0 25px rgba(255, 255, 255, 0.25), inset 0 0 12px rgba(255, 255, 255, 0.12);
     pointer-events: none;
     z-index: 20;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 16px rgba(255, 255, 255, 0.5));
 }
 
-.chest-ir-logo {
+.chest-ir-letters-img {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.85));
 }
 
 /* ---- Responsive ---- */
