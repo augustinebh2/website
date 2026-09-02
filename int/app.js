@@ -324,8 +324,8 @@
 
         function init() {
             searchInput = document.getElementById('discover-search-input') ||
-                           document.getElementById('search-input') ||
-                           document.getElementById('article-search');
+                document.getElementById('search-input') ||
+                document.getElementById('article-search');
             filterPills = Array.from(document.querySelectorAll('.filter-pill, .category-pill'));
             articleCards = Array.from(document.querySelectorAll('.discover-article-card, .case-card, .insight-card, .article-card, .whitepaper, .research-card'));
 
@@ -395,8 +395,8 @@
 
         function init() {
             teamSlider = document.getElementById('team-size-slider') ||
-                         document.getElementById('team-slider') ||
-                         document.querySelector('input[type="range"].calc-slider');
+                document.getElementById('team-slider') ||
+                document.querySelector('input[type="range"].calc-slider');
             teamValBadge = document.getElementById('team-size-val');
             resHours = document.getElementById('res-hours') || document.getElementById('roi-hours-saved');
             resSavings = document.getElementById('res-savings') || document.getElementById('roi-annual-savings');
@@ -713,7 +713,7 @@
                                 newEraVideo.currentTime = 0;
                                 const playPromise = newEraVideo.play();
                                 if (playPromise !== undefined) {
-                                    playPromise.catch(() => {});
+                                    playPromise.catch(() => { });
                                 }
                             }
                         }
@@ -1017,14 +1017,14 @@
         // Stage 4: Bottom-Right (Maintenance) -> translateX -24%, translateY -24%
         // Stage 5: Ecosystem Zoom-Out Overview -> scale 1.00, x: 0, y: 0
         const CAMERA_ANCHORS = [
-            { p: 0.00, scale: 1.00, x: 0,   y: 0,   stage: 0 },
-            { p: 0.08, scale: 1.00, x: 0,   y: 0,   stage: 0 },
-            { p: 0.25, scale: 1.85, x: -24, y: 24,  stage: 1 },
-            { p: 0.45, scale: 1.85, x: 24,  y: 24,  stage: 2 },
-            { p: 0.65, scale: 1.85, x: 24,  y: -24, stage: 3 },
-            { p: 0.825,scale: 1.85, x: -24, y: -24, stage: 4 },
-            { p: 0.95, scale: 1.00, x: 0,   y: 0,   stage: 5 },
-            { p: 1.00, scale: 1.00, x: 0,   y: 0,   stage: 5 }
+            { p: 0.00, scale: 1.00, x: 0, y: 0, stage: 0 },
+            { p: 0.08, scale: 1.00, x: 0, y: 0, stage: 0 },
+            { p: 0.25, scale: 1.85, x: -24, y: 24, stage: 1 },
+            { p: 0.45, scale: 1.85, x: 24, y: 24, stage: 2 },
+            { p: 0.65, scale: 1.85, x: 24, y: -24, stage: 3 },
+            { p: 0.825, scale: 1.85, x: -24, y: -24, stage: 4 },
+            { p: 0.95, scale: 1.00, x: 0, y: 0, stage: 5 },
+            { p: 1.00, scale: 1.00, x: 0, y: 0, stage: 5 }
         ];
 
         // Sanitize phase index input
@@ -1431,25 +1431,22 @@
     })();
 
     /* ==========================================================================
-       10. DISCOVER ROBOT HERO MODULE (Mouse-tracking 3D Robot & Spotlight Orb)
+       10. DISCOVER ROBOT HERO MODULE (Mouse-tracking Robot & Glow Effect)
        ========================================================================== */
     const RobotHeroModule = (function () {
-        let heroSection, glowEl, upperBody, robotHead, leftArm, rightArm, robotSvg;
+        let heroSection, glowEl, upperBody, robotHead, robotSvg;
         let mouseX = 0, mouseY = 0;
         let glowX = 0, glowY = 0;
         let currentRotate = 0, currentTiltX = 0, currentTiltY = 0;
-        let currentHeadRotate = 0, currentHeadTiltY = 0;
-        let currentLeftArmAngle = 0, currentRightArmAngle = 0;
         let animFrameId = null;
         let isInitialized = false;
 
-        // Dynamic motion parameters
-        const UPPER_BODY_MAX_ROTATE = 8.5;  // max degrees rotation for torso+arms
-        const UPPER_BODY_MAX_SHIFT_X = 15;  // max px horizontal shift
-        const UPPER_BODY_MAX_SHIFT_Y = 10;  // max px vertical shift
-        const HEAD_EXTRA_ROTATE = 7;        // head rotates extra towards cursor
-        const ARM_MAX_WANDER = 9;           // wandering arms dynamic reaction degrees
-        const LERP_SPEED = 0.08;            // smoothing factor
+        // Constraints
+        const UPPER_BODY_MAX_ROTATE = 6;   // max degrees rotation for torso+arms
+        const UPPER_BODY_MAX_SHIFT_X = 12; // max px horizontal shift
+        const UPPER_BODY_MAX_SHIFT_Y = 6;  // max px vertical shift
+        const HEAD_EXTRA_ROTATE = 5;       // head rotates more than body
+        const LERP_SPEED = 0.06;           // smoothing factor
 
         function lerp(a, b, t) {
             return a + (b - a) * t;
@@ -1460,89 +1457,66 @@
         }
 
         function onMouseMove(e) {
-            if (!heroSection) return;
             const rect = heroSection.getBoundingClientRect();
             mouseX = e.clientX - rect.left;
             mouseY = e.clientY - rect.top;
         }
 
         function onMouseLeave() {
-            if (!heroSection) return;
-            // Smoothly return to center resting pose
-            mouseX = heroSection.offsetWidth * 0.45;
-            mouseY = heroSection.offsetHeight * 0.35;
+            // Smoothly return to center
+            mouseX = heroSection.offsetWidth / 2;
+            mouseY = heroSection.offsetHeight / 2;
         }
 
         function animate() {
-            if (!heroSection || !glowEl) return;
-
-            // --- 1. Luminous Spotlight Orb Follow (Smooth Lerp) ---
-            glowX = lerp(glowX, mouseX, 0.12);
-            glowY = lerp(glowY, mouseY, 0.12);
+            // --- Glow follow ---
+            glowX = lerp(glowX, mouseX, 0.08);
+            glowY = lerp(glowY, mouseY, 0.08);
             glowEl.style.left = glowX + 'px';
             glowEl.style.top = glowY + 'px';
 
-            // --- 2. Calculate Angle & Distance from Robot Center to Mouse ---
-            if (robotSvg) {
-                const robotRect = robotSvg.getBoundingClientRect();
-                const heroRect = heroSection.getBoundingClientRect();
-                const robotCenterX = (robotRect.left + robotRect.width / 2) - heroRect.left;
-                const robotCenterY = (robotRect.top + robotRect.height * 0.35) - heroRect.top;
+            // --- Calculate direction from robot center to mouse ---
+            const robotRect = robotSvg.getBoundingClientRect();
+            const heroRect = heroSection.getBoundingClientRect();
+            const robotCenterX = robotRect.left + robotRect.width / 2 - heroRect.left;
+            const robotCenterY = robotRect.top + robotRect.height * 0.35 - heroRect.top;
 
-                const dx = mouseX - robotCenterX;
-                const dy = mouseY - robotCenterY;
-                const heroW = heroSection.offsetWidth || 1;
-                const heroH = heroSection.offsetHeight || 1;
+            const dx = mouseX - robotCenterX;
+            const dy = mouseY - robotCenterY;
+            const heroW = heroSection.offsetWidth || 1;
+            const heroH = heroSection.offsetHeight || 1;
 
-                // Normalized coordinate offsets (-1 to +1)
-                const normX = clamp(dx / (heroW * 0.45), -1, 1);
-                const normY = clamp(dy / (heroH * 0.45), -1, 1);
+            // Normalize to -1..1 range based on hero section size
+            const normalizedX = clamp(dx / (heroW * 0.5), -1, 1);
+            const normalizedY = clamp(dy / (heroH * 0.5), -1, 1);
 
-                // Target rotational and translational transforms
-                const targetRotate = normX * UPPER_BODY_MAX_ROTATE;
-                const targetShiftX = normX * UPPER_BODY_MAX_SHIFT_X;
-                const targetShiftY = normY * UPPER_BODY_MAX_SHIFT_Y;
+            // Target values
+            const targetRotate = normalizedX * UPPER_BODY_MAX_ROTATE;
+            const targetShiftX = normalizedX * UPPER_BODY_MAX_SHIFT_X;
+            const targetShiftY = normalizedY * UPPER_BODY_MAX_SHIFT_Y;
 
-                const targetHeadRotate = normX * HEAD_EXTRA_ROTATE;
-                const targetHeadTiltY = normY * 4.5;
+            // Smooth lerp toward target
+            currentRotate = lerp(currentRotate, targetRotate, LERP_SPEED);
+            currentTiltX = lerp(currentTiltX, targetShiftX, LERP_SPEED);
+            currentTiltY = lerp(currentTiltY, targetShiftY, LERP_SPEED);
 
-                // Wandering arms react dynamically to cursor
-                const targetLeftArm = (-normX * ARM_MAX_WANDER) + (normY * 4);
-                const targetRightArm = (-normX * ARM_MAX_WANDER) - (normY * 4);
+            // --- Apply upper body transform (torso + arms + head) ---
+            if (upperBody) {
+                upperBody.style.transform =
+                    'translateX(' + currentTiltX + 'px) ' +
+                    'translateY(' + currentTiltY + 'px) ' +
+                    'rotate(' + currentRotate + 'deg)';
+                upperBody.style.transformOrigin = '250px 305px'; // pivot at waist
+            }
 
-                // Smooth low-pass filter interpolation
-                currentRotate = lerp(currentRotate, targetRotate, LERP_SPEED);
-                currentTiltX = lerp(currentTiltX, targetShiftX, LERP_SPEED);
-                currentTiltY = lerp(currentTiltY, targetShiftY, LERP_SPEED);
-
-                currentHeadRotate = lerp(currentHeadRotate, targetHeadRotate, LERP_SPEED * 1.2);
-                currentHeadTiltY = lerp(currentHeadTiltY, targetHeadTiltY, LERP_SPEED * 1.2);
-
-                currentLeftArmAngle = lerp(currentLeftArmAngle, targetLeftArm, LERP_SPEED);
-                currentRightArmAngle = lerp(currentRightArmAngle, targetRightArm, LERP_SPEED);
-
-                // --- 3. Apply Upper Body Transforms ---
-                if (upperBody) {
-                    upperBody.style.transform =
-                        'translateX(' + currentTiltX.toFixed(2) + 'px) ' +
-                        'translateY(' + currentTiltY.toFixed(2) + 'px) ' +
-                        'rotate(' + currentRotate.toFixed(2) + 'deg)';
-                }
-
-                // --- 4. Apply Head Extra Rotation ---
-                if (robotHead) {
-                    robotHead.style.transform =
-                        'rotate(' + currentHeadRotate.toFixed(2) + 'deg) ' +
-                        'translateY(' + currentHeadTiltY.toFixed(2) + 'px)';
-                }
-
-                // --- 5. Apply Wandering Arms Movement ---
-                if (leftArm) {
-                    leftArm.style.transform = 'rotate(' + currentLeftArmAngle.toFixed(2) + 'deg)';
-                }
-                if (rightArm) {
-                    rightArm.style.transform = 'rotate(' + currentRightArmAngle.toFixed(2) + 'deg)';
-                }
+            // --- Head rotates a bit extra ---
+            if (robotHead) {
+                const headExtraRotate = normalizedX * HEAD_EXTRA_ROTATE;
+                const headTiltY = normalizedY * 3;
+                robotHead.style.transform =
+                    'rotate(' + headExtraRotate + 'deg) ' +
+                    'translateY(' + headTiltY + 'px)';
+                robotHead.style.transformOrigin = '250px 72px'; // pivot at head center
             }
 
             animFrameId = requestAnimationFrame(animate);
@@ -1555,20 +1529,18 @@
             glowEl = document.getElementById('discover-hero-glow');
             upperBody = document.getElementById('robot-upper-body');
             robotHead = document.getElementById('robot-head');
-            leftArm = document.getElementById('robot-arm-left');
-            rightArm = document.getElementById('robot-arm-right');
             robotSvg = document.getElementById('robot-svg');
 
             if (!glowEl || !robotSvg) return;
 
-            // Set initial position towards top-left / center (matches reference composition)
-            mouseX = heroSection.offsetWidth * 0.25;
-            mouseY = heroSection.offsetHeight * 0.25;
+            // Set initial position to center
+            mouseX = heroSection.offsetWidth / 2;
+            mouseY = heroSection.offsetHeight / 2;
             glowX = mouseX;
             glowY = mouseY;
 
-            heroSection.addEventListener('mousemove', onMouseMove, { passive: true });
-            heroSection.addEventListener('mouseleave', onMouseLeave, { passive: true });
+            heroSection.addEventListener('mousemove', onMouseMove);
+            heroSection.addEventListener('mouseleave', onMouseLeave);
 
             animFrameId = requestAnimationFrame(animate);
             isInitialized = true;
