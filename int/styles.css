@@ -5985,3 +5985,219 @@ body.dark-theme .ind-agent-tag {
     }
 }
 
+/* ==========================================================================
+   DISCOVER PAGE — ROBOT HERO SECTION
+   ========================================================================== */
+
+.discover-robot-hero {
+    position: relative;
+    background: #000000;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 7rem 2rem 4rem;
+    cursor: none;
+}
+
+/* White cloudy mouse-following glow */
+.discover-hero-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 450px;
+    height: 450px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, rgba(255, 255, 255, 0.08) 30%, rgba(255, 255, 255, 0.02) 60%, transparent 80%);
+    filter: blur(60px);
+    pointer-events: none;
+    z-index: 2;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    will-change: transform;
+}
+
+.discover-robot-hero:hover .discover-hero-glow {
+    opacity: 1;
+}
+
+/* Inner layout: title left, robot right */
+.discover-hero-inner {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: var(--container-width);
+    width: 100%;
+    gap: 3rem;
+}
+
+/* ---- Title Side ---- */
+.discover-hero-text {
+    flex: 1;
+    max-width: 580px;
+}
+
+.discover-hero-title {
+    font-family: var(--font-heading);
+    font-size: clamp(3rem, 6.5vw, 5.5rem);
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin: 0;
+    padding: 0;
+}
+
+.discover-hero-title em {
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+/* Each line animates in */
+.title-line {
+    display: block;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(40px);
+    animation: titleLineReveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.title-line-1 { animation-delay: 0.15s; }
+.title-line-2 { animation-delay: 0.35s; }
+.title-line-3 { animation-delay: 0.55s; }
+.title-line-4 { animation-delay: 0.75s; }
+
+@keyframes titleLineReveal {
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ---- Robot Side ---- */
+.discover-hero-robot {
+    flex: 0 0 auto;
+    width: 340px;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.robot-svg {
+    width: 100%;
+    height: auto;
+    max-height: 85vh;
+    transition: transform 0.15s ease-out;
+}
+
+/* Robot eye glow animation */
+.robot-eye {
+    animation: eyePulse 4s ease-in-out infinite;
+}
+
+@keyframes eyePulse {
+    0%, 100% { opacity: 0.85; }
+    50% { opacity: 1; }
+}
+
+/* Robot pupils — moved via JS */
+.robot-pupil {
+    transition: cx 0.08s ease-out, cy 0.08s ease-out;
+}
+
+/* Subtle idle arm float */
+.robot-arm-left {
+    animation: armFloatLeft 5s ease-in-out infinite;
+    transform-origin: 122px 220px;
+}
+.robot-arm-right {
+    animation: armFloatRight 5s ease-in-out infinite;
+    transform-origin: 278px 220px;
+}
+
+@keyframes armFloatLeft {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(-2deg); }
+}
+@keyframes armFloatRight {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(2deg); }
+}
+
+/* Robot head group — rotated via JS */
+#robot-head {
+    transform-origin: 200px 112px;
+    transition: transform 0.12s ease-out;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 968px) {
+    .discover-hero-inner {
+        flex-direction: column;
+        text-align: center;
+        gap: 3rem;
+    }
+    .discover-hero-text {
+        max-width: 100%;
+        order: 1;
+    }
+    .discover-hero-robot {
+        width: 260px;
+        order: 2;
+    }
+    .discover-hero-title {
+        font-size: clamp(2.4rem, 8vw, 4rem);
+    }
+}
+
+@media (max-width: 480px) {
+    .discover-robot-hero {
+        padding: 6rem 1.25rem 3rem;
+        min-height: auto;
+    }
+    .discover-hero-robot {
+        width: 200px;
+    }
+    .discover-hero-glow {
+        width: 250px;
+        height: 250px;
+    }
+}
+
+/* ==========================================================================
+   WATERMARK SECTION — INNER BACKGROUND DARKER FIX
+   ========================================================================== */
+
+.watermark-section {
+    background: #000000 !important;
+    position: relative !important;
+}
+
+/* Make the inner watermark area slightly darker with a subtle inset effect */
+.watermark-section .wrapper.center {
+    position: relative !important;
+}
+
+.watermark-section .wrapper.center::before {
+    content: '' !important;
+    position: absolute !important;
+    inset: -2rem -4rem !important;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6) 0%, transparent 70%) !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+}
+
+.watermark-flex-container {
+    position: relative !important;
+    z-index: 1 !important;
+}

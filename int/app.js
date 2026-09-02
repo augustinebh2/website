@@ -1431,7 +1431,115 @@
     })();
 
     /* ==========================================================================
-       10. INTELLECTIR NAMESPACE & LIFECYCLE INITIALIZER
+       10. DISCOVER ROBOT HERO MODULE (Mouse-tracking Robot & Glow Effect)
+       ========================================================================== */
+    const RobotHeroModule = (function () {
+        let heroSection, glowEl, robotHead, pupilLeft, pupilRight, robotSvg;
+        let mouseX = 0, mouseY = 0;
+        let glowX = 0, glowY = 0;
+        let animFrameId = null;
+        let isInitialized = false;
+
+        // Pupil default positions (SVG coords)
+        const PUPIL_LEFT_CX = 176, PUPIL_LEFT_CY = 108;
+        const PUPIL_RIGHT_CX = 224, PUPIL_RIGHT_CY = 108;
+        const PUPIL_RANGE = 6; // max px offset from center
+        const HEAD_MAX_ROTATE = 8; // max degrees of head rotation
+
+        function lerp(a, b, t) {
+            return a + (b - a) * t;
+        }
+
+        function onMouseMove(e) {
+            const rect = heroSection.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+        }
+
+        function onMouseLeave() {
+            // Smoothly return to center
+            mouseX = heroSection.offsetWidth / 2;
+            mouseY = heroSection.offsetHeight / 2;
+        }
+
+        function animate() {
+            // Smooth glow follow with lerp
+            glowX = lerp(glowX, mouseX, 0.08);
+            glowY = lerp(glowY, mouseY, 0.08);
+            glowEl.style.left = glowX + 'px';
+            glowEl.style.top = glowY + 'px';
+
+            // Calculate robot center in page coords
+            const robotRect = robotSvg.getBoundingClientRect();
+            const heroRect = heroSection.getBoundingClientRect();
+            const robotCenterX = robotRect.left + robotRect.width / 2 - heroRect.left;
+            const robotCenterY = robotRect.top + robotRect.height * 0.16 - heroRect.top; // approximate head center
+
+            // Direction from robot head to mouse
+            const dx = mouseX - robotCenterX;
+            const dy = mouseY - robotCenterY;
+            const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+            const normX = dx / dist;
+            const normY = dy / dist;
+
+            // Move pupils
+            if (pupilLeft && pupilRight) {
+                pupilLeft.setAttribute('cx', PUPIL_LEFT_CX + normX * PUPIL_RANGE);
+                pupilLeft.setAttribute('cy', PUPIL_LEFT_CY + normY * PUPIL_RANGE * 0.6);
+                pupilRight.setAttribute('cx', PUPIL_RIGHT_CX + normX * PUPIL_RANGE);
+                pupilRight.setAttribute('cy', PUPIL_RIGHT_CY + normY * PUPIL_RANGE * 0.6);
+            }
+
+            // Rotate head slightly toward mouse
+            if (robotHead) {
+                const headAngle = normX * HEAD_MAX_ROTATE;
+                const headTiltY = normY * 3;
+                robotHead.style.transform = 'rotate(' + headAngle + 'deg) translateY(' + headTiltY + 'px)';
+            }
+
+            animFrameId = requestAnimationFrame(animate);
+        }
+
+        function init() {
+            heroSection = document.querySelector('.discover-robot-hero');
+            if (!heroSection) return;
+
+            glowEl = document.getElementById('discover-hero-glow');
+            robotHead = document.getElementById('robot-head');
+            pupilLeft = document.getElementById('robot-pupil-left');
+            pupilRight = document.getElementById('robot-pupil-right');
+            robotSvg = document.getElementById('robot-svg');
+
+            if (!glowEl || !robotSvg) return;
+
+            // Set initial glow position to center
+            mouseX = heroSection.offsetWidth / 2;
+            mouseY = heroSection.offsetHeight / 2;
+            glowX = mouseX;
+            glowY = mouseY;
+
+            heroSection.addEventListener('mousemove', onMouseMove);
+            heroSection.addEventListener('mouseleave', onMouseLeave);
+
+            animFrameId = requestAnimationFrame(animate);
+            isInitialized = true;
+        }
+
+        function destroy() {
+            if (!isInitialized) return;
+            if (heroSection) {
+                heroSection.removeEventListener('mousemove', onMouseMove);
+                heroSection.removeEventListener('mouseleave', onMouseLeave);
+            }
+            if (animFrameId) cancelAnimationFrame(animFrameId);
+            isInitialized = false;
+        }
+
+        return { init, destroy };
+    })();
+
+    /* ==========================================================================
+       11. INTELLECTIR NAMESPACE & LIFECYCLE INITIALIZER
        ========================================================================== */
     window.Intellectir = {
         ToastModule,
@@ -1443,6 +1551,7 @@
         ScrollAnimationModule,
         InteractiveComponentsModule,
         HowWeWorkModule,
+        RobotHeroModule,
         init: function () {
             ToastModule.init();
             HeaderNavModule.init();
@@ -1453,6 +1562,7 @@
             ScrollAnimationModule.init();
             InteractiveComponentsModule.init();
             HowWeWorkModule.init();
+            RobotHeroModule.init();
         }
     };
 

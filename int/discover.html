@@ -60,74 +60,160 @@
 
     <main id="primary" class="site-main">
 
-        <!-- Banner -->
-        <section class="ind-hero-section">
-            <div class="wrapper">
-                <div class="ind-hero-content center">
-                    <span class="subhead-tag"><i class="fa-solid fa-lightbulb"></i> DISCOVER AGENTIC AI</span>
-                    <h1 class="ind-hero-title">Understanding Agentic Systems</h1>
-                    <p class="ind-hero-desc">
-                        Explore how digital employees handle complex multi-step workflows with total accuracy, security, and quantifiable cost reduction.
-                    </p>
+        <!-- Discover Robot Hero Section -->
+        <section class="discover-robot-hero" id="discover-robot-hero">
+            <!-- Mouse-following white cloudy glow -->
+            <div class="discover-hero-glow" id="discover-hero-glow"></div>
+
+            <div class="discover-hero-inner">
+                <!-- Left: Animated Title -->
+                <div class="discover-hero-text">
+                    <h1 class="discover-hero-title" id="discover-hero-title">
+                        <span class="title-line title-line-1">Artificial</span>
+                        <span class="title-line title-line-2">Intelligence</span>
+                        <span class="title-line title-line-3">is leading</span>
+                        <span class="title-line title-line-4">the <em>future</em></span>
+                    </h1>
                 </div>
-            </div>
-        </section>
 
-        <!-- ROI Calculator -->
-        <section class="proposition-section">
-            <div class="wrapper">
-                <!-- Interactive "See What You Save" ROI Calculator Widget -->
-                <div class="glass-card roi-calculator-card">
-                    <div class="calculator-header center">
-                        <span class="subhead-tag"><i class="fa-solid fa-calculator"></i> INTERACTIVE ROI SIMULATOR</span>
-                        <h3 class="calc-title">Calculate Your Company's Immediate AI Savings</h3>
-                        <p class="calc-subtitle">Select a department and drag the slider to estimate your annual capacity boost.</p>
-                    </div>
+                <!-- Right: Interactive Robot -->
+                <div class="discover-hero-robot" id="discover-hero-robot">
+                    <svg class="robot-svg" id="robot-svg" viewBox="0 0 400 700" xmlns="http://www.w3.org/2000/svg" aria-label="Intellectir AI Robot">
+                        <defs>
+                            <!-- Robot body gradient -->
+                            <linearGradient id="robotBodyGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#e8e8e8"/>
+                                <stop offset="100%" stop-color="#b0b0b0"/>
+                            </linearGradient>
+                            <linearGradient id="robotDarkGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#3a3a3a"/>
+                                <stop offset="100%" stop-color="#1a1a1a"/>
+                            </linearGradient>
+                            <linearGradient id="robotLimbGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#d0d0d0"/>
+                                <stop offset="100%" stop-color="#909090"/>
+                            </linearGradient>
+                            <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+                                <stop offset="60%" stop-color="#e0e8ff" stop-opacity="0.8"/>
+                                <stop offset="100%" stop-color="#a0b4ff" stop-opacity="0"/>
+                            </radialGradient>
+                            <filter id="robotShadow" x="-20%" y="-10%" width="140%" height="130%">
+                                <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.4"/>
+                            </filter>
+                            <filter id="glowFilter" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur in="SourceGraphic" stdDeviation="4"/>
+                            </filter>
+                            <!-- Chest logo clip -->
+                            <clipPath id="chestClip">
+                                <rect x="155" y="310" width="90" height="90" rx="14"/>
+                            </clipPath>
+                        </defs>
 
-                    <div class="calc-grid">
-                        <div class="calc-controls">
-                            <div class="dept-selector-group">
-                                <label class="calc-label">1. Select Your Department:</label>
-                                <div class="dept-pills">
-                                    <button class="dept-btn active" data-dept="support" data-hours="22" data-rate="45"><i class="fa-solid fa-headset"></i> Customer Support</button>
-                                    <button class="dept-btn" data-dept="sales" data-hours="18" data-rate="65"><i class="fa-solid fa-briefcase"></i> Sales &amp; CRM</button>
-                                    <button class="dept-btn" data-dept="finance" data-hours="25" data-rate="55"><i class="fa-solid fa-file-invoice-dollar"></i> Finance &amp; Legal</button>
-                                    <button class="dept-btn" data-dept="operations" data-hours="20" data-rate="60"><i class="fa-solid fa-gears"></i> Operations &amp; IT</button>
-                                </div>
-                            </div>
+                        <g id="robot-body-group" filter="url(#robotShadow)">
+                            <!-- Antenna -->
+                            <line x1="200" y1="52" x2="200" y2="18" stroke="#c0c0c0" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="200" cy="14" r="6" fill="#e0e0e0" stroke="#a0a0a0" stroke-width="1.5"/>
 
-                            <div class="slider-group">
-                                <div class="slider-header">
-                                    <label for="team-size-slider" class="calc-label">2. Team Size Doing Manual Work:</label>
-                                    <span id="team-size-val" class="slider-val-badge">10 Employees</span>
-                                </div>
-                                <input type="range" id="team-size-slider" min="2" max="100" value="10" step="1" class="calc-slider">
-                                <div class="slider-ticks">
-                                    <span>2 members</span>
-                                    <span>50 members</span>
-                                    <span>100+ members</span>
-                                </div>
-                            </div>
-                        </div>
+                            <!-- Head -->
+                            <g id="robot-head">
+                                <rect x="130" y="52" width="140" height="120" rx="40" fill="url(#robotBodyGrad)" stroke="#999" stroke-width="1.5"/>
+                                <!-- Face plate (darker inner) -->
+                                <rect x="148" y="68" width="104" height="80" rx="28" fill="url(#robotDarkGrad)" stroke="#555" stroke-width="1"/>
+                                <!-- Eyes -->
+                                <g id="robot-eyes">
+                                    <circle cx="176" cy="108" r="14" fill="url(#eyeGlow)" class="robot-eye"/>
+                                    <circle cx="224" cy="108" r="14" fill="url(#eyeGlow)" class="robot-eye"/>
+                                    <!-- Eye pupils -->
+                                    <circle cx="176" cy="108" r="5" fill="#ffffff" class="robot-pupil" id="robot-pupil-left"/>
+                                    <circle cx="224" cy="108" r="5" fill="#ffffff" class="robot-pupil" id="robot-pupil-right"/>
+                                </g>
+                                <!-- Mouth indicator -->
+                                <rect x="182" y="132" width="36" height="4" rx="2" fill="#555" opacity="0.6"/>
+                            </g>
 
-                        <div class="calc-results-card">
-                            <div class="results-heading">ESTIMATED ANNUAL IMPACT</div>
-                            <div class="results-metric-grid">
-                                <div class="res-box">
-                                    <span class="res-num" id="res-hours">220 hrs</span>
-                                    <span class="res-lbl">Hours Saved Weekly</span>
-                                </div>
-                                <div class="res-box highlight-res">
-                                    <span class="res-num" id="res-savings">$629,200</span>
-                                    <span class="res-lbl">Estimated Savings</span>
-                                </div>
-                            </div>
-                            <button class="btn btn-primary btn-full open-modal-btn" data-modal-target="demo-modal" data-modal="demo" style="margin-top: 1.25rem;">
-                                <span>Book a Consultation to Automate This</span>
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </button>
-                        </div>
-                    </div>
+                            <!-- Neck -->
+                            <rect x="185" y="172" width="30" height="30" rx="6" fill="url(#robotLimbGrad)" stroke="#999" stroke-width="1"/>
+
+                            <!-- Torso -->
+                            <rect x="130" y="200" width="140" height="180" rx="20" fill="url(#robotBodyGrad)" stroke="#999" stroke-width="1.5"/>
+                            <!-- Chest panel -->
+                            <rect x="145" y="215" width="110" height="150" rx="14" fill="url(#robotDarkGrad)" stroke="#555" stroke-width="1"/>
+
+                            <!-- Intellectir "ir" Logo on Chest -->
+                            <g clip-path="url(#chestClip)" opacity="0.9">
+                                <!-- Logo background -->
+                                <rect x="155" y="310" width="90" height="90" rx="14" fill="#0a0a0a"/>
+                                <!-- Scaled ir logo (matching intellectir_logo.svg proportions) -->
+                                <g transform="translate(155, 310) scale(0.9)">
+                                    <!-- Rounded border -->
+                                    <rect x="5.4" y="5.4" width="79.2" height="79.2" rx="16.2" stroke="rgba(255,255,255,0.5)" stroke-width="3.5" fill="none"/>
+                                    <!-- i dot -->
+                                    <circle cx="23.85" cy="23.4" r="5.85" fill="#ffffff"/>
+                                    <!-- i stem -->
+                                    <rect x="16.65" y="35.1" width="14.4" height="36.9" fill="#ffffff"/>
+                                    <!-- r stem -->
+                                    <rect x="36.45" y="35.1" width="14.4" height="36.9" fill="#ffffff"/>
+                                    <!-- r arm arch -->
+                                    <path d="M50.85 35.1 C56.25 33.3 61.65 33.3 67.95 33.3 C71.55 33.3 73.35 35.1 73.35 39.6 L73.35 43.2 C73.35 43.2 67.95 43.2 63.45 43.2 C57.15 43.2 53.55 45.9 50.85 50.4 Z" fill="#ffffff"/>
+                                </g>
+                            </g>
+
+                            <!-- Chest status light -->
+                            <circle cx="200" cy="240" r="6" fill="#333">
+                                <animate attributeName="fill" values="#333;#66ff88;#333" dur="3s" repeatCount="indefinite"/>
+                            </circle>
+                            <circle cx="200" cy="240" r="6" fill="none" stroke="#66ff88" stroke-width="1" opacity="0">
+                                <animate attributeName="opacity" values="0;0.6;0" dur="3s" repeatCount="indefinite"/>
+                                <animate attributeName="r" values="6;14;6" dur="3s" repeatCount="indefinite"/>
+                            </circle>
+
+                            <!-- Left Arm -->
+                            <g class="robot-arm robot-arm-left">
+                                <!-- Shoulder joint -->
+                                <circle cx="122" cy="220" r="12" fill="url(#robotLimbGrad)" stroke="#999" stroke-width="1"/>
+                                <!-- Upper arm -->
+                                <rect x="98" y="228" width="26" height="80" rx="10" fill="url(#robotLimbGrad)" stroke="#999" stroke-width="1"/>
+                                <!-- Elbow joint -->
+                                <circle cx="111" cy="316" r="9" fill="#c0c0c0" stroke="#999" stroke-width="1"/>
+                                <!-- Forearm -->
+                                <rect x="100" y="324" width="22" height="70" rx="8" fill="url(#robotLimbGrad)" stroke="#999" stroke-width="1"/>
+                                <!-- Hand -->
+                                <rect x="97" y="392" width="28" height="22" rx="8" fill="url(#robotBodyGrad)" stroke="#999" stroke-width="1"/>
+                            </g>
+
+                            <!-- Right Arm -->
+                            <g class="robot-arm robot-arm-right">
+                                <circle cx="278" cy="220" r="12" fill="url(#robotLimbGrad)" stroke="#999" stroke-width="1"/>
+                                <rect x="276" y="228" width="26" height="80" rx="10" fill="url(#robotLimbGrad)" stroke="#999" stroke-width="1"/>
+                                <circle cx="289" cy="316" r="9" fill="#c0c0c0" stroke="#999" stroke-width="1"/>
+                                <rect x="278" y="324" width="22" height="70" rx="8" fill="url(#robotLimbGrad)" stroke="#999" stroke-width="1"/>
+                                <rect x="275" y="392" width="28" height="22" rx="8" fill="url(#robotBodyGrad)" stroke="#999" stroke-width="1"/>
+                            </g>
+
+                            <!-- Hip / Waist -->
+                            <rect x="150" y="378" width="100" height="30" rx="12" fill="url(#robotLimbGrad)" stroke="#999" stroke-width="1"/>
+
+                            <!-- Left Leg -->
+                            <g class="robot-leg robot-leg-left">
+                                <rect x="156" y="406" width="34" height="100" rx="10" fill="url(#robotLimbGrad)" stroke="#999" stroke-width="1"/>
+                                <!-- Knee joint -->
+                                <circle cx="173" cy="510" r="10" fill="#c0c0c0" stroke="#999" stroke-width="1"/>
+                                <!-- Lower leg -->
+                                <rect x="158" y="518" width="30" height="90" rx="8" fill="url(#robotLimbGrad)" stroke="#999" stroke-width="1"/>
+                                <!-- Foot -->
+                                <rect x="148" y="604" width="50" height="22" rx="8" fill="url(#robotBodyGrad)" stroke="#999" stroke-width="1"/>
+                            </g>
+
+                            <!-- Right Leg -->
+                            <g class="robot-leg robot-leg-right">
+                                <rect x="210" y="406" width="34" height="100" rx="10" fill="url(#robotLimbGrad)" stroke="#999" stroke-width="1"/>
+                                <circle cx="227" cy="510" r="10" fill="#c0c0c0" stroke="#999" stroke-width="1"/>
+                                <rect x="212" y="518" width="30" height="90" rx="8" fill="url(#robotLimbGrad)" stroke="#999" stroke-width="1"/>
+                                <rect x="202" y="604" width="50" height="22" rx="8" fill="url(#robotBodyGrad)" stroke="#999" stroke-width="1"/>
+                            </g>
+                        </g>
+                    </svg>
                 </div>
             </div>
         </section>
