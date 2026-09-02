@@ -1560,6 +1560,42 @@
     })();
 
     /* ==========================================================================
+       10B. VIDEO AUTOPLAY INTERSECTION OBSERVER MODULE
+       ========================================================================== */
+    const VideoAutoplayModule = (function () {
+        let observer = null;
+
+        function init() {
+            const videoEls = document.querySelectorAll('.discover-video, #discover-robot-video, .awareness-video');
+            if (!videoEls.length) return;
+
+            if ('IntersectionObserver' in window) {
+                observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        const video = entry.target;
+                        if (entry.isIntersecting) {
+                            const playPromise = video.play();
+                            if (playPromise !== undefined) {
+                                playPromise.catch(() => {
+                                    /* Autoplay policy fallbacks */
+                                });
+                            }
+                        } else {
+                            if (!video.paused) {
+                                video.pause();
+                            }
+                        }
+                    });
+                }, { threshold: 0.25 });
+
+                videoEls.forEach(v => observer.observe(v));
+            }
+        }
+
+        return { init };
+    })();
+
+    /* ==========================================================================
        11. INTELLECTIR NAMESPACE & LIFECYCLE INITIALIZER
        ========================================================================== */
     window.Intellectir = {
@@ -1573,6 +1609,7 @@
         InteractiveComponentsModule,
         HowWeWorkModule,
         RobotHeroModule,
+        VideoAutoplayModule,
         init: function () {
             ToastModule.init();
             HeaderNavModule.init();
@@ -1584,6 +1621,7 @@
             InteractiveComponentsModule.init();
             HowWeWorkModule.init();
             RobotHeroModule.init();
+            VideoAutoplayModule.init();
         }
     };
 
