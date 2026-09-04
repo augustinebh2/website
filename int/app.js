@@ -1409,31 +1409,35 @@
             if (introFrameEl) {
                 if (progress < 0.12) {
                     // Stage 0: Initial "How we work" view
-                    if (introFrameEl.classList) introFrameEl.classList.remove('faded', 'hidden', 'is-dimmed');
+                    if (introFrameEl.classList) {
+                        introFrameEl.classList.remove('faded', 'hidden', 'is-dimmed', 'hww-hidden');
+                    }
                     if (introFrameEl.style) {
-                        introFrameEl.style.opacity = '1';
-                        introFrameEl.style.pointerEvents = 'auto';
-                        introFrameEl.style.visibility = 'visible';
+                        introFrameEl.style.opacity = '';
+                        introFrameEl.style.pointerEvents = '';
+                        introFrameEl.style.visibility = '';
                     }
                     if (stateIntroEl && stateIntroEl.style) stateIntroEl.style.display = 'block';
                     if (statePlatformEl && statePlatformEl.style) statePlatformEl.style.display = 'none';
                 } else if (progress > 0.90) {
                     // Stage 5: Final Ecosystem "The Intellectir Platform" & Explore Solutions CTA
-                    if (introFrameEl.classList) introFrameEl.classList.remove('faded', 'hidden', 'is-dimmed');
+                    if (introFrameEl.classList) {
+                        introFrameEl.classList.remove('faded', 'hidden', 'is-dimmed', 'hww-hidden');
+                    }
                     if (introFrameEl.style) {
-                        introFrameEl.style.opacity = '1';
-                        introFrameEl.style.pointerEvents = 'auto';
-                        introFrameEl.style.visibility = 'visible';
+                        introFrameEl.style.opacity = '';
+                        introFrameEl.style.pointerEvents = '';
+                        introFrameEl.style.visibility = '';
                     }
                     if (stateIntroEl && stateIntroEl.style) stateIntroEl.style.display = 'none';
                     if (statePlatformEl && statePlatformEl.style) statePlatformEl.style.display = 'block';
                 } else {
                     // Stages 1–4: Panned focus onto active quadrant card
-                    if (introFrameEl.classList) introFrameEl.classList.add('faded', 'hidden', 'is-dimmed');
+                    if (introFrameEl.classList) {
+                        introFrameEl.classList.add('faded', 'hidden', 'is-dimmed', 'hww-hidden');
+                    }
                     if (introFrameEl.style) {
-                        introFrameEl.style.opacity = '0';
                         introFrameEl.style.pointerEvents = 'none';
-                        introFrameEl.style.visibility = 'hidden';
                     }
                 }
             }
@@ -1466,10 +1470,17 @@
                 if (!tag) return;
                 const cornerName = tag.getAttribute ? tag.getAttribute('data-corner') : null;
                 if (stage === 0 || stage === 5) {
-                    if (tag.classList) tag.classList.add('active');
+                    if (tag.classList) {
+                        tag.classList.add('active');
+                        tag.classList.remove('hww-corner-active');
+                    }
                 } else {
                     const activeCornerName = cornerTagMap[activePhaseIndex];
-                    if (tag.classList) tag.classList.toggle('active', cornerName === activeCornerName);
+                    const isActive = cornerName === activeCornerName;
+                    if (tag.classList) {
+                        tag.classList.toggle('active', isActive);
+                        tag.classList.toggle('hww-corner-active', isActive);
+                    }
                 }
             });
 
@@ -1478,11 +1489,34 @@
                 if (!card) return;
                 const qNum = parseInt(card.getAttribute ? card.getAttribute('data-quadrant') : '', 10);
                 if (stage === 0 || stage === 5) {
-                    if (card.classList) card.classList.remove('active');
+                    if (card.classList) {
+                        card.classList.remove('active');
+                        card.classList.remove('hww-active');
+                    }
                 } else {
-                    if (card.classList) card.classList.toggle('active', qNum === activePhaseIndex);
+                    const isActive = qNum === activePhaseIndex;
+                    if (card.classList) {
+                        card.classList.toggle('active', isActive);
+                        card.classList.toggle('hww-active', isActive);
+                    }
                 }
             });
+
+            // 7. Section-Level State Classes (hww-zoomed, hww-phase-N, hww-stage-N)
+            if (sectionEl && sectionEl.classList) {
+                const isZoomed = stage >= 1 && stage <= 4;
+                sectionEl.classList.toggle('hww-zoomed', isZoomed);
+
+                // Phase-specific HUD border glow
+                for (let p = 1; p <= 4; p++) {
+                    sectionEl.classList.toggle(`hww-phase-${p}`, isZoomed && activePhaseIndex === p);
+                }
+
+                // Stage classes for CTA bar and nav scrubber
+                for (let s = 0; s <= 5; s++) {
+                    sectionEl.classList.toggle(`hww-stage-${s}`, stage === s);
+                }
+            }
         }
 
         // Cross-environment RAF wrappers

@@ -5533,6 +5533,125 @@ input[type="range"]::-webkit-slider-thumb:hover,
     }
 }
 
+/* ==========================================================================
+   HWW SCROLL-DRIVEN ZOOM ANIMATION STATE CLASSES
+   ========================================================================== */
+
+/* Default state: quadrant card inner content hidden */
+#how-we-work-section .hww-quadrant-card .hww-card-inner {
+    opacity: 0;
+    transform: translateY(24px) scale(0.96);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+/* Active state: card content visible */
+#how-we-work-section .hww-quadrant-card.hww-active .hww-card-inner {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Quadrant cards default semi-transparent when zoomed */
+#how-we-work-section .hww-quadrant-card {
+    transition: border-color 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#how-we-work-section.hww-zoomed .hww-quadrant-card {
+    opacity: 0.15;
+}
+
+#how-we-work-section.hww-zoomed .hww-quadrant-card.hww-active {
+    opacity: 1;
+}
+
+/* Corner tags: dim when not active, glow when active */
+#how-we-work-section .hww-corner-tag {
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                border-color 0.3s ease,
+                transform 0.3s ease,
+                box-shadow 0.3s ease;
+}
+
+#how-we-work-section.hww-zoomed .hww-corner-tag {
+    opacity: 0.2;
+}
+
+#how-we-work-section.hww-zoomed .hww-corner-tag.hww-corner-active {
+    opacity: 1;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+}
+
+/* Intro frame smooth hide/show */
+#how-we-work-section .hww-intro-frame {
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0.5s;
+}
+
+#how-we-work-section .hww-intro-frame.hww-hidden {
+    opacity: 0;
+    transform: scale(0.88);
+    pointer-events: none;
+    visibility: hidden;
+}
+
+/* HUD frame border glow per active phase */
+#how-we-work-section.hww-phase-1 .hww-hud-border-frame {
+    border-color: rgba(16, 185, 129, 0.25);
+    box-shadow: inset 0 0 40px rgba(16, 185, 129, 0.08);
+}
+
+#how-we-work-section.hww-phase-2 .hww-hud-border-frame {
+    border-color: rgba(59, 130, 246, 0.25);
+    box-shadow: inset 0 0 40px rgba(59, 130, 246, 0.08);
+}
+
+#how-we-work-section.hww-phase-3 .hww-hud-border-frame {
+    border-color: rgba(236, 72, 153, 0.25);
+    box-shadow: inset 0 0 40px rgba(236, 72, 153, 0.08);
+}
+
+#how-we-work-section.hww-phase-4 .hww-hud-border-frame {
+    border-color: rgba(245, 158, 11, 0.25);
+    box-shadow: inset 0 0 40px rgba(245, 158, 11, 0.08);
+}
+
+#how-we-work-section .hww-hud-border-frame {
+    transition: border-color 0.6s ease, box-shadow 0.6s ease;
+}
+
+/* Canvas smooth GPU-accelerated transform */
+#how-we-work-section .hww-spatial-canvas {
+    transition: none; /* JS will handle via requestAnimationFrame */
+}
+
+/* CTA bar visibility */
+#how-we-work-section .hww-cta-bar {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+}
+
+#how-we-work-section.hww-stage-5 .hww-cta-bar {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+/* Nav scrubber visibility during zoom */
+#how-we-work-section .hww-nav-scrubber-container {
+    transition: opacity 0.4s ease;
+}
+
+#how-we-work-section.hww-stage-0 .hww-nav-scrubber-container {
+    opacity: 0.4;
+}
+
 /* 5. WATERMARK SECTION */
 .watermark-section {
     padding: 7rem 0 4rem 0;
