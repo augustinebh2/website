@@ -103,9 +103,7 @@
         <section class="capabilities-section" id="explore-section">
             <div class="wrapper">
                 <div class="section-header center">
-                    <span class="subhead-tag"><i class="fa-solid fa-book-open-reader"></i> INSIGHTS &amp; INTELLIGENCE</span>
                     <h2 class="section-title">Explore Enterprise AI Research &amp; Case Studies</h2>
-                    <p class="section-lead">Explore curated global research from Deloitte, McKinsey, Shopify, and local South African perspectives alongside Intellectir's engineering frameworks.</p>
                 </div>
 
                 <!-- Minimalist Search & Navigation Bar -->
@@ -114,12 +112,11 @@
                         <div class="discover-search-box">
                             <i class="fa-solid fa-magnifying-glass discover-search-icon" aria-hidden="true"></i>
                             <input type="text" id="discover-search-input" class="discover-search-input"
-                                placeholder="Search by keyword, company (Deloitte, McKinsey, Shopify), or topic (invoice, South Africa, POPIA)..."
+                                placeholder="Search by keyword, company, or topic..."
                                 autocomplete="off" spellcheck="false" aria-label="Search articles and case studies">
                             <button type="button" class="discover-search-clear" id="discover-search-clear" aria-label="Clear search" title="Clear search">
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
-                            <span class="search-key-hint" id="search-key-hint"><kbd>/</kbd></span>
                         </div>
                     </div>
 
@@ -127,11 +124,11 @@
                     <nav class="category-pills-row" id="category-pills-nav" aria-label="Article categories">
                         <button class="filter-pill active" data-category="all" aria-pressed="true">
                             <span>All Resources</span>
-                            <span class="pill-count" id="count-all">10</span>
+                            <span class="pill-count" id="count-all">6</span>
                         </button>
                         <button class="filter-pill" data-category="case-studies" aria-pressed="false">
                             <span>Case Studies</span>
-                            <span class="pill-count" id="count-case-studies">2</span>
+                            <span class="pill-count" id="count-case-studies">1</span>
                         </button>
                         <button class="filter-pill" data-category="strategy" aria-pressed="false">
                             <span>AI Strategy &amp; Workflows</span>
@@ -141,28 +138,46 @@
                             <span>Workforce &amp; South Africa</span>
                             <span class="pill-count" id="count-workforce-sa">2</span>
                         </button>
-                        <button class="filter-pill" data-category="commerce-ops" aria-pressed="false">
-                            <span>Commerce &amp; Operations</span>
-                            <span class="pill-count" id="count-commerce-ops">1</span>
-                        </button>
-                        <button class="filter-pill" data-category="architecture" aria-pressed="false">
-                            <span>Architecture &amp; RAG</span>
-                            <span class="pill-count" id="count-architecture">2</span>
-                        </button>
                     </nav>
 
                     <!-- Active Search Status & Count -->
                     <div class="discover-search-status" id="discover-search-status">
-                        <span class="discover-results-count" id="discover-results-count">Showing all 10 articles</span>
-                        <span class="discover-active-query" id="discover-active-query" style="display: none;"></span>
+                        <span class="discover-results-count" id="discover-results-count">Showing all 6 articles</span>
                     </div>
                 </div>
 
-                <!-- Articles Grid -->
+                <!-- Articles Grid (Only the user-provided links) -->
                 <div class="ind-grid-3 discover-articles-grid" id="discover-articles-grid">
 
-                    <!-- 1. Deloitte Case Study (External) -->
+                    <!-- 1. IBM Think: AI Workflow -->
                     <article class="glass-card discover-article-card reveal-on-scroll"
+                        data-category="strategy"
+                        data-publisher="IBM Think"
+                        data-title="AI Workflow: How Artificial Intelligence Streamlines Tasks & Workflows"
+                        data-summary="Artificial intelligence (AI) workflow is the process of using AI-powered technologies and products to automate tasks and streamline activities within an organization, from single-task models to multi-agent architectures."
+                        data-tags="ibm think ai workflow watsonx multi agent orchestration bpa rpa enterprise automation">
+                        <div class="card-meta-header">
+                            <span class="publisher-tag publisher-ibm"><i class="fa-solid fa-network-wired"></i> IBM Think</span>
+                            <span class="shimmer-badge">AI Workflows</span>
+                        </div>
+                        <h3 class="card-title">
+                            <a href="https://www.ibm.com/think/topics/ai-workflow"
+                                target="_blank" rel="noopener noreferrer" class="article-title-link">
+                                AI Workflow: How Artificial Intelligence Streamlines Tasks &amp; Workflows
+                            </a>
+                        </h3>
+                        <p class="card-desc">How enterprise orchestrators coordinate autonomous agents, APIs, and data pipelines to eliminate manual inefficiencies and scale operational velocity.</p>
+                        <div class="article-footer">
+                            <span class="article-read-time"><i class="fa-regular fa-clock"></i> 6 min read</span>
+                            <a href="https://www.ibm.com/think/topics/ai-workflow"
+                                target="_blank" rel="noopener noreferrer" class="article-link-action">
+                                Read Topic <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- 2. Deloitte Case Study -->
+                    <article class="glass-card discover-article-card reveal-on-scroll delay-100"
                         data-category="case-studies"
                         data-publisher="Deloitte"
                         data-title="Hands Off the Task, Eyes on the Outcome: Autonomous Invoice Processing"
@@ -188,8 +203,8 @@
                         </div>
                     </article>
 
-                    <!-- 2. McKinsey Advanced Industries (External) -->
-                    <article class="glass-card discover-article-card reveal-on-scroll delay-100"
+                    <!-- 3. McKinsey Advanced Industries -->
+                    <article class="glass-card discover-article-card reveal-on-scroll delay-200"
                         data-category="strategy"
                         data-publisher="McKinsey & Company"
                         data-title="Empowering Advanced Industries with Agentic AI"
@@ -215,51 +230,24 @@
                         </div>
                     </article>
 
-                    <!-- 3. ShiftMate South Africa (External) -->
-                    <article class="glass-card discover-article-card reveal-on-scroll delay-200"
-                        data-category="workforce-sa"
-                        data-publisher="ShiftMate SA"
-                        data-title="What Are AI Agents? A Plain-English Guide for South African Businesses"
-                        data-summary="A plain-English guide for South African business owners covering POPIA compliance, multilingual agents (English, Zulu, Afrikaans), SME economics, and 9-12 month ROI."
-                        data-tags="shiftmate south africa popia zulu afrikaans sme call centre recruitment compliance local adoption roi">
-                        <div class="card-meta-header">
-                            <span class="publisher-tag publisher-shiftmate"><i class="fa-solid fa-earth-africa"></i> ShiftMate SA</span>
-                            <span class="shimmer-badge">South Africa &amp; POPIA</span>
-                        </div>
-                        <h3 class="card-title">
-                            <a href="https://shiftmate.co.za/ai/agents/what-are-ai-agents-south-africa"
-                                target="_blank" rel="noopener noreferrer" class="article-title-link">
-                                What Are AI Agents? Guide for South African Businesses
-                            </a>
-                        </h3>
-                        <p class="card-desc">Practical guide explaining how South African businesses deploy agents for candidate screening, call-center first contact, and POPIA-compliant data residency.</p>
-                        <div class="article-footer">
-                            <span class="article-read-time"><i class="fa-regular fa-clock"></i> 6 min read</span>
-                            <a href="https://shiftmate.co.za/ai/agents/what-are-ai-agents-south-africa"
-                                target="_blank" rel="noopener noreferrer" class="article-link-action">
-                                Read Guide <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                            </a>
-                        </div>
-                    </article>
-
-                    <!-- 4. Shopify AI Agents (External) -->
+                    <!-- 4. Shopify AI Agents -->
                     <article class="glass-card discover-article-card reveal-on-scroll"
-                        data-category="commerce-ops"
+                        data-category="strategy"
                         data-publisher="Shopify"
                         data-title="What Are AI Agents? Types, Uses, and How They Work"
-                        data-summary="How autonomous AI systems operate with minimal human intervention to support e-commerce operations, 24/7 personalized customer support, and predictive inventory management."
+                        data-summary="How autonomous AI systems operate with minimal human intervention to support business operations, 24/7 personalized customer support, and predictive inventory management."
                         data-tags="shopify commerce retail e-commerce customer service inventory management autonomous agents operations">
                         <div class="card-meta-header">
                             <span class="publisher-tag publisher-shopify"><i class="fa-solid fa-bag-shopping"></i> Shopify</span>
-                            <span class="shimmer-badge">Commerce &amp; Retail</span>
+                            <span class="shimmer-badge">AI Agents Guide</span>
                         </div>
                         <h3 class="card-title">
                             <a href="https://www.shopify.com/blog/ai-agents"
                                 target="_blank" rel="noopener noreferrer" class="article-title-link">
-                                What Are AI Agents? Types, Architecture &amp; Use Cases for Commerce
+                                What Are AI Agents? Types, Architecture &amp; Use Cases
                             </a>
                         </h3>
-                        <p class="card-desc">An executive breakdown of how retail brands integrate agentic workflows to automate order resolution, stock tracking, and hyper-personalized customer engagement.</p>
+                        <p class="card-desc">An executive breakdown of how organizations integrate agentic workflows to automate multi-step operations, inventory tracking, and customer engagement.</p>
                         <div class="article-footer">
                             <span class="article-read-time"><i class="fa-regular fa-clock"></i> 7 min read</span>
                             <a href="https://www.shopify.com/blog/ai-agents"
@@ -269,7 +257,7 @@
                         </div>
                     </article>
 
-                    <!-- 5. McKinsey Global Institute: Future of Work (External) -->
+                    <!-- 5. McKinsey Global Institute: Future of Work -->
                     <article class="glass-card discover-article-card reveal-on-scroll delay-100"
                         data-category="workforce-sa"
                         data-publisher="McKinsey Global Institute"
@@ -296,130 +284,30 @@
                         </div>
                     </article>
 
-                    <!-- 6. IBM Think: AI Workflow (External) -->
+                    <!-- 6. ShiftMate South Africa -->
                     <article class="glass-card discover-article-card reveal-on-scroll delay-200"
-                        data-category="strategy"
-                        data-publisher="IBM Think"
-                        data-title="AI Workflow: Streamlining Tasks & Autonomous Multi-Agent Systems"
-                        data-summary="Comprehensive review of AI workflow automation, watsonx Orchestrate, multi-agent conductor layers, and how 82% of operations executives plan agent-led process reinvention by 2027."
-                        data-tags="ibm think ai workflow watsonx multi agent orchestration bpa rpa enterprise automation">
+                        data-category="workforce-sa"
+                        data-publisher="ShiftMate SA"
+                        data-title="What Are AI Agents? A Plain-English Guide for South African Businesses"
+                        data-summary="A plain-English guide for South African business owners covering POPIA compliance, multilingual agents (English, Zulu, Afrikaans), SME economics, and 9-12 month ROI."
+                        data-tags="shiftmate south africa popia zulu afrikaans sme call centre recruitment compliance local adoption roi">
                         <div class="card-meta-header">
-                            <span class="publisher-tag publisher-ibm"><i class="fa-solid fa-network-wired"></i> IBM Think</span>
-                            <span class="shimmer-badge">Workflows &amp; Orchestration</span>
+                            <span class="publisher-tag publisher-shiftmate"><i class="fa-solid fa-earth-africa"></i> ShiftMate SA</span>
+                            <span class="shimmer-badge">South Africa</span>
                         </div>
                         <h3 class="card-title">
-                            <a href="https://www.ibm.com/think/topics/ai-workflow"
+                            <a href="https://shiftmate.co.za/ai/agents/what-are-ai-agents-south-africa"
                                 target="_blank" rel="noopener noreferrer" class="article-title-link">
-                                AI Workflow: Streamlining Tasks &amp; Multi-Agent Systems
+                                What Are AI Agents? Guide for South African Businesses
                             </a>
                         </h3>
-                        <p class="card-desc">How enterprise orchestrators coordinate autonomous agents, APIs, and data pipelines to eliminate manual inefficiencies and scale operational velocity.</p>
+                        <p class="card-desc">Practical guide explaining how South African businesses deploy agents for candidate screening, call-center first contact, and POPIA-compliant data residency.</p>
                         <div class="article-footer">
                             <span class="article-read-time"><i class="fa-regular fa-clock"></i> 6 min read</span>
-                            <a href="https://www.ibm.com/think/topics/ai-workflow"
+                            <a href="https://shiftmate.co.za/ai/agents/what-are-ai-agents-south-africa"
                                 target="_blank" rel="noopener noreferrer" class="article-link-action">
-                                Read Topic <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                Read Guide <i class="fa-solid fa-arrow-up-right-from-square"></i>
                             </a>
-                        </div>
-                    </article>
-
-                    <!-- 7. Intellectir Proprietary: Enterprise RAG (Internal) -->
-                    <article class="glass-card discover-article-card reveal-on-scroll"
-                        data-category="architecture"
-                        data-publisher="Intellectir Engineering"
-                        data-title="Hybrid Vector-Graph Retrieval for Multi-Billion Token Repositories"
-                        data-summary="How combining dense vector search with sparse property graph GQL traversal achieves 99.4% factual recall in regulated financial compliance audits."
-                        data-tags="intellectir rag graph vector embeddings gql compliance retrieval architecture benchmark">
-                        <div class="card-meta-header">
-                            <span class="publisher-tag publisher-intellectir"><i class="fa-solid fa-cube"></i> Intellectir</span>
-                            <span class="shimmer-badge">Enterprise RAG</span>
-                        </div>
-                        <h3 class="card-title">
-                            <a href="#demo-modal" class="article-title-link open-modal-btn" data-modal-target="demo-modal">
-                                Hybrid Vector-Graph Retrieval for Multi-Billion Token Repositories
-                            </a>
-                        </h3>
-                        <p class="card-desc">Combining dense vector search with sparse property graph GQL traversal to achieve 99.4% factual recall in regulated financial and legal compliance audits.</p>
-                        <div class="article-footer">
-                            <span class="article-read-time"><i class="fa-regular fa-clock"></i> 6 min read</span>
-                            <button type="button" class="article-link-action open-modal-btn" data-modal-target="demo-modal">
-                                Request Whitepaper &rarr;
-                            </button>
-                        </div>
-                    </article>
-
-                    <!-- 8. Intellectir Proprietary: Governance (Internal) -->
-                    <article class="glass-card discover-article-card reveal-on-scroll delay-100"
-                        data-category="architecture"
-                        data-publisher="Intellectir Engineering"
-                        data-title="SOC2 & HIPAA Compliant Guardrails for Multi-Agent Workflows"
-                        data-summary="Architecting zero-retention privacy layers, PII anonymization proxies, and real-time execution audit logs for healthcare and banking integrations."
-                        data-tags="intellectir soc2 hipaa governance privacy guardrails pii security banking compliance">
-                        <div class="card-meta-header">
-                            <span class="publisher-tag publisher-intellectir"><i class="fa-solid fa-cube"></i> Intellectir</span>
-                            <span class="shimmer-badge">Governance &amp; Security</span>
-                        </div>
-                        <h3 class="card-title">
-                            <a href="#demo-modal" class="article-title-link open-modal-btn" data-modal-target="demo-modal">
-                                SOC2 &amp; HIPAA Compliant Guardrails for Multi-Agent Workflows
-                            </a>
-                        </h3>
-                        <p class="card-desc">Architecting zero-retention privacy layers, PII anonymization proxies, and real-time execution audit logs for healthcare and banking agent integrations.</p>
-                        <div class="article-footer">
-                            <span class="article-read-time"><i class="fa-regular fa-clock"></i> 8 min read</span>
-                            <button type="button" class="article-link-action open-modal-btn" data-modal-target="demo-modal">
-                                Request Framework &rarr;
-                            </button>
-                        </div>
-                    </article>
-
-                    <!-- 9. Intellectir Proprietary: Fintech Case Study (Internal) -->
-                    <article class="glass-card discover-article-card reveal-on-scroll delay-200"
-                        data-category="case-studies"
-                        data-publisher="Intellectir Case Study"
-                        data-title="Global Fintech Reduces Claims Processing Time from 3 Days to 45 Seconds"
-                        data-summary="An in-depth case study on deploying autonomous agentic workers to extract invoice metadata, verify audit policy compliance, and initiate ERP payouts."
-                        data-tags="intellectir fintech claims processing erp invoice payout automation case study roi">
-                        <div class="card-meta-header">
-                            <span class="publisher-tag publisher-intellectir"><i class="fa-solid fa-cube"></i> Intellectir</span>
-                            <span class="shimmer-badge">Case Study</span>
-                        </div>
-                        <h3 class="card-title">
-                            <a href="#demo-modal" class="article-title-link open-modal-btn" data-modal-target="demo-modal">
-                                Global Fintech Reduces Claims Processing Time from 3 Days to 45 Seconds
-                            </a>
-                        </h3>
-                        <p class="card-desc">Deploying autonomous agentic workers to extract claim documentation, audit policy compliance across multi-tenant ledgers, and trigger automated settlements.</p>
-                        <div class="article-footer">
-                            <span class="article-read-time"><i class="fa-regular fa-clock"></i> 5 min read</span>
-                            <button type="button" class="article-link-action open-modal-btn" data-modal-target="demo-modal">
-                                View Case Study &rarr;
-                            </button>
-                        </div>
-                    </article>
-
-                    <!-- 10. Intellectir Proprietary: Executive Guide (Internal) -->
-                    <article class="glass-card discover-article-card reveal-on-scroll"
-                        data-category="strategy"
-                        data-publisher="Intellectir Advisory"
-                        data-title="The 2026 Executive Guide to Agentic Engineering & Multi-Agent Mesh"
-                        data-summary="Transitioning your organization from simple chat widgets to autonomous agentic orchestrators that run end-to-end operational processes."
-                        data-tags="intellectir strategy executive guide multi agent mesh autonomous engineering enterprise roi">
-                        <div class="card-meta-header">
-                            <span class="publisher-tag publisher-intellectir"><i class="fa-solid fa-cube"></i> Intellectir</span>
-                            <span class="shimmer-badge">AI Strategy</span>
-                        </div>
-                        <h3 class="card-title">
-                            <a href="#demo-modal" class="article-title-link open-modal-btn" data-modal-target="demo-modal">
-                                The 2026 Executive Guide to Agentic Engineering &amp; Multi-Agent Mesh
-                            </a>
-                        </h3>
-                        <p class="card-desc">Transitioning your organization from single-turn chat widgets to autonomous multi-agent mesh networks that execute end-to-end enterprise workflows.</p>
-                        <div class="article-footer">
-                            <span class="article-read-time"><i class="fa-regular fa-clock"></i> 10 min read</span>
-                            <button type="button" class="article-link-action open-modal-btn" data-modal-target="demo-modal">
-                                Read Guide &rarr;
-                            </button>
                         </div>
                     </article>
 

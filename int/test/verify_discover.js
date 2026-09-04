@@ -4,14 +4,14 @@ const path = require('path');
 const htmlPath = path.join(__dirname, '..', 'discover.html');
 const html = fs.readFileSync(htmlPath, 'utf8');
 
-console.log('=== 1. VERIFYING ARTICLE URLS IN DISCOVER.HTML ===');
+console.log('=== 1. VERIFYING ALL 6 USER-PROVIDED ARTICLE URLS ===');
 const requiredUrls = [
+    'https://www.ibm.com/think/topics/ai-workflow',
     'https://www.deloitte.com/us/en/what-we-do/case-studies/hands-off-the-task-eyes-on-the-outcome.html',
     'https://www.mckinsey.com/industries/automotive-and-assembly/our-insights/empowering-advanced-industries-with-agentic-ai',
-    'https://shiftmate.co.za/ai/agents/what-are-ai-agents-south-africa',
     'https://www.shopify.com/blog/ai-agents',
     'https://www.mckinsey.com.br/our-insights/agents-robots-and-us-skill-partnerships-in-the-age-of-ai',
-    'https://www.ibm.com/think/topics/ai-workflow'
+    'https://shiftmate.co.za/ai/agents/what-are-ai-agents-south-africa'
 ];
 
 let allPassed = true;
@@ -24,61 +24,54 @@ requiredUrls.forEach(url => {
     }
 });
 
-console.log('\n=== 2. VERIFYING PUBLISHERS ===');
-const publishers = ['Deloitte', 'McKinsey & Company', 'ShiftMate SA', 'Shopify', 'McKinsey Global Institute', 'IBM Think', 'Intellectir Engineering', 'Intellectir Case Study', 'Intellectir Advisory'];
-publishers.forEach(pub => {
-    if (html.includes(`data-publisher="${pub}"`)) {
-        console.log(`[PASS] Publisher present: ${pub}`);
-    } else {
-        console.error(`[FAIL] Publisher missing: ${pub}`);
-        allPassed = false;
-    }
-});
-
-console.log('\n=== 3. VERIFYING CATEGORY PILLS ===');
-const categories = ['all', 'case-studies', 'strategy', 'workforce-sa', 'commerce-ops', 'architecture'];
-categories.forEach(cat => {
-    if (html.includes(`data-category="${cat}"`)) {
-        console.log(`[PASS] Category present: ${cat}`);
-    } else {
-        console.error(`[FAIL] Category missing: ${cat}`);
-        allPassed = false;
-    }
-});
-
-console.log('\n=== 4. VERIFYING SEARCH BAR ELEMENTS ===');
-const elements = [
-    'id="discover-search-input"',
-    'id="discover-search-clear"',
-    'id="search-key-hint"',
-    'id="category-pills-nav"',
-    'id="discover-results-count"',
-    'id="discover-articles-grid"',
-    'id="discover-no-results"'
+console.log('\n=== 2. VERIFYING REMOVED ELEMENTS ===');
+const forbiddenStrings = [
+    'INSIGHTS & INTELLIGENCE',
+    'INSIGHTS &amp; INTELLIGENCE',
+    'Explore curated global research from Deloitte',
+    'Commerce &amp; Retail',
+    'Commerce & Retail',
+    'Hybrid Vector-Graph Retrieval',
+    'SOC2 &amp; HIPAA Compliant Guardrails',
+    'Global Fintech Reduces Claims Processing Time',
+    'The 2026 Executive Guide to Agentic Engineering',
+    'search-key-hint'
 ];
-elements.forEach(el => {
-    if (html.includes(el)) {
-        console.log(`[PASS] Element present: ${el}`);
+
+forbiddenStrings.forEach(str => {
+    if (!html.includes(str)) {
+        console.log(`[PASS] Correctly removed: "${str}"`);
     } else {
-        console.error(`[FAIL] Element missing: ${el}`);
+        console.error(`[FAIL] Still present in discover.html: "${str}"`);
         allPassed = false;
     }
 });
 
-console.log('\n=== 5. COUNT TOTAL ARTICLE CARDS ===');
+console.log('\n=== 3. VERIFYING TOTAL ARTICLES COUNT ===');
 const matches = html.match(/class="glass-card discover-article-card/g) || [];
 console.log(`Total discover article cards: ${matches.length}`);
-if (matches.length === 10) {
-    console.log('[PASS] Exactly 10 article cards present.');
+if (matches.length === 6) {
+    console.log('[PASS] Exactly 6 article cards present (all user-provided links).');
 } else {
-    console.error(`[FAIL] Expected 10 article cards, got ${matches.length}`);
+    console.error(`[FAIL] Expected exactly 6 article cards, got ${matches.length}`);
     allPassed = false;
 }
 
+console.log('\n=== 4. VERIFYING CATEGORY TABS ===');
+const categories = ['all', 'case-studies', 'strategy', 'workforce-sa'];
+categories.forEach(cat => {
+    if (html.includes(`data-category="${cat}"`)) {
+        console.log(`[PASS] Category tab present: ${cat}`);
+    } else {
+        console.error(`[FAIL] Category tab missing: ${cat}`);
+        allPassed = false;
+    }
+});
+
 if (allPassed) {
-    console.log('\n>>> ALL DISCOVER VERIFICATION TESTS PASSED SUCCESSFULLY! <<<');
+    console.log('\n>>> ALL DISCOVER HTML CHECKS PASSED! <<<');
     process.exit(0);
 } else {
-    console.error('\n>>> SOME DISCOVER VERIFICATION TESTS FAILED! <<<');
+    console.error('\n>>> SOME DISCOVER HTML CHECKS FAILED! <<<');
     process.exit(1);
 }

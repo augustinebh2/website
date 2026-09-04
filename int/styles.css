@@ -1449,41 +1449,8 @@ body.dark-theme .glass-card {
     margin-bottom: 3rem;
 }
 
-.discover-search-box {
-    position: relative;
-    max-width: 520px;
-    width: 100%;
-}
+/* Discover search styles managed in Discover Page section below */
 
-.discover-search-box input,
-.discover-search-input {
-    width: 100%;
-    padding: 0.85rem 1.25rem 0.85rem 2.85rem;
-    border-radius: var(--radius-full);
-    border: 1px solid var(--border-subtle);
-    background: var(--bg-card);
-    font-size: 0.95rem;
-    color: var(--text-primary);
-    box-shadow: var(--shadow-sm);
-    transition: all var(--transition-fast);
-}
-
-.discover-search-box input:focus,
-.discover-search-input:focus {
-    outline: none;
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-}
-
-.discover-search-box i,
-.discover-search-icon {
-    position: absolute;
-    left: 1.15rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-muted);
-    pointer-events: none;
-}
 
 .category-pills-row {
     display: flex;
@@ -6901,19 +6868,23 @@ spline-viewer a[href*="spline.design"] {
     color: var(--accent-primary);
 }
 
-.discover-search-input {
+.discover-search-input,
+.discover-search-box input {
     flex: 1;
-    border: none;
-    outline: none;
-    background: transparent;
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
     font-family: var(--font-sans);
     font-size: 0.95rem;
     color: var(--text-primary);
-    padding: 0.45rem 0;
+    padding: 0.5rem 0 !important;
     line-height: 1.4;
+    border-radius: 0 !important;
 }
 
-.discover-search-input::placeholder {
+.discover-search-input::placeholder,
+.discover-search-box input::placeholder {
     color: #94a3b8;
     font-weight: 400;
 }
@@ -6938,24 +6909,6 @@ spline-viewer a[href*="spline.design"] {
     background: #f1f5f9;
 }
 
-.search-key-hint {
-    display: inline-flex;
-    align-items: center;
-    user-select: none;
-    pointer-events: none;
-}
-
-.search-key-hint kbd {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    padding: 2px 7px;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: #64748b;
-    font-weight: 600;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
-}
 
 /* Category Pills Navigation */
 .category-pills-row {
