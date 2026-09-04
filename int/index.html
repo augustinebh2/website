@@ -845,479 +845,411 @@
 
 
             <!-- 5. HOW WE WORK SECTION (2.5D SPATIAL CANVAS & LIFECYCLE METHODOLOGY) -->
+                        <!-- 5. HOW WE WORK SECTION (SPATIAL ZOOM CANVAS & 4-PHASE LIFECYCLE) -->
             <section class="how-we-work-section" id="how-we-work-section" aria-label="How We Work - Enterprise AI Lifecycle">
                 <div class="hww-track" data-hww-track id="hww-track">
-                    <div class="hww-sticky-viewport hww-viewport" data-hww-viewport>
+                    <div class="hww-sticky-viewport hww-viewport" data-hww-viewport id="hww-viewport">
+                        
+                        <div class="hww-bg-grid"></div>
 
-                        <!-- HUD High-Tech Grid & Corner Nodes -->
-                        <div class="hww-hud-overlay" aria-hidden="true">
-                            <div class="hww-hud-border-frame"></div>
-                            <div class="hww-hud-connecting-rays">
-                                <span class="ray-line ray-tl"></span>
-                                <span class="ray-line ray-tr"></span>
-                                <span class="ray-line ray-bl"></span>
-                                <span class="ray-line ray-br"></span>
-                            </div>
-                            <div class="hww-hud-crosshair center-crosshair"></div>
-                            
-                            <!-- 4 Fixed HUD Corner Tags -->
-                            <!-- Top-Right: Phase 1 Discovery Call (Green #10b981) -->
-                            <div class="hww-corner-tag corner-tr" data-corner="discovery">
-                                <span class="corner-dot dot-green"></span>
-                                <div class="corner-text-wrap">
-                                    <span class="corner-label"><span class="corner-num">01</span> Phase 1: Discovery Call</span>
-                                    <span class="corner-coord">PHASE 01 // 40% UPFRONT</span>
-                                </div>
-                            </div>
-
-                            <!-- Top-Left: Phase 2 Building Phase (Blue #3b82f6) -->
-                            <div class="hww-corner-tag corner-tl" data-corner="building">
-                                <span class="corner-dot dot-blue"></span>
-                                <div class="corner-text-wrap">
-                                    <span class="corner-label"><span class="corner-num">02</span> Phase 2: Building Phase</span>
-                                    <span class="corner-coord">PHASE 02 // 1–4 WEEKS</span>
-                                </div>
-                            </div>
-
-                            <!-- Bottom-Left: Phase 3 Integrating Phase (Pink/Red #ec4899) -->
-                            <div class="hww-corner-tag corner-bl" data-corner="integrating">
-                                <span class="corner-dot dot-pink dot-purple"></span>
-                                <div class="corner-text-wrap">
-                                    <span class="corner-label"><span class="corner-num">03</span> Phase 3: Integrating Phase</span>
-                                    <span class="corner-coord">PHASE 03 // 60% FINAL</span>
-                                </div>
-                            </div>
-
-                            <!-- Bottom-Right: Phase 4 Maintenance (Yellow/Gold #f59e0b) -->
-                            <div class="hww-corner-tag corner-br" data-corner="maintenance">
-                                <span class="corner-dot dot-yellow"></span>
-                                <div class="corner-text-wrap">
-                                    <span class="corner-label"><span class="corner-num">04</span> Phase 4: Maintenance</span>
-                                    <span class="corner-coord">PHASE 04 // 24/7 OPT</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Phase Quick-Nav Scrubber Pills -->
+                        <!-- Top Navigation Pills / Scrubber Navigation -->
                         <div class="hww-nav-scrubber-container">
-                            <nav class="hww-nav-pills" aria-label="Phase navigation">
-                                <div class="hww-scrubber-track">
+                            <nav class="hww-top-nav hww-nav-pills" id="hww-nav-pills" aria-label="Phase navigation">
+                                <div class="hww-scrubber-track" style="display: none;">
                                     <div class="hww-scrubber-progress" id="hww-scrubber-progress"></div>
                                 </div>
-                                <button type="button" class="hww-nav-pill active" data-hww-goto="1" aria-label="Navigate to Phase 1: Discovery Call">
-                                    <span class="pill-dot dot-green"></span>
-                                    <span class="pill-num">01</span>
-                                    <span class="pill-title">Discovery</span>
+                                <button type="button" class="hww-nav-item hww-nav-pill active" data-phase="1" data-hww-goto="1" aria-label="Navigate to Phase 1: Discovery Call">
+                                    <span class="hww-nav-dot dot-green"></span>
+                                    <span class="pill-num" style="display:none;">01</span>
+                                    <span class="pill-title">01 Discovery</span>
                                 </button>
-                                <button type="button" class="hww-nav-pill" data-hww-goto="2" aria-label="Navigate to Phase 2: Building Phase">
-                                    <span class="pill-dot dot-blue"></span>
-                                    <span class="pill-num">02</span>
-                                    <span class="pill-title">Building</span>
+                                <button type="button" class="hww-nav-item hww-nav-pill" data-phase="2" data-hww-goto="2" aria-label="Navigate to Phase 2: Building Phase">
+                                    <span class="hww-nav-dot dot-blue dot-purple"></span>
+                                    <span class="pill-num" style="display:none;">02</span>
+                                    <span class="pill-title">02 Building</span>
                                 </button>
-                                <button type="button" class="hww-nav-pill" data-hww-goto="3" aria-label="Navigate to Phase 3: Integrating phase">
-                                    <span class="pill-dot dot-pink dot-purple"></span>
-                                    <span class="pill-num">03</span>
-                                    <span class="pill-title">Integrating</span>
+                                <button type="button" class="hww-nav-item hww-nav-pill" data-phase="3" data-hww-goto="3" aria-label="Navigate to Phase 3: Integrating phase">
+                                    <span class="hww-nav-dot dot-coral dot-pink dot-purple"></span>
+                                    <span class="pill-num" style="display:none;">03</span>
+                                    <span class="pill-title">03 Integration</span>
                                 </button>
-                                <button type="button" class="hww-nav-pill" data-hww-goto="4" aria-label="Navigate to Phase 4: Maintenance">
-                                    <span class="pill-dot dot-yellow"></span>
-                                    <span class="pill-num">04</span>
-                                    <span class="pill-title">Maintenance</span>
+                                <button type="button" class="hww-nav-item hww-nav-pill" data-phase="4" data-hww-goto="4" aria-label="Navigate to Phase 4: Maintenance">
+                                    <span class="hww-nav-dot dot-yellow"></span>
+                                    <span class="pill-num" style="display:none;">04</span>
+                                    <span class="pill-title">04 Maintenance</span>
                                 </button>
                             </nav>
                         </div>
 
-                        <!-- 2.5D Spatial Canvas (Camera Pan & Zoom Container) -->
-                        <div class="hww-spatial-canvas hww-canvas" data-hww-canvas id="hww-spatial-canvas">
+                        <!-- Fixed Spatial Canvas (1200x700 virtual coordinate space) -->
+                        <div class="hww-spatial-canvas hww-canvas" id="hww-spatial-canvas" data-hww-canvas>
 
-                            <!-- Central Intro & Outro Platform Frame (Stage 0 & Stage 5 Focus) -->
-                            <div class="hww-intro-frame" id="hww-intro-frame">
-                                <!-- Initial Stage 0 View -->
-                                <div class="hww-intro-content state-intro center" id="hww-state-intro">
-                                    <span class="subhead-tag"><i class="fa-solid fa-diagram-project"></i> METHODOLOGY</span>
-                                    <h2 class="section-title text-white hww-main-title">How we work</h2>
-                                    <p class="section-lead text-white-muted">Our structured end-to-end framework for auditing, architecting, and deploying custom AI agents into your business operations.</p>
-                                    <div class="hww-scroll-indicator" aria-hidden="true">
-                                        <span class="scroll-mouse"><i class="fa-solid fa-arrow-down-long"></i></span>
-                                        <span class="scroll-label">Scroll to explore our 4-phase deployment lifecycle</span>
-                                    </div>
+                            <!-- Central Wireframe Rectangle Border with Corner Crosshairs -->
+                            <div class="hww-wireframe hww-hud-border-frame">
+                                <div class="hww-crosshair hww-crosshair-tl"></div>
+                                <div class="hww-crosshair hww-crosshair-tr"></div>
+                                <div class="hww-crosshair hww-crosshair-bl"></div>
+                                <div class="hww-crosshair hww-crosshair-br"></div>
+                            </div>
+
+                            <div class="hww-center-crosshair"></div>
+
+                            <!-- 1. Central Hero Text: "How we work" & Outro Text -->
+                            <div class="hww-center-text hww-intro-frame" id="hww-intro-frame">
+                                <div id="hww-state-intro" class="hww-intro-content state-intro">
+                                    <span class="subhead-tag" style="display:none;"><i class="fa-solid fa-diagram-project"></i> METHODOLOGY</span>
+                                    <h2 class="hww-title-init hww-main-title text-white" id="initTitle">How we work</h2>
+                                    <p class="hww-subtitle-init text-white-muted" id="initSubtitle">Our structured end-to-end framework for auditing, architecting, and deploying custom AI agents into your business operations.</p>
                                 </div>
-                                <!-- Final Overview Stage 5 View (Zoom-Out) -->
-                                <div class="hww-intro-content state-platform center" id="hww-state-platform" style="display: none;">
-                                    <span class="subhead-tag"><i class="fa-solid fa-layer-group"></i> ECOSYSTEM OVERVIEW</span>
-                                    <h2 class="section-title text-white hww-platform-title">The Intellectir Platform</h2>
-                                    <p class="section-lead text-white-muted">An integrated multi-agent intelligence layer tailored for high-scale enterprise workflows.</p>
-                                    <div class="hww-platform-cta-wrap">
-                                        <a href="solutions.html" class="btn btn-primary hww-explore-btn" aria-label="Explore Our Solutions">
-                                            <span>Explore Our Solutions &rarr;</span>
-                                        </a>
+                                
+                                <div id="hww-state-platform" class="hww-intro-content state-platform" style="display: none;">
+                                    <div class="hww-title-outro hww-platform-title" id="outroTitle">
+                                        <div class="hww-outro-badge">Intellectir Delivery Framework</div>
+                                        <div class="text-white">The Intellectir Platform: Bespoke intelligent systems for your enterprise</div>
+                                        <div class="hww-platform-cta-wrap" style="margin-top: 1.2rem;">
+                                            <button type="button" class="btn btn-primary open-modal-btn hww-explore-btn" data-modal="demo" data-modal-target="demo-modal" aria-label="Schedule Your Discovery Call">
+                                                <span>Schedule Your Discovery Call &rarr;</span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- QUADRANT 1: TOP-RIGHT — PHASE 1: DISCOVERY CALL -->
-                            <article class="hww-quadrant-card hww-q1 card-discovery" data-quadrant="1" id="hww-phase-1">
+                            <!-- 2. Four Corner Nodes (Placed along inner vertices of the wireframe box) -->
+                            <!-- Top-Right: Step 1 Discovery Call (Green) -->
+                            <div class="hww-corner-node corner-tr hww-node-tr" id="nodeTR" data-corner="discovery">
+                                <div class="hww-node-square dot-green"></div>
+                                <span class="corner-label"><span class="corner-num">01</span> Step 01 · Discovery Call</span>
+                                <span class="corner-coord" style="display:none;">PHASE 01 // 40% UPFRONT</span>
+                            </div>
+
+                            <!-- Top-Left: Step 2 Building Phase (Purple/Blue) -->
+                            <div class="hww-corner-node corner-tl hww-node-tl" id="nodeTL" data-corner="building">
+                                <div class="hww-node-square dot-blue dot-purple"></div>
+                                <span class="corner-label"><span class="corner-num">02</span> Step 02 · Building Phase</span>
+                                <span class="corner-coord" style="display:none;">PHASE 02 // 1–4 WEEKS</span>
+                            </div>
+
+                            <!-- Bottom-Left: Step 3 Integration Phase (Coral/Pink) -->
+                            <div class="hww-corner-node corner-bl hww-node-bl" id="nodeBL" data-corner="integrating">
+                                <div class="hww-node-square dot-coral dot-pink dot-purple"></div>
+                                <span class="corner-label"><span class="corner-num">03</span> Step 03 · Integration Phase</span>
+                                <span class="corner-coord" style="display:none;">PHASE 03 // 60% FINAL</span>
+                            </div>
+
+                            <!-- Bottom-Right: Step 4 Maintenance (Yellow) -->
+                            <div class="hww-corner-node corner-br hww-node-br" id="nodeBR" data-corner="maintenance">
+                                <div class="hww-node-square dot-yellow"></div>
+                                <span class="corner-label"><span class="corner-num">04</span> Step 04 · Maintenance</span>
+                                <span class="corner-coord" style="display:none;">PHASE 04 // 24/7 OPT</span>
+                            </div>
+
+                            <!-- ==========================================================
+                                 STEP 1: TOP-RIGHT (DISCOVERY CALL) - GREEN THEME
+                                 ========================================================== -->
+                            <article class="hww-quadrant hww-quad-tr hww-quadrant-card card-discovery" id="quadrant1" data-quadrant="1">
                                 <div class="hww-card-inner">
-                                    <!-- Left Column: Interactive UI Mockup (Intake & Security Vault) -->
-                                    <div class="hww-card-mockup">
-                                        <div class="hww-mockup-window mockup-discovery mockup-p1" style="--phase-accent: var(--hww-p1-accent); --phase-glow: var(--hww-p1-glow);">
-                                            <div class="mockup-header-bar">
-                                                <div class="mockup-controls">
-                                                    <span class="control-dot red"></span>
-                                                    <span class="control-dot yellow"></span>
-                                                    <span class="control-dot green"></span>
-                                                </div>
-                                                <div class="mockup-window-title"><i class="fa-solid fa-shield-halved"></i> Intake &amp; Security Vault</div>
-                                                <span class="mockup-chip chip-green">40% Escrow Secured</span>
+                                    <!-- Left Box: Visual Illustration -->
+                                    <div class="hww-card-visual hww-visual-step1 mockup-discovery mockup-p1 hww-card-mockup">
+                                        <div class="hww-visual-title">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                                            <span>Step 01 / Diagnostic</span>
+                                        </div>
+
+                                        <div class="hww-visual-pill hww-pill-green">
+                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                                            <span>Initial Diagnostic & Scope</span>
+                                        </div>
+
+                                        <div class="hww-visual-row">
+                                            <div class="hww-row-left">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                                                <span>OS & Stack Audit</span>
                                             </div>
-                                            <div class="mockup-screen-body">
-                                                <div class="mockup-stream-card">
-                                                    <div class="stream-title-row">
-                                                        <span class="stream-icon-pulse"><i class="fa-solid fa-waveform-lines"></i></span>
-                                                        <span class="stream-label">Operational Intake Stream</span>
-                                                        <span class="stream-status live">RECORDING</span>
-                                                    </div>
-                                                    <div class="audio-stream-meta" style="margin-bottom: 0.35rem;">
-                                                        <span class="audio-timer">[42:15]</span>
-                                                        <div class="audio-waveform-bars" aria-label="Audio streaming visualizer">
-                                                            <span class="wave-bar wb-1"></span>
-                                                            <span class="wave-bar wb-2"></span>
-                                                            <span class="wave-bar wb-3"></span>
-                                                            <span class="wave-bar wb-4"></span>
-                                                            <span class="wave-bar wb-5"></span>
-                                                            <span class="wave-bar wb-6"></span>
-                                                            <span class="wave-bar wb-7"></span>
-                                                            <span class="wave-bar wb-8"></span>
-                                                        </div>
-                                                    </div>
-                                                    <div class="stream-log-items">
-                                                        <div class="log-item done"><i class="fa-solid fa-check"></i> <span>Operating Systems: CRM / ERP Identified</span></div>
-                                                        <div class="log-item done"><i class="fa-solid fa-check"></i> <span>Bottlenecks: 3 High-Latency Workflows Isolated</span></div>
-                                                        <div class="log-item done"><i class="fa-solid fa-check"></i> <span>Target ROI: 140 hrs/mo Automation Identified</span></div>
-                                                    </div>
-                                                </div>
-                                                <div class="mockup-vault-card">
-                                                    <div class="vault-heading"><i class="fa-solid fa-lock"></i> Zero-Knowledge Credential Handover</div>
-                                                    <div class="vault-rows">
-                                                        <div class="vault-row">
-                                                            <span class="v-label">API_KEY_OPENAI:</span>
-                                                            <code class="v-mask">sk-proj-••••••••••••••••••••</code>
-                                                            <span class="v-status"><i class="fa-solid fa-key"></i> Verified</span>
-                                                        </div>
-                                                        <div class="vault-row">
-                                                            <span class="v-label">DB_CONNECTION:</span>
-                                                            <code class="v-mask">postgresql://••••••••••••••••</code>
-                                                            <span class="v-status"><i class="fa-solid fa-database"></i> Granted</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mockup-milestone-footer p1-footer">
-                                                    <div class="milestone-text">
-                                                        <i class="fa-solid fa-receipt"></i>
-                                                        <span>Milestone: <strong>40% Upfront Kickoff Secured</strong></span>
-                                                    </div>
-                                                    <div class="milestone-progress-bar">
-                                                        <div class="milestone-progress-fill p1-fill" style="width: 40%;"></div>
-                                                    </div>
-                                                </div>
+                                            <span class="hww-row-right hww-status-green">Mapped ✓</span>
+                                        </div>
+
+                                        <div class="hww-visual-row">
+                                            <div class="hww-row-left">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                                <span>Zero-Trust Protocol</span>
                                             </div>
+                                            <span class="hww-row-right hww-status-green">Encrypted</span>
+                                        </div>
+
+                                        <div class="hww-visual-row">
+                                            <div class="hww-row-left">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                                <span>Commercial Terms</span>
+                                            </div>
+                                            <span class="hww-row-right" style="color: #ffffff;">40% Upfront</span>
+                                        </div>
+
+                                        <div class="hww-live-banner" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.25); color: #6ee7b7;">
+                                            <span class="hww-dot-pulse hww-dot-green"></span>
+                                            <span>Discovery Session: Ready & Scheduled</span>
                                         </div>
                                     </div>
 
-                                    <!-- Right Column: Deliverables Text Card -->
+                                    <!-- Right Box: Content Card -->
                                     <div class="hww-card-content">
-                                        <div class="hww-phase-badge badge-green">
-                                            <i class="fa-solid fa-phone-volume"></i>
-                                            <span>PHASE 01</span>
+                                        <div>
+                                            <div class="hww-step-badge">
+                                                <span class="hww-step-badge-square" style="background: var(--accent-green, #10b981);"></span>
+                                                <span>Phase 1</span>
+                                            </div>
+                                            <h3 class="hww-content-heading hww-phase-title">Phase 1: Discovery Call</h3>
+                                            <p class="hww-content-desc hww-phase-description">
+                                                We get on a call with you so you can explain to us what problems you are facing and what outcomes you want.
+                                            </p>
                                         </div>
-                                        <h3 class="hww-phase-title">Phase 1: Discovery Call</h3>
-                                        <p class="hww-phase-description">We get on a call with you so you can explain to us what problems you are facing and what outcomes you want.</p>
-                                        
-                                        <div class="hww-points-box">
-                                            <h4 class="hww-points-heading">Key Deliverables:</h4>
-                                            <ul class="hww-points-list">
-                                                <li>
-                                                    <span class="point-icon green"><i class="fa-solid fa-circle-check"></i></span>
-                                                    <span class="point-text">Vent to us about your problems</span>
-                                                </li>
-                                                <li>
-                                                    <span class="point-icon green"><i class="fa-solid fa-circle-check"></i></span>
-                                                    <span class="point-text">Clear understanding of your operating systems</span>
-                                                </li>
-                                                <li>
-                                                    <span class="point-icon green"><i class="fa-solid fa-circle-check"></i></span>
-                                                    <span class="point-text">Credential Handover</span>
-                                                </li>
-                                                <li>
-                                                    <span class="point-icon green"><i class="fa-solid fa-circle-check"></i></span>
-                                                    <span class="point-text">40% upfront payment</span>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        <ul class="hww-content-list hww-points-list">
+                                            <li class="hww-content-item">
+                                                <span class="hww-chevron">&gt;</span>
+                                                <span>Vent to us about your problems</span>
+                                            </li>
+                                            <li class="hww-content-item">
+                                                <span class="hww-chevron">&gt;</span>
+                                                <span>Clear understanding of your operating systems</span>
+                                            </li>
+                                            <li class="hww-content-item">
+                                                <span class="hww-chevron">&gt;</span>
+                                                <span>Credential Handover</span>
+                                            </li>
+                                            <li class="hww-content-item">
+                                                <span class="hww-chevron">&gt;</span>
+                                                <span>40% upfront payment</span>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </article>
 
-                            <!-- QUADRANT 2: TOP-LEFT — PHASE 2: BUILDING PHASE -->
-                            <article class="hww-quadrant-card hww-q2 card-building" data-quadrant="2" id="hww-phase-2">
+                            <!-- ==========================================================
+                                 STEP 2: TOP-LEFT (BUILDING PHASE) - PURPLE/BLUE THEME
+                                 ========================================================== -->
+                            <article class="hww-quadrant hww-quad-tl hww-quadrant-card card-building" id="quadrant2" data-quadrant="2">
                                 <div class="hww-card-inner">
-                                    <!-- Left Column: Interactive UI Mockup (Build Progress & Telemetry Terminal) -->
-                                    <div class="hww-card-mockup">
-                                        <div class="hww-mockup-window mockup-building mockup-p2" style="--phase-accent: var(--hww-p2-accent); --phase-glow: var(--hww-p2-glow);">
-                                            <div class="mockup-header-bar">
-                                                <div class="mockup-controls">
-                                                    <span class="control-dot red"></span>
-                                                    <span class="control-dot yellow"></span>
-                                                    <span class="control-dot green"></span>
-                                                </div>
-                                                <div class="mockup-window-title"><i class="fa-solid fa-terminal"></i> Architecture Synthesis &amp; Build</div>
-                                                <span class="mockup-chip chip-blue">Sprint W2 // Live</span>
+                                    <!-- Left Box: Visual Illustration -->
+                                    <div class="hww-card-visual hww-visual-step2 mockup-building mockup-p2 hww-card-mockup">
+                                        <div class="hww-visual-title">
+                                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>
+                                            <span>Step 02 / Architecture</span>
+                                        </div>
+
+                                        <div class="hww-visual-pill hww-pill-purple">
+                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                            <span>Timeline: 1 – 4 Weeks</span>
+                                        </div>
+
+                                        <div class="hww-visual-row">
+                                            <div class="hww-row-left">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                                                <span>Multi-Agent Engine</span>
                                             </div>
-                                            <div class="mockup-screen-body">
-                                                <div class="mockup-sprint-bar-box">
-                                                    <div class="sprint-info-row">
-                                                        <span class="s-title"><i class="fa-solid fa-calendar-week"></i> Build Timeline</span>
-                                                        <span class="s-time">1 – 4 Weeks Fast Delivery</span>
-                                                    </div>
-                                                    <div class="sprint-progress-track">
-                                                        <div class="sprint-progress-fill" style="width: 72%;"></div>
-                                                    </div>
-                                                    <div class="sprint-milestones-row">
-                                                        <span class="m-step done">W1: Setup</span>
-                                                        <span class="m-step active">W2: Multi-Agent</span>
-                                                        <span class="m-step">W3: Evaluators</span>
-                                                        <span class="m-step">W4: Release</span>
-                                                    </div>
-                                                </div>
-                                                <div class="mockup-terminal-box">
-                                                    <div class="terminal-line"><span class="t-stamp">[14:02:18]</span> <span class="t-cyan">Agent.Planner</span> synthesized state graph.</div>
-                                                    <div class="terminal-line"><span class="t-stamp">[14:02:19]</span> <span class="t-cyan">Agent.Memory</span> Vector embeddings indexed (0.84ms)</div>
-                                                    <div class="terminal-line success"><span class="t-stamp">[14:02:21]</span> <span class="t-green">State-of-the-art multi-agent mesh compiled.</span></div>
-                                                    <div class="terminal-line prompt"><span class="t-stamp">&gt;</span> Live build stream active <span class="term-cursor">_</span></div>
-                                                </div>
-                                                <div class="mockup-meta-pills">
-                                                    <span class="meta-pill"><i class="fa-solid fa-microchip"></i> 14 Active Nodes</span>
-                                                    <span class="meta-pill"><i class="fa-solid fa-gauge-high"></i> 99.8% Test Coverage</span>
-                                                </div>
+                                            <span class="hww-row-right hww-status-green">Compiled ✓</span>
+                                        </div>
+
+                                        <div class="hww-visual-row">
+                                            <div class="hww-row-left">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v6M12 16v6M4.93 4.93l4.24 4.24M14.83 14.83l4.24 4.24M2 12h6M16 12h6M4.93 19.07l4.24-4.24M14.83 9.17l4.24-4.24"/></svg>
+                                                <span>Custom Connectors</span>
                                             </div>
+                                            <span class="hww-row-right hww-status-purple">Building 85%...</span>
+                                        </div>
+
+                                        <div class="hww-visual-row">
+                                            <div class="hww-row-left">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z"/></svg>
+                                                <span>Tailored Logic</span>
+                                            </div>
+                                            <span class="hww-row-right hww-status-blue">Optimized</span>
+                                        </div>
+
+                                        <div class="hww-prog-track">
+                                            <div class="hww-prog-fill"></div>
                                         </div>
                                     </div>
 
-                                    <!-- Right Column: Deliverables Text Card -->
+                                    <!-- Right Box: Content Card -->
                                     <div class="hww-card-content">
-                                        <div class="hww-phase-badge badge-blue">
-                                            <i class="fa-solid fa-laptop-code"></i>
-                                            <span>PHASE 02</span>
+                                        <div>
+                                            <div class="hww-step-badge">
+                                                <span class="hww-step-badge-square" style="background: var(--accent-purple, #a855f7);"></span>
+                                                <span>Phase 2</span>
+                                            </div>
+                                            <h3 class="hww-content-heading hww-phase-title">Phase 2: Building Phase</h3>
+                                            <p class="hww-content-desc hww-phase-description">
+                                                We build the systems designed specifically for your needs, and blends into your operating system
+                                            </p>
                                         </div>
-                                        <h3 class="hww-phase-title">Phase 2: Building Phase</h3>
-                                        <p class="hww-phase-description">We build the systems designed specifically for your needs, and blends into your operating system</p>
-                                        
-                                        <div class="hww-points-box">
-                                            <h4 class="hww-points-heading">Key Deliverables:</h4>
-                                            <ul class="hww-points-list">
-                                                <li>
-                                                    <span class="point-icon blue"><i class="fa-solid fa-circle-check"></i></span>
-                                                    <span class="point-text">Takes from 1 - 4 weeks depending on the case</span>
-                                                </li>
-                                                <li>
-                                                    <span class="point-icon blue"><i class="fa-solid fa-circle-check"></i></span>
-                                                    <span class="point-text">Live dashboard so you can track progress</span>
-                                                </li>
-                                                <li>
-                                                    <span class="point-icon blue"><i class="fa-solid fa-circle-check"></i></span>
-                                                    <span class="point-text">Engineering state-of-the-art architecture</span>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        <ul class="hww-content-list hww-points-list">
+                                            <li class="hww-content-item">
+                                                <span class="hww-chevron">&gt;</span>
+                                                <span>Takes from 1 - 4 weeks depending on the case</span>
+                                            </li>
+                                            <li class="hww-content-item">
+                                                <span class="hww-chevron">&gt;</span>
+                                                <span>Live dashboard so you can track progress</span>
+                                            </li>
+                                            <li class="hww-content-item">
+                                                <span class="hww-chevron">&gt;</span>
+                                                <span>Engineering state-of-the-art architecture</span>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </article>
 
-                            <!-- QUADRANT 3: BOTTOM-LEFT — PHASE 3: INTEGRATING PHASE -->
-                            <article class="hww-quadrant-card hww-q3 card-integrating" data-quadrant="3" id="hww-phase-3">
+                            <!-- ==========================================================
+                                 STEP 3: BOTTOM-LEFT (INTEGRATION PHASE) - CORAL THEME
+                                 ========================================================== -->
+                            <article class="hww-quadrant hww-quad-bl hww-quadrant-card card-integrating" id="quadrant3" data-quadrant="3">
                                 <div class="hww-card-inner">
-                                    <!-- Left Column: Interactive UI Mockup (Integration Hub & QA Suite) -->
-                                    <div class="hww-card-mockup">
-                                        <div class="hww-mockup-window mockup-integrating mockup-p3" style="--phase-accent: var(--hww-p3-accent); --phase-glow: var(--hww-p3-glow);">
-                                            <div class="mockup-header-bar">
-                                                <div class="mockup-controls">
-                                                    <span class="control-dot red"></span>
-                                                    <span class="control-dot yellow"></span>
-                                                    <span class="control-dot green"></span>
-                                                </div>
-                                                <div class="mockup-window-title"><i class="fa-solid fa-plug-circle-check"></i> Integration Hub &amp; QA</div>
-                                                <span class="mockup-chip chip-pink chip-purple">60% Final Release</span>
+                                    <!-- Left Box: Visual Illustration -->
+                                    <div class="hww-card-visual hww-visual-step3 mockup-integrating mockup-p3 hww-card-mockup">
+                                        <div class="hww-visual-title">
+                                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                                            <span>Step 03 / Integration</span>
+                                        </div>
+
+                                        <div class="hww-visual-pill hww-pill-coral">
+                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                                            <span>Custom Built Intellectir OS</span>
+                                        </div>
+
+                                        <div class="hww-visual-row">
+                                            <div class="hww-row-left">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                                                <span>Enterprise ERP & CRM</span>
                                             </div>
-                                            <div class="mockup-screen-body">
-                                                <div class="mockup-connectors-grid">
-                                                    <div class="connector-item connected">
-                                                        <i class="fa-solid fa-database"></i>
-                                                        <span class="c-name">PostgreSQL / DW</span>
-                                                        <span class="c-dot"></span>
-                                                    </div>
-                                                    <div class="connector-item connected">
-                                                        <i class="fa-brands fa-salesforce"></i>
-                                                        <span class="c-name">Salesforce CRM</span>
-                                                        <span class="c-dot"></span>
-                                                    </div>
-                                                    <div class="connector-item connected">
-                                                        <i class="fa-brands fa-slack"></i>
-                                                        <span class="c-name">Slack / Teams</span>
-                                                        <span class="c-dot"></span>
-                                                    </div>
-                                                    <div class="connector-item connected">
-                                                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                                                        <span class="c-name">REST APIs / Pinecone</span>
-                                                        <span class="c-dot"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="mockup-qa-box">
-                                                    <div class="qa-header-row">
-                                                        <span class="qa-label"><i class="fa-solid fa-clipboard-check"></i> Final QA Test Suite</span>
-                                                        <span class="qa-badge-pass">100% Passed (48/48)</span>
-                                                    </div>
-                                                    <div class="qa-track">
-                                                        <div class="qa-fill" style="width: 100%;"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="mockup-docs-bar">
-                                                    <i class="fa-solid fa-book-bookmark"></i>
-                                                    <span>Team Enablement Documentation &amp; SOP Library Ready</span>
-                                                </div>
-                                                <div class="mockup-milestone-footer p3-footer">
-                                                    <div class="milestone-text">
-                                                        <i class="fa-solid fa-circle-dollar-to-slot"></i>
-                                                        <span>Milestone: <strong>60% Final Payment &amp; Handover</strong></span>
-                                                    </div>
-                                                    <div class="milestone-progress-bar">
-                                                        <div class="milestone-progress-fill p3-fill" style="width: 100%;"></div>
-                                                    </div>
-                                                </div>
+                                            <span class="hww-row-right" style="color: #fda4af;">Synced ⚡</span>
+                                        </div>
+
+                                        <div class="hww-visual-row">
+                                            <div class="hww-row-left">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/><polyline points="12 13 12 9 10 11"/></svg>
+                                                <span>Company Tools & Files</span>
                                             </div>
+                                            <span class="hww-row-right hww-status-green">Connected ✓</span>
+                                        </div>
+
+                                        <div class="hww-visual-row">
+                                            <div class="hww-row-left">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                                <span>Team Communication</span>
+                                            </div>
+                                            <span class="hww-row-right hww-status-green">Integrated ✓</span>
+                                        </div>
+
+                                        <div class="hww-live-banner" style="background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.25); color: #fda4af;">
+                                            <span class="hww-dot-pulse hww-dot-red"></span>
+                                            <span>Plugged Into Stack: Live & Syncing</span>
                                         </div>
                                     </div>
 
-                                    <!-- Right Column: Deliverables Text Card -->
+                                    <!-- Right Box: Content Card -->
                                     <div class="hww-card-content">
-                                        <div class="hww-phase-badge badge-pink badge-purple">
-                                            <i class="fa-solid fa-network-wired"></i>
-                                            <span>PHASE 03</span>
+                                        <div>
+                                            <div class="hww-step-badge">
+                                                <span class="hww-step-badge-square" style="background: var(--accent-coral, #f43f5e);"></span>
+                                                <span>Phase 3</span>
+                                            </div>
+                                            <h3 class="hww-content-heading hww-phase-title">Phase 3: Integrating phase</h3>
+                                            <p class="hww-content-desc hww-phase-description">
+                                                We plug your new intelligent system into your company's existing tools, softwares, databases and operational setup
+                                            </p>
                                         </div>
-                                        <h3 class="hww-phase-title">Phase 3: Integrating Phase</h3>
-                                        <p class="hww-phase-description">We plug your new intelligent system into your company's existing tools, softwares, databases and operational setup</p>
-                                        
-                                        <div class="hww-points-box">
-                                            <h4 class="hww-points-heading">Key Deliverables:</h4>
-                                            <ul class="hww-points-list">
-                                                <li>
-                                                    <span class="point-icon pink purple"><i class="fa-solid fa-circle-check"></i></span>
-                                                    <span class="point-text">Documentation so your entire team can understand how system works</span>
-                                                </li>
-                                                <li>
-                                                    <span class="point-icon pink purple"><i class="fa-solid fa-circle-check"></i></span>
-                                                    <span class="point-text">Final Testing</span>
-                                                </li>
-                                                <li>
-                                                    <span class="point-icon pink purple"><i class="fa-solid fa-circle-check"></i></span>
-                                                    <span class="point-text">60% final payment</span>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        <ul class="hww-content-list hww-points-list">
+                                            <li class="hww-content-item">
+                                                <span class="hww-chevron">&gt;</span>
+                                                <span>Documentation so your entire team can understand how system works</span>
+                                            </li>
+                                            <li class="hww-content-item">
+                                                <span class="hww-chevron">&gt;</span>
+                                                <span>Final Testing</span>
+                                            </li>
+                                            <li class="hww-content-item">
+                                                <span class="hww-chevron">&gt;</span>
+                                                <span>60% final payment</span>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </article>
 
-                            <!-- QUADRANT 4: BOTTOM-RIGHT — PHASE 4: MAINTENANCE -->
-                            <article class="hww-quadrant-card hww-q4 card-maintenance" data-quadrant="4" id="hww-phase-4">
+                            <!-- ==========================================================
+                                 STEP 4: BOTTOM-RIGHT (MAINTENANCE) - YELLOW THEME
+                                 ========================================================== -->
+                            <article class="hww-quadrant hww-quad-br hww-quadrant-card card-maintenance" id="quadrant4" data-quadrant="4">
                                 <div class="hww-card-inner">
-                                    <!-- Left Column: Interactive UI Mockup (24/7 Real-Time Telemetry & RLHF Loop) -->
-                                    <div class="hww-card-mockup">
-                                        <div class="hww-mockup-window mockup-maintenance mockup-p4" style="--phase-accent: var(--hww-p4-accent); --phase-glow: var(--hww-p4-glow);">
-                                            <div class="mockup-header-bar">
-                                                <div class="mockup-controls">
-                                                    <span class="control-dot red"></span>
-                                                    <span class="control-dot yellow"></span>
-                                                    <span class="control-dot green"></span>
-                                                </div>
-                                                <div class="mockup-window-title"><i class="fa-solid fa-heart-pulse"></i> 24/7 Telemetry &amp; RLHF Loop</div>
-                                                <span class="mockup-chip chip-yellow">Active Retainer</span>
+                                    <!-- Left Box: Visual Illustration -->
+                                    <div class="hww-card-visual hww-visual-step4 mockup-maintenance mockup-p4 hww-card-mockup">
+                                        <div class="hww-visual-title">
+                                            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                                            <span>Step 04 / Optimization</span>
+                                        </div>
+
+                                        <!-- 2-Column Stats Grid -->
+                                        <div class="hww-stats-grid">
+                                            <div class="hww-stat-box">
+                                                <div class="hww-stat-number">99.9%</div>
+                                                <div class="hww-stat-label">System Uptime</div>
                                             </div>
-                                            <div class="mockup-screen-body">
-                                                <div class="mockup-telemetry-grid">
-                                                    <div class="tele-col">
-                                                        <span class="tele-name">System Uptime</span>
-                                                        <span class="tele-val text-green">99.99%</span>
-                                                    </div>
-                                                    <div class="tele-col">
-                                                        <span class="tele-name">Avg Latency</span>
-                                                        <span class="tele-val text-blue">14ms</span>
-                                                    </div>
-                                                    <div class="tele-col">
-                                                        <span class="tele-name">RLHF Weights</span>
-                                                        <span class="tele-val text-yellow">v4.8 (Auto)</span>
-                                                    </div>
-                                                </div>
-                                                <div class="mockup-curve-container">
-                                                    <div class="curve-header-row">
-                                                        <span class="c-title"><i class="fa-solid fa-chart-line-up"></i> Exponential Learning Curve</span>
-                                                        <span class="c-gain">+412% Compounding</span>
-                                                    </div>
-                                                    <div class="curve-bars-visual" aria-hidden="true">
-                                                        <div class="c-bar" style="height: 30%;"></div>
-                                                        <div class="c-bar" style="height: 48%;"></div>
-                                                        <div class="c-bar" style="height: 65%;"></div>
-                                                        <div class="c-bar" style="height: 82%;"></div>
-                                                        <div class="c-bar peak" style="height: 100%;"></div>
-                                                    </div>
-                                                    <svg class="compounding-svg" viewBox="0 0 300 30" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Compounding ROI chart">
-                                                        <path d="M0 26 C50 25, 100 20, 150 14 C200 8, 250 3, 300 1" stroke="url(#p4Grad)" stroke-width="2.5" stroke-linecap="round"/>
-                                                        <path d="M0 26 C50 25, 100 20, 150 14 C200 8, 250 3, 300 1 L300 30 L0 30 Z" fill="url(#p4AreaGrad)" opacity="0.2"/>
-                                                        <defs>
-                                                            <linearGradient id="p4Grad" x1="0" y1="0" x2="300" y2="0" gradientUnits="userSpaceOnUse">
-                                                                <stop stop-color="#f59e0b"/>
-                                                                <stop offset="1" stop-color="#fbbf24"/>
-                                                            </linearGradient>
-                                                            <linearGradient id="p4AreaGrad" x1="0" y1="0" x2="0" y2="30" gradientUnits="userSpaceOnUse">
-                                                                <stop stop-color="#f59e0b"/>
-                                                                <stop offset="1" stop-color="transparent"/>
-                                                            </linearGradient>
-                                                        </defs>
-                                                    </svg>
-                                                </div>
-                                                <div class="mockup-optimize-banner">
-                                                    <i class="fa-solid fa-sparkles"></i>
-                                                    <span>Continuous Fine-Tuning &amp; Drift Guard Active</span>
-                                                </div>
+                                            <div class="hww-stat-box">
+                                                <div class="hww-stat-number">24/7</div>
+                                                <div class="hww-stat-label">Active Telemetry</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="hww-visual-row">
+                                            <div class="hww-row-left">
+                                                <span class="hww-check-icon">✓</span>
+                                                <span>Constantly Maintain System</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="hww-visual-row">
+                                            <div class="hww-row-left">
+                                                <span class="hww-check-icon">✓</span>
+                                                <span>Real-time Updates & Prompt Tuning</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="hww-visual-row">
+                                            <div class="hww-row-left">
+                                                <span class="hww-check-icon">✓</span>
+                                                <span>Dedicated Support Assurance</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <!-- Right Column: Deliverables Text Card -->
+                                    <!-- Right Box: Content Card -->
                                     <div class="hww-card-content">
-                                        <div class="hww-phase-badge badge-yellow">
-                                            <i class="fa-solid fa-arrows-spin"></i>
-                                            <span>PHASE 04</span>
+                                        <div>
+                                            <div class="hww-step-badge">
+                                                <span class="hww-step-badge-square" style="background: var(--accent-yellow, #f59e0b);"></span>
+                                                <span>Phase 4</span>
+                                            </div>
+                                            <h3 class="hww-content-heading hww-phase-title">Phase 4: Maintenance</h3>
+                                            <p class="hww-content-desc hww-phase-description">
+                                                We do not just integrate the system and leave you stranded if anything changes in your business, we constantly maintain it for optimal functionality.
+                                            </p>
                                         </div>
-                                        <h3 class="hww-phase-title">Phase 4: Maintenance</h3>
-                                        <p class="hww-phase-description">We do not just integrate the system and leave you stranded if anything changes in your business, we constantly maintain it for optimal functionality.</p>
-                                        
-                                        <div class="hww-points-box">
-                                            <h4 class="hww-points-heading">Key Deliverables:</h4>
-                                            <ul class="hww-points-list">
-                                                <li>
-                                                    <span class="point-icon yellow"><i class="fa-solid fa-circle-check"></i></span>
-                                                    <span class="point-text">Optional, we charge monthly retainer after opted for</span>
-                                                </li>
-                                                <li>
-                                                    <span class="point-icon yellow"><i class="fa-solid fa-circle-check"></i></span>
-                                                    <span class="point-text">Real time system updates, agent training and optimization</span>
-                                                </li>
-                                                <li>
-                                                    <span class="point-icon yellow"><i class="fa-solid fa-circle-check"></i></span>
-                                                    <span class="point-text">System exponentially improves and delivers exceptional results</span>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                        <ul class="hww-content-list hww-points-list">
+                                            <li class="hww-content-item">
+                                                <span class="hww-chevron">&gt;</span>
+                                                <span>Optional, we charge monthly retainer after opted for</span>
+                                            </li>
+                                            <li class="hww-content-item">
+                                                <span class="hww-chevron">&gt;</span>
+                                                <span>Real time system updates, agent training and optimization</span>
+                                            </li>
+                                            <li class="hww-content-item">
+                                                <span class="hww-chevron">&gt;</span>
+                                                <span>System exponentially improves and delivers exceptional results</span>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </article>
@@ -1326,7 +1258,7 @@
 
                         <!-- Bottom Section CTA Trigger -->
                         <div class="hww-cta-bar center">
-                            <button type="button" class="btn btn-primary open-modal-btn" data-modal="demo" data-modal-target="demo-modal" aria-label="Book Discovery Call Consultation">
+                            <button type="button" class="btn btn-primary open-modal-btn" data-modal="demo" data-modal-target="demo-modal" aria-label="Schedule Your Discovery Call">
                                 <span>Schedule Your Discovery Call</span>
                                 <i class="fa-solid fa-arrow-right"></i>
                             </button>
