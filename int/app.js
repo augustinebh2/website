@@ -315,63 +315,329 @@
     })();
 
     /* ==========================================================================
-       4. DISCOVER RESEARCH & ARTICLE FILTER MODULE
+       4. DISCOVER RESEARCH & RELEVANCE SEARCH MODULE
        ========================================================================== */
     const DiscoverFilterModule = (() => {
         let searchInput = null;
+        let clearBtn = null;
         let filterPills = [];
+        let articlesGrid = null;
         let articleCards = [];
+        let resultsCountEl = null;
+        let noResultsEl = null;
+        let emptyResetBtn = null;
+        let cardData = [];
 
         function init() {
             searchInput = document.getElementById('discover-search-input') ||
                 document.getElementById('search-input') ||
                 document.getElementById('article-search');
+            clearBtn = document.getElementById('discover-search-clear');
             filterPills = Array.from(document.querySelectorAll('.filter-pill, .category-pill'));
+            articlesGrid = document.getElementById('discover-articles-grid') || document.querySelector('.ind-grid-3');
             articleCards = Array.from(document.querySelectorAll('.discover-article-card, .case-card, .insight-card, .article-card, .whitepaper, .research-card'));
+            resultsCountEl = document.getElementById('discover-results-count');
+            noResultsEl = document.getElementById('discover-no-results');
+            emptyResetBtn = document.getElementById('empty-state-reset-btn');
 
             if (!searchInput && filterPills.length === 0 && articleCards.length === 0) return;
 
+            // Cache metadata for high-speed relevance calculation
+            cardData = articleCards.map((card, index) => {
+                const titleEl = card.querySelector('h3, .card-title, .case-title, .pillar-title');
+                const descEl = card.querySelector('p, .card-desc, .case-desc, .pillar-desc');
+                const rawTitle = card.getAttribute('data-title') || titleEl?.textContent?.trim() || '';
+                const rawDesc = card.getAttribute('data-summary') || descEl?.textContent?.trim() || '';
+
+                return {
+                    card,
+                    index,
+                    titleEl,
+                    descEl,
+                    rawTitle,
+                    rawDesc,
+                    titleText: rawTitle.toLowerCase(),
+                    descText: rawDesc.toLowerCase(),
+                    publisher: (card.getAttribute('data-publisher') || '').toLowerCase(),
+                    category: (card.getAttribute('data-category') || 'all').toLowerCase(),
+                    tags: (card.getAttribute('data-tags') || '').toLowerCase()
+                };
+            });
+
+            // Search input listeners
             if (searchInput) {
-                searchInput.addEventListener('input', debounce(filterArticles, 100));
+                searchInput.addEventListener('input', debounce(() => {
+                    updateClearButton();
+                    filterAndRankArticles();
+                }, 80));
+
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        searchInput.value = '';
+                        updateClearButton();
+                        searchInput.focus();
+                        filterAndRankArticles();
+                    });
+                }
             }
 
+            // Keyboard shortcut '/' to search
+            document.addEventListener('keydown', (e) => {
+                if (e.key === '/' && searchInput && document.activeElement !== searchInput) {
+                    const tag = document.activeElement?.tagName?.toLowerCase();
+                    if (tag !== 'input' && tag !== 'textarea') {
+                        e.preventDefault();
+                        searchInput.focus();
+                        searchInput.select();
+                    }
+                }
+            });
+
+            // Category pills listeners
             filterPills.forEach(pill => {
                 pill.addEventListener('click', (e) => {
                     e.preventDefault();
-                    filterPills.forEach(p => p.classList.remove('active'));
+                    filterPills.forEach(p => {
+                        p.classList.remove('active');
+                        p.setAttribute('aria-pressed', 'false');
+                    });
                     pill.classList.add('active');
-                    filterArticles();
+                    pill.setAttribute('aria-pressed', 'true');
+                    filterAndRankArticles();
                 });
             });
+
+            // Empty state reset button
+            if (emptyResetBtn) {
+                emptyResetBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    if (searchInput) searchInput.value = '';
+                    updateClearButton();
+                    const allPill = filterPills.find(p => (p.getAttribute('data-category') || 'all') === 'all');
+                    if (allPill) {
+                        filterPills.forEach(p => {
+                            p.classList.remove('active');
+                            p.setAttribute('aria-pressed', 'false');
+                        });
+                        allPill.classList.add('active');
+                        allPill.setAttribute('aria-pressed', 'true');
+                    }
+                    filterAndRankArticles();
+                    if (searchInput) searchInput.focus();
+                });
+            }
+
+            // Initial calculation
+            updateClearButton();
+            updatePillCounts();
+            filterAndRankArticles();
         }
 
-        function filterArticles() {
+        function updateClearButton() {
+            if (!clearBtn || !searchInput) return;
+            clearBtn.style.display = searchInput.value.trim().length > 0 ? 'inline-flex' : 'none';
+        }
+
+        function updatePillCounts() {
             const rawQuery = searchInput ? searchInput.value : '';
             const normalizedQuery = (rawQuery || '').trim().toLowerCase();
-            const activePill = document.querySelector('.filter-pill.active, .category-pill.active');
-            const selectedCategory = activePill ? (activePill.getAttribute('data-category') || 'all').toLowerCase() : 'all';
+            const tokens = normalizedQuery.split(/\s+/).filter(t => t.length > 0);
 
-            articleCards.forEach(card => {
-                const title = card.querySelector('h3, .card-title, .case-title, .pillar-title')?.textContent.toLowerCase() || '';
-                const desc = card.querySelector('p, .card-desc, .case-desc, .pillar-desc')?.textContent.toLowerCase() || '';
-                const category = (card.getAttribute('data-category') || 'all').toLowerCase();
+            const counts = { all: 0 };
+            filterPills.forEach(pill => {
+                const cat = pill.getAttribute('data-category') || 'all';
+                counts[cat] = 0;
+            });
 
-                const matchesCategory = selectedCategory === 'all' || category === selectedCategory;
-                const matchesQuery = !normalizedQuery || title.includes(normalizedQuery) || desc.includes(normalizedQuery);
+            cardData.forEach(item => {
+                let matchesSearch = true;
+                if (tokens.length > 0) {
+                    matchesSearch = tokens.some(token =>
+                        item.titleText.includes(token) ||
+                        item.descText.includes(token) ||
+                        item.publisher.includes(token) ||
+                        item.tags.includes(token) ||
+                        item.category.includes(token)
+                    );
+                }
+                if (matchesSearch) {
+                    counts.all = (counts.all || 0) + 1;
+                    if (counts[item.category] !== undefined) {
+                        counts[item.category]++;
+                    }
+                }
+            });
 
-                if (matchesCategory && matchesQuery) {
-                    card.style.display = '';
-                    card.style.opacity = '1';
-                    card.style.transform = 'scale(1)';
-                } else {
-                    card.style.opacity = '0';
-                    card.style.transform = 'scale(0.95)';
-                    card.style.display = 'none';
+            filterPills.forEach(pill => {
+                const cat = pill.getAttribute('data-category') || 'all';
+                const countEl = pill.querySelector('.pill-count');
+                if (countEl && counts[cat] !== undefined) {
+                    countEl.textContent = counts[cat];
                 }
             });
         }
 
-        return { init, filterArticles };
+        function filterAndRankArticles() {
+            const rawQuery = searchInput ? searchInput.value : '';
+            const normalizedQuery = (rawQuery || '').trim().toLowerCase();
+            const activePill = document.querySelector('.filter-pill.active, .category-pill.active');
+            const selectedCategory = activePill ? (activePill.getAttribute('data-category') || 'all').toLowerCase() : 'all';
+            const tokens = normalizedQuery.split(/\s+/).filter(t => t.length > 0);
+
+            let visibleCount = 0;
+            const scoredCards = [];
+
+            cardData.forEach(item => {
+                const matchesCategory = selectedCategory === 'all' || item.category === selectedCategory;
+
+                if (!matchesCategory) {
+                    scoredCards.push({ ...item, score: -1, isVisible: false });
+                    return;
+                }
+
+                if (tokens.length === 0) {
+                    scoredCards.push({ ...item, score: 100 - item.index, isVisible: true });
+                    visibleCount++;
+                    return;
+                }
+
+                let score = 0;
+                let matchedAny = false;
+
+                // Exact full phrase bonuses
+                if (normalizedQuery.length > 2) {
+                    if (item.titleText.includes(normalizedQuery)) score += 45;
+                    if (item.publisher.includes(normalizedQuery)) score += 40;
+                    if (item.tags.includes(normalizedQuery)) score += 30;
+                    if (item.descText.includes(normalizedQuery)) score += 20;
+                }
+
+                // Token-level scoring
+                tokens.forEach(token => {
+                    let tokenMatched = false;
+                    if (item.publisher.includes(token)) {
+                        score += 20;
+                        tokenMatched = true;
+                    }
+                    if (item.titleText.includes(token)) {
+                        score += 16;
+                        tokenMatched = true;
+                    }
+                    if (item.tags.includes(token)) {
+                        score += 12;
+                        tokenMatched = true;
+                    }
+                    if (item.category.includes(token)) {
+                        score += 10;
+                        tokenMatched = true;
+                    }
+                    if (item.descText.includes(token)) {
+                        score += 6;
+                        tokenMatched = true;
+                    }
+                    if (tokenMatched) matchedAny = true;
+                });
+
+                // All tokens matched bonus
+                const allTokensMatch = tokens.every(token =>
+                    item.titleText.includes(token) ||
+                    item.descText.includes(token) ||
+                    item.publisher.includes(token) ||
+                    item.tags.includes(token) ||
+                    item.category.includes(token)
+                );
+
+                if (allTokensMatch) score += 25;
+
+                if (matchedAny && score > 0) {
+                    scoredCards.push({ ...item, score, isVisible: true });
+                    visibleCount++;
+                } else {
+                    scoredCards.push({ ...item, score: 0, isVisible: false });
+                }
+            });
+
+            // Sort visible cards by relevance score descending, then original index
+            const visibleCards = scoredCards.filter(c => c.isVisible);
+            visibleCards.sort((a, b) => b.score - a.score || a.index - b.index);
+
+            // Reorder in DOM so top-ranked articles pop up first
+            if (articlesGrid) {
+                visibleCards.forEach(item => {
+                    item.card.style.display = '';
+                    item.card.style.opacity = '1';
+                    item.card.style.transform = 'scale(1)';
+                    articlesGrid.appendChild(item.card);
+                    applyHighlight(item, tokens);
+                });
+
+                scoredCards.filter(c => !c.isVisible).forEach(item => {
+                    item.card.style.display = 'none';
+                    item.card.style.opacity = '0';
+                    item.card.style.transform = 'scale(0.96)';
+                    resetHighlight(item);
+                });
+            }
+
+            // Update status text
+            if (resultsCountEl) {
+                const categoryLabel = activePill ? (activePill.querySelector('span:first-child')?.textContent || 'resources') : 'resources';
+                if (normalizedQuery) {
+                    resultsCountEl.textContent = `Showing ${visibleCount} ${visibleCount === 1 ? 'result' : 'results'} for "${rawQuery.trim()}"`;
+                } else if (selectedCategory === 'all') {
+                    resultsCountEl.textContent = `Showing all ${visibleCount} articles`;
+                } else {
+                    resultsCountEl.textContent = `Showing ${visibleCount} ${visibleCount === 1 ? 'article' : 'articles'} in ${categoryLabel}`;
+                }
+            }
+
+            // Toggle empty state
+            if (noResultsEl) {
+                noResultsEl.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+
+            updatePillCounts();
+        }
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function applyHighlight(item, tokens) {
+            if (!item.titleEl || !item.descEl) return;
+            if (tokens.length === 0) {
+                resetHighlight(item);
+                return;
+            }
+
+            const cleanTokens = tokens.map(t => escapeRegExp(t)).filter(t => t.length > 1);
+            if (cleanTokens.length === 0) return;
+
+            const regex = new RegExp(`(${cleanTokens.join('|')})`, 'gi');
+            
+            const titleLink = item.titleEl.querySelector('a');
+            if (titleLink) {
+                titleLink.innerHTML = item.rawTitle.replace(regex, '<mark class="search-highlight">$1</mark>');
+            } else {
+                item.titleEl.innerHTML = item.rawTitle.replace(regex, '<mark class="search-highlight">$1</mark>');
+            }
+
+            item.descEl.innerHTML = item.rawDesc.replace(regex, '<mark class="search-highlight">$1</mark>');
+        }
+
+        function resetHighlight(item) {
+            if (!item.titleEl || !item.descEl) return;
+            const titleLink = item.titleEl.querySelector('a');
+            if (titleLink) {
+                titleLink.textContent = item.rawTitle;
+            } else {
+                item.titleEl.textContent = item.rawTitle;
+            }
+            item.descEl.textContent = item.rawDesc;
+        }
+
+        return { init, filterArticles: filterAndRankArticles };
     })();
 
     /* ==========================================================================
