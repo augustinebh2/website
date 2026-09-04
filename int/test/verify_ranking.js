@@ -160,36 +160,14 @@ if (r5[0].item.publisher === 'IBM Think') {
     passed = false;
 }
 
-// Test 6: Category Filter "case-studies"
-console.log('\n--- Test 6: Category Filter "case-studies" ---');
-const r6 = rankSearch('', 'case-studies');
-console.log(`Total items in case-studies: ${r6.length}`);
-if (r6.length === 1 && r6[0].item.publisher === 'Deloitte') {
-    console.log('[PASS] Exactly 1 case study item returned (Deloitte)');
+// Test 6: Default (all articles returned)
+console.log('\n--- Test 6: Default State (No Filter) ---');
+const r6 = rankSearch('');
+console.log(`Total items returned without filter: ${r6.length}`);
+if (r6.length === 6) {
+    console.log('[PASS] Exactly 6 items returned in default state');
 } else {
-    console.error(`[FAIL] Expected 1 item, got ${r6.length}`);
-    passed = false;
-}
-
-// Test 7: Category Filter "strategy"
-console.log('\n--- Test 7: Category Filter "strategy" ---');
-const r7 = rankSearch('', 'strategy');
-console.log(`Total items in strategy: ${r7.length}`);
-if (r7.length === 3) {
-    console.log('[PASS] Exactly 3 strategy items returned');
-} else {
-    console.error(`[FAIL] Expected 3 items, got ${r7.length}`);
-    passed = false;
-}
-
-// Test 8: Category Filter "workforce-sa"
-console.log('\n--- Test 8: Category Filter "workforce-sa" ---');
-const r8 = rankSearch('', 'workforce-sa');
-console.log(`Total items in workforce-sa: ${r8.length}`);
-if (r8.length === 2) {
-    console.log('[PASS] Exactly 2 workforce-sa items returned');
-} else {
-    console.error(`[FAIL] Expected 2 items, got ${r8.length}`);
+    console.error(`[FAIL] Expected 6 items, got ${r6.length}`);
     passed = false;
 }
 

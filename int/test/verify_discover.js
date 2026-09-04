@@ -24,7 +24,7 @@ requiredUrls.forEach(url => {
     }
 });
 
-console.log('\n=== 2. VERIFYING REMOVED ELEMENTS ===');
+console.log('\n=== 2. VERIFYING REMOVED ELEMENTS & BADGES ===');
 const forbiddenStrings = [
     'INSIGHTS & INTELLIGENCE',
     'INSIGHTS &amp; INTELLIGENCE',
@@ -35,7 +35,9 @@ const forbiddenStrings = [
     'SOC2 &amp; HIPAA Compliant Guardrails',
     'Global Fintech Reduces Claims Processing Time',
     'The 2026 Executive Guide to Agentic Engineering',
-    'search-key-hint'
+    'search-key-hint',
+    'category-pills-row',
+    'shimmer-badge'
 ];
 
 forbiddenStrings.forEach(str => {
@@ -47,7 +49,16 @@ forbiddenStrings.forEach(str => {
     }
 });
 
-console.log('\n=== 3. VERIFYING TOTAL ARTICLES COUNT ===');
+console.log('\n=== 3. VERIFYING SUBTITLE ===');
+const expectedSubtitle = 'articles to help you understand basics of AI Implementation and how it is important for your business';
+if (html.includes(expectedSubtitle)) {
+    console.log(`[PASS] Subtitle present: "${expectedSubtitle}"`);
+} else {
+    console.error(`[FAIL] Subtitle missing: "${expectedSubtitle}"`);
+    allPassed = false;
+}
+
+console.log('\n=== 4. VERIFYING TOTAL ARTICLES COUNT ===');
 const matches = html.match(/class="glass-card discover-article-card/g) || [];
 console.log(`Total discover article cards: ${matches.length}`);
 if (matches.length === 6) {
@@ -56,17 +67,6 @@ if (matches.length === 6) {
     console.error(`[FAIL] Expected exactly 6 article cards, got ${matches.length}`);
     allPassed = false;
 }
-
-console.log('\n=== 4. VERIFYING CATEGORY TABS ===');
-const categories = ['all', 'case-studies', 'strategy', 'workforce-sa'];
-categories.forEach(cat => {
-    if (html.includes(`data-category="${cat}"`)) {
-        console.log(`[PASS] Category tab present: ${cat}`);
-    } else {
-        console.error(`[FAIL] Category tab missing: ${cat}`);
-        allPassed = false;
-    }
-});
 
 if (allPassed) {
     console.log('\n>>> ALL DISCOVER HTML CHECKS PASSED! <<<');
