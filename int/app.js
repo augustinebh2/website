@@ -1249,7 +1249,7 @@
     })();
 
     /* ==========================================================================
-       9. HOW WE WORK: 2.5D SPATIAL MOTION & CAMERA CONTROLLER MODULE
+       9. HOW WE WORK: SPATIAL ZOOM CANVAS & 4-PHASE LIFECYCLE
        ========================================================================== */
     const HowWeWorkModule = (function () {
         let isInitialized = false;
@@ -1259,10 +1259,9 @@
         let introFrameEl = null;
         let stateIntroEl = null;
         let statePlatformEl = null;
-        let scrubberProgressEl = null;
-        let navPills = [];
         let cornerTags = [];
         let quadrantCards = [];
+        let hudWireframe = null;
 
         let currentProgress = 0;
         let targetProgress = 0;
@@ -1271,55 +1270,67 @@
         let observer = null;
         let boundScrollHandler = null;
         let boundResizeHandler = null;
-        let activePhaseIndex = 1;
+        let activePhaseIndex = 0;
 
-        const LERP_FACTOR = 0.1; // Smooth jank-free damping bounded between 0.05 and 0.20
+        const LERP_FACTOR = 0.04;
 
-        // 2.5D Camera Keyframe Waypoints (Stages 0 to 5)
-        // Stage 0: Overview (scale 1.00, x: 0, y: 0)
-        // Stage 1: Top-Right (Discovery Call) -> translateX -24%, translateY +24%
-        // Stage 2: Top-Left (Building Phase) -> translateX +24%, translateY +24%
-        // Stage 3: Bottom-Left (Integrating Phase) -> translateX +24%, translateY -24%
-        // Stage 4: Bottom-Right (Maintenance) -> translateX -24%, translateY -24%
-        // Stage 5: Ecosystem Zoom-Out Overview -> scale 1.00, x: 0, y: 0
-        const CAMERA_ANCHORS = [
-            { p: 0.00, scale: 1.00, x: 0, y: 0, stage: 0 },
-            { p: 0.08, scale: 1.00, x: 0, y: 0, stage: 0 },
-            { p: 0.25, scale: 1.85, x: -24, y: 24, stage: 1 },
-            { p: 0.45, scale: 1.85, x: 24, y: 24, stage: 2 },
-            { p: 0.65, scale: 1.85, x: 24, y: -24, stage: 3 },
-            { p: 0.825, scale: 1.85, x: -24, y: -24, stage: 4 },
-            { p: 0.95, scale: 1.00, x: 0, y: 0, stage: 5 },
-            { p: 1.00, scale: 1.00, x: 0, y: 0, stage: 5 }
-        ];
+        function getWaypoints() {
+            const ww = typeof window !== 'undefined' ? window.innerWidth : 1200;
+            const wh = typeof window !== 'undefined' ? window.innerHeight : 800;
+            const isMobile = ww < 768;
 
-        // Sanitize phase index input
-        function sanitizeGotoIndex(val) {
-            const num = parseInt(val, 10);
-            if (isNaN(num) || num < 1) return 1;
-            if (num > 4) return 4;
-            return num;
+            const vwScale = ww / 1200;
+            const vhScale = wh / 700;
+            const overviewScale = Math.min(vwScale, vhScale) * (isMobile ? 0.95 : 0.85);
+
+            const zoomScale = Math.min(ww / 540, wh / 300) * (isMobile ? 0.9 : 0.65);
+
+            const dx = 290;
+            const dy = 160;
+
+            return [
+                { p: 0.00, scale: overviewScale, x: 0, y: 0, stage: 0 },
+                { p: 0.12, scale: overviewScale, x: 0, y: 0, stage: 0 },
+
+                // Stage 1: Top Right (Discovery)
+                { p: 0.22, scale: zoomScale, x: -dx, y: dy, stage: 1 },
+                { p: 0.32, scale: zoomScale, x: -dx, y: dy, stage: 1 },
+
+                // Stage 2: Top Left (Building)
+                { p: 0.42, scale: zoomScale, x: dx, y: dy, stage: 2 },
+                { p: 0.52, scale: zoomScale, x: dx, y: dy, stage: 2 },
+
+                // Stage 3: Bottom Left (Integration)
+                { p: 0.62, scale: zoomScale, x: dx, y: -dy, stage: 3 },
+                { p: 0.72, scale: zoomScale, x: dx, y: -dy, stage: 3 },
+
+                // Stage 4: Bottom Right (Maintenance)
+                { p: 0.82, scale: zoomScale, x: -dx, y: -dy, stage: 4 },
+                { p: 0.88, scale: zoomScale, x: -dx, y: -dy, stage: 4 },
+
+                // Stage 5: Outro
+                { p: 0.98, scale: overviewScale, x: 0, y: 0, stage: 5 },
+                { p: 1.00, scale: overviewScale, x: 0, y: 0, stage: 5 }
+            ];
         }
 
-        // Hermite smoothstep interpolation
+        let waypoints = getWaypoints();
+
         function smoothstep(t) {
             const clamped = Math.max(0, Math.min(1, t));
             return clamped * clamped * (3 - 2 * clamped);
         }
 
-        // Camera Matrix Calculation from Progress (0.00 to 1.00)
         function computeCameraTransform(progress) {
-            const numP = (typeof progress === 'number' && !isNaN(progress)) ? progress : 0;
-            const clampedP = Math.max(0, Math.min(1, numP));
+            const clampedP = Math.max(0, Math.min(1, progress || 0));
 
-            // Find segment in CAMERA_ANCHORS
-            let aCurrent = CAMERA_ANCHORS[0];
-            let aNext = CAMERA_ANCHORS[CAMERA_ANCHORS.length - 1];
+            let aCurrent = waypoints[0];
+            let aNext = waypoints[waypoints.length - 1];
 
-            for (let i = 0; i < CAMERA_ANCHORS.length - 1; i++) {
-                if (clampedP >= CAMERA_ANCHORS[i].p && clampedP <= CAMERA_ANCHORS[i + 1].p) {
-                    aCurrent = CAMERA_ANCHORS[i];
-                    aNext = CAMERA_ANCHORS[i + 1];
+            for (let i = 0; i < waypoints.length - 1; i++) {
+                if (clampedP >= waypoints[i].p && clampedP <= waypoints[i + 1].p) {
+                    aCurrent = waypoints[i];
+                    aNext = waypoints[i + 1];
                     break;
                 }
             }
@@ -1332,221 +1343,134 @@
             const x = aCurrent.x + (aNext.x - aCurrent.x) * easedT;
             const y = aCurrent.y + (aNext.y - aCurrent.y) * easedT;
 
-            // Determine stage based on progress boundaries
-            let currentStage = 0;
-            if (clampedP < 0.15) {
-                currentStage = 0;
-            } else if (clampedP < 0.35) {
-                currentStage = 1;
-            } else if (clampedP < 0.55) {
-                currentStage = 2;
-            } else if (clampedP < 0.75) {
-                currentStage = 3;
-            } else if (clampedP < 0.90) {
-                currentStage = 4;
-            } else {
-                currentStage = 5;
-            }
+            let stage = 0;
+            if (clampedP < 0.12) stage = 0;
+            else if (clampedP < 0.37) stage = 1;
+            else if (clampedP < 0.57) stage = 2;
+            else if (clampedP < 0.77) stage = 3;
+            else if (clampedP < 0.93) stage = 4;
+            else stage = 5;
 
             return {
-                stage: currentStage,
+                stage,
                 scale: parseFloat(scale.toFixed(4)),
-                translateX: parseFloat(x.toFixed(2)),
-                translateY: parseFloat(y.toFixed(2)),
-                transformString: `scale(${scale.toFixed(4)}) translate3d(${x.toFixed(2)}%, ${y.toFixed(2)}%, 0px)`
+                x: parseFloat(x.toFixed(2)),
+                y: parseFloat(y.toFixed(2))
             };
         }
 
-        // Target scroll progress from current window position
         function computeTargetProgress() {
             if (!trackEl) return 0;
             const rect = trackEl.getBoundingClientRect();
-            const viewportHeight = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 1;
-            const trackHeight = trackEl.offsetHeight || rect.height || 1;
-            const scrollableDistance = Math.max(1, trackHeight - viewportHeight);
-            const scrollY = -rect.top;
-            const rawProgress = scrollY / scrollableDistance;
-
-            if (isNaN(rawProgress)) return 0;
+            const viewportHeight = window.innerHeight || 1;
+            const trackHeight = trackEl.offsetHeight || 1;
+            const scrollable = Math.max(1, trackHeight - viewportHeight);
+            const rawProgress = -rect.top / scrollable;
             return Math.max(0, Math.min(1, rawProgress));
         }
+        
+        // Exact mathematical fade mappings based on your requirements
+        function calculateOpacityForQuadrant(qNum, p) {
+            let op = 0;
+            if (qNum === 1) { // Top Right
+                if (p < 0.12) op = 0;
+                else if (p < 0.22) op = (p - 0.12) / 0.10;
+                else if (p <= 0.32) op = 1;
+                else if (p < 0.37) op = 1 - ((p - 0.32) / 0.05);
+                else op = 0;
+            } else if (qNum === 2) { // Top Left
+                if (p < 0.37) op = 0;
+                else if (p < 0.42) op = (p - 0.37) / 0.05;
+                else if (p <= 0.52) op = 1;
+                else if (p < 0.57) op = 1 - ((p - 0.52) / 0.05);
+                else op = 0;
+            } else if (qNum === 3) { // Bottom Left
+                if (p < 0.57) op = 0;
+                else if (p < 0.62) op = (p - 0.57) / 0.05;
+                else if (p <= 0.72) op = 1;
+                else if (p < 0.77) op = 1 - ((p - 0.72) / 0.05);
+                else op = 0;
+            } else if (qNum === 4) { // Bottom Right
+                if (p < 0.77) op = 0;
+                else if (p < 0.82) op = (p - 0.77) / 0.05;
+                else if (p <= 0.88) op = 1;
+                else if (p < 0.98) op = 1 - ((p - 0.88) / 0.10);
+                else op = 0;
+            }
+            return Math.max(0, Math.min(1, op));
+        }
 
-        // Render one animation frame for visual synchronization
         function renderFrame(progress) {
             const matrix = computeCameraTransform(progress);
             const stage = matrix.stage;
-
-            // Map stage to active phase (1 to 4)
-            if (stage === 0 || stage === 1) {
-                activePhaseIndex = 1;
-            } else if (stage === 2) {
-                activePhaseIndex = 2;
-            } else if (stage === 3) {
-                activePhaseIndex = 3;
+            
+            if (stage >= 1 && stage <= 4) {
+                activePhaseIndex = stage;
             } else {
-                activePhaseIndex = 4;
+                activePhaseIndex = 0;
             }
 
-            // 1. Camera Canvas Matrix Transformation
-            if (canvasEl && canvasEl.style) {
-                const prefersReducedMotion = typeof window !== 'undefined' &&
-                    window.matchMedia &&
-                    typeof window.matchMedia === 'function' &&
-                    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-                const isMobileReflow = typeof window !== 'undefined' && window.innerWidth && window.innerWidth <= 992;
-
-                if (prefersReducedMotion) {
-                    canvasEl.style.transform = 'none';
-                } else if (isMobileReflow) {
-                    canvasEl.style.transform = '';
-                } else {
-                    canvasEl.style.transform = matrix.transformString;
-                }
+            if (canvasEl) {
+                canvasEl.style.transform = `scale(${matrix.scale}) translate3d(${matrix.x}px, ${matrix.y}px, 0)`;
             }
 
-            // 2. Intro / Outro Center Frame State Switching
             if (introFrameEl) {
-                if (progress < 0.12) {
-                    // Stage 0: Initial "How we work" view
-                    if (introFrameEl.classList) {
-                        introFrameEl.classList.remove('faded', 'hidden', 'is-dimmed', 'hww-hidden');
-                    }
-                    if (introFrameEl.style) {
-                        introFrameEl.style.opacity = '';
-                        introFrameEl.style.pointerEvents = '';
-                        introFrameEl.style.visibility = '';
-                    }
-                    if (stateIntroEl && stateIntroEl.style) stateIntroEl.style.display = 'block';
-                    if (statePlatformEl && statePlatformEl.style) statePlatformEl.style.display = 'none';
-                } else if (progress > 0.90) {
-                    // Stage 5: Final Ecosystem "The Intellectir Platform" & Explore Solutions CTA
-                    if (introFrameEl.classList) {
-                        introFrameEl.classList.remove('faded', 'hidden', 'is-dimmed', 'hww-hidden');
-                    }
-                    if (introFrameEl.style) {
-                        introFrameEl.style.opacity = '';
-                        introFrameEl.style.pointerEvents = '';
-                        introFrameEl.style.visibility = '';
-                    }
-                    if (stateIntroEl && stateIntroEl.style) stateIntroEl.style.display = 'none';
-                    if (statePlatformEl && statePlatformEl.style) statePlatformEl.style.display = 'block';
+                if (stage === 0) {
+                    introFrameEl.style.opacity = '1';
+                    if (stateIntroEl) stateIntroEl.style.display = 'block';
+                    if (statePlatformEl) statePlatformEl.style.display = 'none';
+                } else if (stage === 5) {
+                    introFrameEl.style.opacity = '1';
+                    if (stateIntroEl) stateIntroEl.style.display = 'none';
+                    if (statePlatformEl) statePlatformEl.style.display = 'block';
+                    
+                    const titleOutro = document.getElementById('outroTitle');
+                    if (titleOutro) titleOutro.style.opacity = '1';
                 } else {
-                    // Stages 1–4: Panned focus onto active quadrant card
-                    if (introFrameEl.classList) {
-                        introFrameEl.classList.add('faded', 'hidden', 'is-dimmed', 'hww-hidden');
-                    }
-                    if (introFrameEl.style) {
-                        introFrameEl.style.pointerEvents = 'none';
-                    }
+                    introFrameEl.style.opacity = '0';
+                    if (stateIntroEl) stateIntroEl.style.display = 'none';
                 }
             }
 
-            // 3. Scrubber Pills Active Synchronization
-            navPills.forEach(pill => {
-                if (!pill) return;
-                const goto = sanitizeGotoIndex(pill.getAttribute ? pill.getAttribute('data-hww-goto') : null);
-                const isActive = goto === activePhaseIndex;
-                if (pill.classList) pill.classList.toggle('active', isActive);
-                if (pill.setAttribute) pill.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            quadrantCards.forEach(card => {
+                if (!card) return;
+                const qNum = parseInt(card.getAttribute('data-quadrant'), 10);
+                card.style.opacity = calculateOpacityForQuadrant(qNum, progress).toFixed(3);
             });
 
-            // 4. Scrubber Progress Line Width
-            if (scrubberProgressEl && scrubberProgressEl.style) {
-                const pct = Math.max(0, Math.min(100, progress * 100));
-                scrubberProgressEl.style.width = `${pct}%`;
-            }
-
-            // 5. HUD Corner Boundary Tags Illumination
-            // Stage 0 and Stage 5 illuminate all 4 corner tags; Stages 1-4 isolate specific active tag
-            const cornerTagMap = {
-                1: 'discovery',
-                2: 'building',
-                3: 'integrating',
-                4: 'maintenance'
-            };
+            const phaseToCornerMap = { 1: 'discovery', 2: 'building', 3: 'integrating', 4: 'maintenance' };
+            const activeCorner = phaseToCornerMap[activePhaseIndex];
 
             cornerTags.forEach(tag => {
                 if (!tag) return;
-                const cornerName = tag.getAttribute ? tag.getAttribute('data-corner') : null;
+                const cornerName = tag.getAttribute('data-corner');
                 if (stage === 0 || stage === 5) {
-                    if (tag.classList) {
-                        tag.classList.add('active');
-                        tag.classList.remove('hww-corner-active');
-                    }
+                    tag.style.opacity = '1';
+                    tag.style.transform = 'scale(1)';
+                    const square = tag.querySelector('.hww-node-square');
+                    if (square) square.style.boxShadow = '';
+                } else if (cornerName === activeCorner) {
+                    tag.style.opacity = '1';
+                    tag.style.transform = 'scale(1.04)';
                 } else {
-                    const activeCornerName = cornerTagMap[activePhaseIndex];
-                    const isActive = cornerName === activeCornerName;
-                    if (tag.classList) {
-                        tag.classList.toggle('active', isActive);
-                        tag.classList.toggle('hww-corner-active', isActive);
-                    }
+                    tag.style.opacity = '0.4';
+                    tag.style.transform = 'scale(0.95)';
                 }
             });
-
-            // 6. Quadrant Cards Active Illumination
-            quadrantCards.forEach(card => {
-                if (!card) return;
-                const qNum = parseInt(card.getAttribute ? card.getAttribute('data-quadrant') : '', 10);
+            
+            if (hudWireframe) {
                 if (stage === 0 || stage === 5) {
-                    if (card.classList) {
-                        card.classList.remove('active');
-                        card.classList.remove('hww-active');
-                    }
+                    hudWireframe.style.opacity = '1';
                 } else {
-                    const isActive = qNum === activePhaseIndex;
-                    if (card.classList) {
-                        card.classList.toggle('active', isActive);
-                        card.classList.toggle('hww-active', isActive);
-                    }
-                }
-            });
-
-            // 7. Section-Level State Classes (hww-zoomed, hww-phase-N, hww-stage-N)
-            if (sectionEl && sectionEl.classList) {
-                const isZoomed = stage >= 1 && stage <= 4;
-                sectionEl.classList.toggle('hww-zoomed', isZoomed);
-
-                // Phase-specific HUD border glow
-                for (let p = 1; p <= 4; p++) {
-                    sectionEl.classList.toggle(`hww-phase-${p}`, isZoomed && activePhaseIndex === p);
-                }
-
-                // Stage classes for CTA bar and nav scrubber
-                for (let s = 0; s <= 5; s++) {
-                    sectionEl.classList.toggle(`hww-stage-${s}`, stage === s);
+                    hudWireframe.style.opacity = '0.3';
                 }
             }
         }
 
-        // Cross-environment RAF wrappers
-        function requestNextFrame(callback) {
-            if (typeof window !== 'undefined' && typeof window.requestAnimationFrame === 'function') {
-                return window.requestAnimationFrame(callback);
-            }
-            if (typeof requestAnimationFrame === 'function') {
-                return requestAnimationFrame(callback);
-            }
-            return setTimeout(callback, 16);
-        }
-
-        function cancelFrame(id) {
-            if (typeof window !== 'undefined' && typeof window.cancelAnimationFrame === 'function') {
-                window.cancelAnimationFrame(id);
-                return;
-            }
-            if (typeof cancelAnimationFrame === 'function') {
-                cancelAnimationFrame(id);
-                return;
-            }
-            clearTimeout(id);
-        }
-
-        // Animation Loop
         function loop() {
             if (!isLoopRunning) return;
-
             const delta = targetProgress - currentProgress;
+            
             if (Math.abs(delta) < 0.0001) {
                 currentProgress = targetProgress;
             } else {
@@ -1554,8 +1478,7 @@
             }
 
             renderFrame(currentProgress);
-
-            rafId = requestNextFrame(loop);
+            rafId = window.requestAnimationFrame(loop);
         }
 
         function startLoop() {
@@ -1567,105 +1490,48 @@
         function stopLoop() {
             isLoopRunning = false;
             if (rafId) {
-                cancelFrame(rafId);
+                window.cancelAnimationFrame(rafId);
                 rafId = null;
             }
         }
 
-        // Scroll listener
         function onScroll() {
             targetProgress = computeTargetProgress();
         }
 
-        // Resize listener
         function onResize() {
+            waypoints = getWaypoints();
             targetProgress = computeTargetProgress();
             renderFrame(currentProgress);
         }
 
-        // Programmatic Scroll to Phase (1..4)
-        function scrollToPhase(phaseIndex) {
-            const sanitized = sanitizeGotoIndex(phaseIndex);
-            const targetPhaseProgressMap = {
-                1: 0.25,
-                2: 0.45,
-                3: 0.65,
-                4: 0.825
-            };
-            const phaseP = targetPhaseProgressMap[sanitized] || 0.25;
-
-            if (!trackEl) return;
-            const rect = trackEl.getBoundingClientRect();
-            const scrollY = (typeof window !== 'undefined' && window.pageYOffset) ? window.pageYOffset : (document.documentElement.scrollTop || 0);
-            const trackAbsoluteTop = scrollY + (rect ? rect.top : 0);
-            const viewportHeight = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 1;
-            const trackHeight = trackEl.offsetHeight || (rect ? rect.height : 1);
-            const scrollableDistance = Math.max(1, trackHeight - viewportHeight);
-
-            const targetScrollTop = trackAbsoluteTop + (phaseP * scrollableDistance);
-
-            if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
-                window.scrollTo({
-                    top: targetScrollTop,
-                    behavior: 'smooth'
-                });
-            }
-        }
-
-        // Active Phase Query
-        function getActivePhase() {
-            return activePhaseIndex;
-        }
-
-        // Initialization
         function init() {
-            if (typeof document === 'undefined') return { initialized: false, reason: 'Document missing' };
+            if (isInitialized) return;
 
             sectionEl = document.getElementById('how-we-work-section');
-            if (!sectionEl) return { initialized: false, reason: 'Root element missing' };
+            if (!sectionEl) return;
 
-            if (isInitialized) return { initialized: true, alreadyInitialized: true };
-            isInitialized = true;
+            trackEl = document.getElementById('hww-track');
+            canvasEl = document.getElementById('hww-spatial-canvas');
+            introFrameEl = document.getElementById('hww-intro-frame');
+            stateIntroEl = document.getElementById('hww-state-intro');
+            statePlatformEl = document.getElementById('hww-state-platform');
+            hudWireframe = document.querySelector('.hww-wireframe');
+            
+            cornerTags = Array.from(document.querySelectorAll('.hww-corner-node'));
+            quadrantCards = Array.from(document.querySelectorAll('.hww-quadrant'));
 
-            trackEl = document.getElementById('hww-track') || (sectionEl.querySelector ? sectionEl.querySelector('.hww-track') : null);
-            canvasEl = document.getElementById('hww-spatial-canvas') || (sectionEl.querySelector ? sectionEl.querySelector('.hww-spatial-canvas') : null);
-            introFrameEl = document.getElementById('hww-intro-frame') || (sectionEl.querySelector ? sectionEl.querySelector('.hww-intro-frame') : null);
-            stateIntroEl = document.getElementById('hww-state-intro') || (introFrameEl && introFrameEl.querySelector ? introFrameEl.querySelector('.state-intro') : null);
-            statePlatformEl = document.getElementById('hww-state-platform') || (introFrameEl && introFrameEl.querySelector ? introFrameEl.querySelector('.state-platform') : null);
-            scrubberProgressEl = document.getElementById('hww-scrubber-progress');
-            navPills = sectionEl.querySelectorAll ? Array.from(sectionEl.querySelectorAll('.hww-nav-pill')) : [];
-            cornerTags = sectionEl.querySelectorAll ? Array.from(sectionEl.querySelectorAll('.hww-corner-tag')) : [];
-            quadrantCards = sectionEl.querySelectorAll ? Array.from(sectionEl.querySelectorAll('.hww-quadrant-card')) : [];
-
-            // Setup Scrubber Click Handlers
-            navPills.forEach(pill => {
-                if (!pill || !pill.addEventListener) return;
-                const handler = function (e) {
-                    if (e && e.preventDefault) e.preventDefault();
-                    const gotoVal = pill.getAttribute ? pill.getAttribute('data-hww-goto') : null;
-                    if (gotoVal !== null) {
-                        scrollToPhase(gotoVal);
-                    }
-                };
-                pill._hwwClickHandler = handler;
-                pill.addEventListener('click', handler);
-            });
-
-            // Bind Event Listeners
             boundScrollHandler = onScroll;
             boundResizeHandler = onResize;
-            if (typeof window !== 'undefined' && window.addEventListener) {
-                window.addEventListener('scroll', boundScrollHandler, { passive: true });
-                window.addEventListener('resize', boundResizeHandler, { passive: true });
-            }
+            window.addEventListener('scroll', boundScrollHandler, { passive: true });
+            window.addEventListener('resize', boundResizeHandler, { passive: true });
 
-            // Initial Target & Frame Calculation
             targetProgress = computeTargetProgress();
             currentProgress = targetProgress;
+            waypoints = getWaypoints();
             renderFrame(currentProgress);
 
-            // IntersectionObserver Lifecycle for Performance
-            if (typeof window !== 'undefined' && 'IntersectionObserver' in window && typeof window.IntersectionObserver === 'function') {
+            if ('IntersectionObserver' in window) {
                 observer = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
@@ -1675,60 +1541,19 @@
                             stopLoop();
                         }
                     });
-                }, {
-                    root: null,
-                    threshold: [0, 0.05, 0.1]
-                });
+                }, { threshold: [0, 0.05, 0.1] });
                 observer.observe(sectionEl);
             } else {
                 startLoop();
             }
 
-            return { initialized: true };
+            isInitialized = true;
         }
 
-        // Cleanup & Teardown
-        function destroy() {
-            stopLoop();
+        return { init };
+    })();
 
-            if (observer) {
-                observer.disconnect();
-                observer = null;
-            }
-
-            if (typeof window !== 'undefined' && window.removeEventListener) {
-                if (boundScrollHandler) window.removeEventListener('scroll', boundScrollHandler);
-                if (boundResizeHandler) window.removeEventListener('resize', boundResizeHandler);
-            }
-
-            navPills.forEach(pill => {
-                if (pill && pill.removeEventListener && pill._hwwClickHandler) {
-                    pill.removeEventListener('click', pill._hwwClickHandler);
-                    delete pill._hwwClickHandler;
-                }
-            });
-
-            if (canvasEl && canvasEl.style) canvasEl.style.transform = '';
-            if (introFrameEl && introFrameEl.style) {
-                introFrameEl.style.opacity = '';
-                introFrameEl.style.pointerEvents = '';
-                introFrameEl.style.visibility = '';
-            }
-            if (stateIntroEl && stateIntroEl.style) stateIntroEl.style.display = '';
-            if (statePlatformEl && statePlatformEl.style) statePlatformEl.style.display = '';
-
-            isInitialized = false;
-        }
-
-        return {
-            init,
-            getActivePhase,
-            scrollToPhase,
-            destroy,
-            computeCameraTransform,
-            computeTargetProgress
-        };
-    })();    /* ==========================================================================
+    /* ==========================================================================
        10. DISCOVER ROBOT HERO MODULE (Lighting Glow & Spline Watermark Cleanup)
        ========================================================================== */
     const RobotHeroModule = (function () {

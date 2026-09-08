@@ -61,84 +61,24 @@
 
     <main id="primary" class="site-main">
 
-        <!-- Banner -->
-        <section class="ind-hero-section">
-            <div class="wrapper">
-                <div class="ind-hero-content center">
-                    <span class="subhead-tag"><i class="fa-solid fa-building"></i> ABOUT INTELLECTIR</span>
-                    <h1 class="ind-hero-title">Architecting the Autonomous Enterprise</h1>
-                    <p class="ind-hero-desc">
-                        We bridge the gap between AI hype and real operational business value with specialized agentic systems.
-                    </p>
-                </div>
-            </div>
+        <!-- Banner with Full Screen Video -->
+        <section class="ind-fullscreen-video-hero">
+            <video class="ind-fullscreen-video" autoplay loop muted playsinline poster="assets/hero_poster.png">
+                <source src="assets/upper.mp4" type="video/mp4">
+                Your browser does not support HTML5 video playback.
+            </video>
         </section>
 
-        <!-- Company Mission -->
-        <section class="pillars-section">
-            <div class="wrapper">
-                <div class="glass-card pillar-card" style="max-width: 800px; margin: 0 auto 2.5rem; padding: 2.5rem;">
-                    <h3 class="pillar-title" style="margin-bottom: 1rem;"><i class="fa-solid fa-rocket" style="color: var(--accent-primary);"></i> Our Mission</h3>
-                    <p class="pillar-desc" style="font-size: 1.05rem; line-height: 1.7;">
-                        Intellectir was founded on a simple principle: <strong>every workflow needs speed, but not every task needs a human.</strong> We help security, operations, and engineering leaders architect, deploy, and scale custom AI agents that eliminate operational bottlenecks with enterprise-grade security and proven ROI.
+        <!-- Final Screen Quote -->
+        <section class="final-screen-section" style="background: linear-gradient(135deg, #4da8da 0%, #1e88e5 100%); color: #ffffff; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 4rem 2rem; text-align: center;">
+            <div class="wrapper" style="max-width: 1000px;">
+                <div class="quote-content" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 24px; padding: 4rem 3rem; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);">
+                    <i class="fa-solid fa-quote-left" style="font-size: 3rem; opacity: 0.2; margin-bottom: 1.5rem;"></i>
+                    <p style="font-size: 1.75rem; line-height: 1.7; font-weight: 500; margin-bottom: 3rem; font-family: 'Outfit', sans-serif;">
+                        "The African continent is incredibly wealthy in skills, talent and innovation. The gab between the current condition of Africa and what it would be at its finest is resourcefullness and leadership. Artificial Intelligence is humanity's greatest innovation and development. It is way more powerful and capable than what the average user can comprehend. At Intellectir, we strongly believe artificial intelligence can transform Africa into a community we never imagined. Our goal is to bring the worlds' greatest technology into every corner of our businesses, schools and neighbourhoods."
                     </p>
-                </div>
-
-                <!-- Contact Card -->
-                <div class="glass-card pillar-card center" style="max-width: 800px; margin: 0 auto; padding: 2.5rem;">
-                    <h3 class="pillar-title" style="margin-bottom: 0.75rem;">Ready to Transform Your Operations?</h3>
-                    <p class="pillar-desc" style="margin-bottom: 1.5rem;">Book a private 15-minute consultation with our principal AI architects.</p>
-                    <button class="btn btn-primary btn-large open-modal-btn" data-modal-target="demo-modal" data-modal="demo">
-                        <span>Book a Consultation Now</span>
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Trust & Security Compliance Matrix Section -->
-        <section id="compliance" class="capabilities-section">
-            <div class="wrapper">
-                <div class="section-header center">
-                    <span class="subhead-tag"><i class="fa-solid fa-shield-halved"></i> ENTERPRISE COMPLIANCE &amp; SECURITY</span>
-                    <h2 class="section-title">Built for Mission-Critical Environments</h2>
-                    <p class="section-lead">Every agentic workflow built by Intellectir runs within strict zero-trust audit boundaries.</p>
-                </div>
-
-                <div class="ind-grid-3">
-                    <div class="glass-card pillar-card reveal-on-scroll">
-                        <div class="card-icon" style="color: var(--accent-primary);"><i class="fa-solid fa-file-shield"></i></div>
-                        <h3 class="pillar-title">SOC2 Type II Certified</h3>
-                        <p class="pillar-desc">Independently audited controls covering operational security, data confidentiality, and system availability.</p>
-                    </div>
-
-                    <div class="glass-card pillar-card reveal-on-scroll delay-100">
-                        <div class="card-icon" style="color: var(--accent-secondary);"><i class="fa-solid fa-hospital-user"></i></div>
-                        <h3 class="pillar-title">HIPAA &amp; BAA Ready</h3>
-                        <p class="pillar-desc">Zero-retention data pipelines and automatic PHI/PII redaction guardrails for healthcare enterprise workloads.</p>
-                    </div>
-
-                    <div class="glass-card pillar-card reveal-on-scroll delay-200">
-                        <div class="card-icon" style="color: var(--accent-cyan);"><i class="fa-solid fa-lock"></i></div>
-                        <h3 class="pillar-title">Zero Data Retention</h3>
-                        <p class="pillar-desc">Your enterprise data stays in your VPC. Customer inputs are never retained or used to train public LLMs.</p>
-                    </div>
-                </div>
-
-                <!-- Enterprise Impact Stats Bar -->
-                <div class="ind-grid-3" style="margin-top: 2.5rem;">
-                    <div class="stat-counter-box reveal-on-scroll">
-                        <span class="stat-number">99.9%</span>
-                        <span class="stat-label">Production Uptime SLA</span>
-                    </div>
-                    <div class="stat-counter-box reveal-on-scroll delay-100">
-                        <span class="stat-number">$45M+</span>
-                        <span class="stat-label">Client Costs Saved Annually</span>
-                    </div>
-                    <div class="stat-counter-box reveal-on-scroll delay-200">
-                        <span class="stat-number">50+</span>
-                        <span class="stat-label">Enterprise Deployments</span>
-                    </div>
+                    <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: 0.5px;">Augustine Ekwunife Jr - Founder &amp; CEO</div>
+                    <div style="font-size: 1.1rem; font-weight: 400; opacity: 0.9; font-family: 'JetBrains Mono', monospace;">Bsc Artificial Intelligence &amp; Computer Science - UCT</div>
                 </div>
             </div>
         </section>
@@ -167,7 +107,7 @@
             </div>
             <div class="footer-bottom-bar">
                 <div class="copyright">© 2026 Intellectir Inc. All rights reserved.</div>
-                <div class="footer-location"><i class="fa-solid fa-location-dot"></i> Cape Town &amp; Global Operations</div>
+                <div class="footer-location"><i class="fa-solid fa-location-dot"></i> Cape Town - South Africa</div>
             </div>
         </div>
     </footer>

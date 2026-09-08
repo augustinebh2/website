@@ -1,4 +1,4 @@
-﻿/**
+/**
  * INTELLECTIR - ENTERPRISE AI ARCHITECTURE & CLIENT CONTROLLER
  * ============================================================
  * Modular, Accessible, Zero-Dependency Client Interaction Architecture.
@@ -1007,7 +1007,7 @@
         let boundResizeHandler = null;
         let activePhaseIndex = 1;
 
-        const LERP_FACTOR = 0.1; // Smooth jank-free damping bounded between 0.05 and 0.20
+        const LERP_FACTOR = 0.04; // Smooth jank-free damping bounded between 0.05 and 0.20
 
         // 2.5D Camera Keyframe Waypoints (Stages 0 to 5)
         // Stage 0: Overview (scale 1.00, x: 0, y: 0)
