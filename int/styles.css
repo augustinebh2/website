@@ -5104,14 +5104,7 @@ text-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
 }
 
 .service-scroll-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 6px;
-    height: 100%;
-    background: linear-gradient(180deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-    border-radius: 6px 0 0 6px;
+    display: none;
 }
 
 .service-card-header {
@@ -5209,8 +5202,8 @@ text-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
 }
 
 .service-practice-box {
-    background: linear-gradient(135deg, rgba(37, 99, 235, 0.06) 0%, rgba(79, 70, 229, 0.04) 100%);
-    border-left: 4px solid var(--accent-primary);
+    background: var(--bg-secondary);
+    border-left: 4px solid var(--text-muted);
     padding: 1.35rem 1.65rem;
     border-radius: 0 14px 14px 0;
     margin-top: 0.5rem;
@@ -6168,3 +6161,72 @@ mark.search-highlight {
         font-size: 0.9rem;
     }
 }
+
+/* ==========================================================================
+   INDUSTRY VIDEO MARQUEE
+   ========================================================================== */
+
+.industry-video-marquee-container {
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    cursor: grab;
+}
+
+.industry-video-marquee-container:active {
+    cursor: grabbing;
+}
+
+.industry-video-marquee-track {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.industry-video-marquee-group {
+    display: flex;
+    gap: 2rem;
+    padding-right: 2rem;
+}
+
+.industry-video-marquee-card {
+    position: relative;
+    width: 75vw;
+    max-width: 1200px;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.industry-video-marquee-card video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    z-index: 1;
+    pointer-events: none;
+}
+
+h t m l    {
+       s c r o l l - b e h a v i o r :    s m o o t h ;
+       
+}
+
+     

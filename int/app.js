@@ -615,7 +615,7 @@
             if (cleanTokens.length === 0) return;
 
             const regex = new RegExp(`(${cleanTokens.join('|')})`, 'gi');
-            
+
             const titleLink = item.titleEl.querySelector('a');
             if (titleLink) {
                 titleLink.innerHTML = item.rawTitle.replace(regex, '<mark class="search-highlight">$1</mark>');
@@ -1368,7 +1368,7 @@
             const rawProgress = -rect.top / scrollable;
             return Math.max(0, Math.min(1, rawProgress));
         }
-        
+
         // Exact mathematical fade mappings based on your requirements
         function calculateOpacityForQuadrant(qNum, p) {
             let op = 0;
@@ -1403,7 +1403,7 @@
         function renderFrame(progress) {
             const matrix = computeCameraTransform(progress);
             const stage = matrix.stage;
-            
+
             if (stage >= 1 && stage <= 4) {
                 activePhaseIndex = stage;
             } else {
@@ -1423,7 +1423,7 @@
                     introFrameEl.style.opacity = '1';
                     if (stateIntroEl) stateIntroEl.style.display = 'none';
                     if (statePlatformEl) statePlatformEl.style.display = 'block';
-                    
+
                     const titleOutro = document.getElementById('outroTitle');
                     if (titleOutro) titleOutro.style.opacity = '1';
                 } else {
@@ -1457,7 +1457,7 @@
                     tag.style.transform = 'scale(0.95)';
                 }
             });
-            
+
             if (hudWireframe) {
                 if (stage === 0 || stage === 5) {
                     hudWireframe.style.opacity = '1';
@@ -1470,7 +1470,7 @@
         function loop() {
             if (!isLoopRunning) return;
             const delta = targetProgress - currentProgress;
-            
+
             if (Math.abs(delta) < 0.0001) {
                 currentProgress = targetProgress;
             } else {
@@ -1517,7 +1517,7 @@
             stateIntroEl = document.getElementById('hww-state-intro');
             statePlatformEl = document.getElementById('hww-state-platform');
             hudWireframe = document.querySelector('.hww-wireframe');
-            
+
             cornerTags = Array.from(document.querySelectorAll('.hww-corner-node'));
             quadrantCards = Array.from(document.querySelectorAll('.hww-quadrant'));
 
