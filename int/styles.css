@@ -6197,15 +6197,13 @@ mark.search-highlight {
 
 .industry-video-marquee-card {
     position: relative;
-    width: 75vw;
-    max-width: 1200px;
-    height: auto;
-    aspect-ratio: 16 / 9;
+    height: 85vh;
+    width: auto;
     border-radius: 1.5rem;
     overflow: hidden;
     flex-shrink: 0;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    border: none;
     background: transparent;
     display: flex;
     align-items: center;
@@ -6214,19 +6212,30 @@ mark.search-highlight {
 }
 
 .industry-video-marquee-card video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
+    position: relative;
+    display: block;
     height: 100%;
+    width: auto;
+    max-width: none;
     object-fit: contain;
+    border-radius: 1.5rem;
     z-index: 1;
     pointer-events: none;
 }
 
-h t m l    {
-       s c r o l l - b e h a v i o r :    s m o o t h ;
-       
+@media (max-width: 768px) {
+    .industry-video-marquee-card {
+        height: 60vh;
+    }
 }
 
-     
+@media (max-width: 480px) {
+    .industry-video-marquee-card {
+        height: 50vh;
+    }
+}
+
+h t m l    {
+       s c r o l l - b e h a v i o r :    s m o o t h ;
+       
+}

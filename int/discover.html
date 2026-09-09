@@ -52,6 +52,7 @@
                     <li class="nav-item"><a href="solutions.html" class="nav-link">Services</a></li>
                     <li class="nav-item"><a href="industries.html" class="nav-link">Industries</a></li>
                     <li class="nav-item"><a href="discover.html" class="nav-link active">Discover</a></li>
+                    <li class="nav-item"><a href="partners.html" class="nav-link">Our Partners</a></li>
                     <li class="nav-item"><a href="company.html" class="nav-link">Company</a></li>
                 </ul>
             </nav>
@@ -107,8 +108,14 @@
                     <p class="section-lead">articles to help you understand basics of AI Implementation and how it is important for your business</p>
                 </div>
 
-                <!-- Minimalist Search Bar -->
                 <div class="discover-filter-bar">
+                    <div class="category-pills-row" style="margin-bottom: 1.5rem; justify-content: center;">
+                        <button class="filter-pill active" data-category="all" aria-pressed="true"><span>All Articles</span> <span class="pill-count"></span></button>
+                        <button class="filter-pill" data-category="strategy" aria-pressed="false"><span>Strategy</span> <span class="pill-count"></span></button>
+                        <button class="filter-pill" data-category="case-studies" aria-pressed="false"><span>Case Studies</span> <span class="pill-count"></span></button>
+                        <button class="filter-pill" data-category="workplace" aria-pressed="false"><span>Workplace</span> <span class="pill-count"></span></button>
+                    </div>
+                    
                     <div class="discover-search-box-wrap">
                         <div class="discover-search-box">
                             <i class="fa-solid fa-magnifying-glass discover-search-icon" aria-hidden="true"></i>
@@ -123,7 +130,7 @@
 
                     <!-- Active Search Status & Count -->
                     <div class="discover-search-status" id="discover-search-status">
-                        <span class="discover-results-count" id="discover-results-count">Showing all 6 articles</span>
+                        <span class="discover-results-count" id="discover-results-count">Showing all 9 articles</span>
                     </div>
                 </div>
 
@@ -236,7 +243,7 @@
 
                     <!-- 5. McKinsey Global Institute: Future of Work -->
                     <article class="glass-card discover-article-card reveal-on-scroll delay-100"
-                        data-category="workforce-sa"
+                        data-category="workplace"
                         data-publisher="McKinsey Global Institute"
                         data-title="Agents, Robots, and Us: Skill Partnerships in the Age of AI"
                         data-summary="McKinsey research showing up to $2.9T in annual value unlocked by redesigning workflows for human-agent collaboration, with AI fluency demand rising sevenfold."
@@ -262,7 +269,7 @@
 
                     <!-- 6. ShiftMate South Africa -->
                     <article class="glass-card discover-article-card reveal-on-scroll delay-200"
-                        data-category="workforce-sa"
+                        data-category="workplace"
                         data-publisher="ShiftMate SA"
                         data-title="What Are AI Agents? A Plain-English Guide for South African Businesses"
                         data-summary="A plain-English guide for South African business owners covering POPIA compliance, multilingual agents (English, Zulu, Afrikaans), SME economics, and 9-12 month ROI."
@@ -282,6 +289,84 @@
                             <a href="https://shiftmate.co.za/ai/agents/what-are-ai-agents-south-africa"
                                 target="_blank" rel="noopener noreferrer" class="article-link-action">
                                 Read Guide <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- 7. IBM Think: AI for Business Benefits -->
+                    <article class="glass-card discover-article-card reveal-on-scroll"
+                        data-category="strategy"
+                        data-publisher="IBM Think"
+                        data-title="AI for Business Benefits: How Artificial Intelligence is Transforming Enterprise"
+                        data-summary="Discover the tangible benefits of integrating AI into your business operations, from increased efficiency to enhanced customer experiences."
+                        data-tags="ibm think ai benefits business enterprise efficiency growth strategy">
+                        <div class="card-meta-header">
+                            <span class="publisher-tag publisher-ibm"><i class="fa-solid fa-network-wired"></i> IBM Think</span>
+                        </div>
+                        <h3 class="card-title">
+                            <a href="https://www.ibm.com/think/insights/ai-for-business-benefits?utm_source=chatgpt.com"
+                                target="_blank" rel="noopener noreferrer" class="article-title-link">
+                                AI for Business Benefits: How Artificial Intelligence is Transforming Enterprise
+                            </a>
+                        </h3>
+                        <p class="card-desc">Discover the tangible benefits of integrating AI into your business operations, from increased efficiency to enhanced customer experiences.</p>
+                        <div class="article-footer">
+                            <span class="article-read-time"><i class="fa-regular fa-clock"></i> 7 min read</span>
+                            <a href="https://www.ibm.com/think/insights/ai-for-business-benefits?utm_source=chatgpt.com"
+                                target="_blank" rel="noopener noreferrer" class="article-link-action">
+                                Read Insight <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- 8. IBM Think: AI in the Workplace -->
+                    <article class="glass-card discover-article-card reveal-on-scroll delay-100"
+                        data-category="workplace"
+                        data-publisher="IBM Think"
+                        data-title="AI in the Workplace: The Future of Human-Machine Collaboration"
+                        data-summary="Explore how AI is reshaping the modern workplace, empowering employees, and creating new opportunities for growth and innovation."
+                        data-tags="ibm think ai workplace human machine collaboration employees operations">
+                        <div class="card-meta-header">
+                            <span class="publisher-tag publisher-ibm"><i class="fa-solid fa-network-wired"></i> IBM Think</span>
+                        </div>
+                        <h3 class="card-title">
+                            <a href="https://www.ibm.com/think/topics/ai-in-the-workplace?utm_source=chatgpt.com"
+                                target="_blank" rel="noopener noreferrer" class="article-title-link">
+                                AI in the Workplace: The Future of Human-Machine Collaboration
+                            </a>
+                        </h3>
+                        <p class="card-desc">Explore how AI is reshaping the modern workplace, empowering employees, and creating new opportunities for growth and innovation.</p>
+                        <div class="article-footer">
+                            <span class="article-read-time"><i class="fa-regular fa-clock"></i> 6 min read</span>
+                            <a href="https://www.ibm.com/think/topics/ai-in-the-workplace?utm_source=chatgpt.com"
+                                target="_blank" rel="noopener noreferrer" class="article-link-action">
+                                Read Topic <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- 9. IBM Newsroom: Productivity Gains -->
+                    <article class="glass-card discover-article-card reveal-on-scroll delay-200"
+                        data-category="case-studies"
+                        data-publisher="IBM Newsroom"
+                        data-title="Two-thirds of surveyed enterprises in EMEA report significant productivity gains from AI"
+                        data-summary="A new IBM study reveals that 66% of surveyed enterprises in the EMEA region have experienced substantial productivity improvements thanks to AI adoption."
+                        data-tags="ibm newsroom study emea productivity gains enterprise adoption roi case study">
+                        <div class="card-meta-header">
+                            <span class="publisher-tag publisher-ibm"><i class="fa-solid fa-network-wired"></i> IBM Newsroom</span>
+                        </div>
+                        <h3 class="card-title">
+                            <a href="https://newsroom.ibm.com/2025-10-28-Two-thirds-of-surveyed-enterprises-in-EMEA-report-significant-productivity-gains-from-AI%2C-finds-new-IBM-study?utm_source=chatgpt.com"
+                                target="_blank" rel="noopener noreferrer" class="article-title-link">
+                                IBM Study: 66% of EMEA Enterprises Report Productivity Gains
+                            </a>
+                        </h3>
+                        <p class="card-desc">A new IBM study reveals that two-thirds of surveyed enterprises in the EMEA region have experienced substantial productivity improvements thanks to AI adoption.</p>
+                        <div class="article-footer">
+                            <span class="article-read-time"><i class="fa-regular fa-clock"></i> 5 min read</span>
+                            <a href="https://newsroom.ibm.com/2025-10-28-Two-thirds-of-surveyed-enterprises-in-EMEA-report-significant-productivity-gains-from-AI%2C-finds-new-IBM-study?utm_source=chatgpt.com"
+                                target="_blank" rel="noopener noreferrer" class="article-link-action">
+                                Read Study <i class="fa-solid fa-arrow-up-right-from-square"></i>
                             </a>
                         </div>
                     </article>
