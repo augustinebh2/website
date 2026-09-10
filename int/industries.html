@@ -157,28 +157,89 @@
         </div>
     </footer>
 
-    <!-- Consultation Modal -->
+    <!-- Consultation & Booking Modal -->
     <div id="demo-modal" class="modal-backdrop modal" role="dialog" aria-modal="true" aria-hidden="true">
-        <div class="modal-card modal-dialog glass-card">
+        <div class="modal-card modal-dialog glass-card booking-modal-card">
             <button class="modal-close-btn" id="close-modal-btn" aria-label="Close modal"><i class="fa-solid fa-xmark"></i></button>
-            <div class="modal-header">
-                <h3 class="modal-title">Book an AI Strategy &amp; Implementation Consultation</h3>
-                <p class="modal-desc">Speak directly with our principal AI architects to audit your industry workflows and build custom agents.</p>
+            
+            <!-- Step Progress Indicator -->
+            <div class="booking-step-indicator">
+                <div class="step-item active" id="step-dot-1">
+                    <span class="step-number">1</span>
+                    <span class="step-label">Your Info</span>
+                </div>
+                <div class="step-connector" id="step-connector-1"></div>
+                <div class="step-item" id="step-dot-2">
+                    <span class="step-number">2</span>
+                    <span class="step-label">Date &amp; Time</span>
+                </div>
             </div>
+
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-heading-title">Your first step in AI adoption</h3>
+            </div>
+
             <form id="modal-consultation-form" class="modal-form">
-                <div class="form-group">
-                    <label for="modal-name">Full Name</label>
-                    <input type="text" id="modal-name" name="name" required placeholder="John Doe">
+                <!-- STEP 1: Contact Information -->
+                <div class="booking-step-content active" id="booking-step-1">
+                    <div class="form-group">
+                        <label for="modal-name">Full Name <span class="required-star">*</span></label>
+                        <input type="text" id="modal-name" name="name" required placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-email">Work Email <span class="required-star">*</span></label>
+                        <input type="email" id="modal-email" name="email" required placeholder="john@company.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-company">Company Name <span class="required-star">*</span></label>
+                        <input type="text" id="modal-company" name="company" required placeholder="Acme Corporation">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-phone">Cellphone Number <span class="required-star">*</span></label>
+                        <input type="tel" id="modal-phone" name="phone" required placeholder="+27 82 123 4567">
+                    </div>
+                    <button type="button" class="btn btn-primary btn-full" id="booking-next-btn">Next: Select Date &amp; Time <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i></button>
                 </div>
-                <div class="form-group">
-                    <label for="modal-email">Work Email</label>
-                    <input type="email" id="modal-email" name="email" required placeholder="john@company.com">
+
+                <!-- STEP 2: Calendar & Time Slots -->
+                <div class="booking-step-content" id="booking-step-2" style="display: none;">
+                    <div class="booking-calendar-wrapper">
+                        <div class="calendar-header">
+                            <button type="button" class="calendar-nav-btn" id="cal-prev-month" aria-label="Previous Month"><i class="fa-solid fa-chevron-left"></i></button>
+                            <span class="calendar-month-year" id="cal-month-year-label">September 2026</span>
+                            <button type="button" class="calendar-nav-btn" id="cal-next-month" aria-label="Next Month"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                        <div class="calendar-weekdays">
+                            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                        </div>
+                        <div class="calendar-days-grid" id="cal-days-grid">
+                            <!-- Dynamic Days -->
+                        </div>
+                    </div>
+
+                    <div class="booking-time-wrapper">
+                        <label class="time-selector-label"><i class="fa-regular fa-clock"></i> Select Available Time Slot</label>
+                        <div class="time-slots-grid" id="time-slots-grid">
+                            <button type="button" class="time-slot-btn" data-time="09:00 AM">09:00 AM</button>
+                            <button type="button" class="time-slot-btn" data-time="10:30 AM">10:30 AM</button>
+                            <button type="button" class="time-slot-btn" data-time="01:30 PM">01:30 PM</button>
+                            <button type="button" class="time-slot-btn" data-time="03:00 PM">03:00 PM</button>
+                            <button type="button" class="time-slot-btn" data-time="04:30 PM">04:30 PM</button>
+                        </div>
+                    </div>
+
+                    <div class="selected-booking-summary" id="booking-summary-badge" style="display: none;">
+                        <i class="fa-regular fa-calendar-check"></i> <span id="selected-date-time-text">No date selected</span>
+                    </div>
+
+                    <input type="hidden" id="modal-selected-date" name="selected_date">
+                    <input type="hidden" id="modal-selected-time" name="selected_time">
+
+                    <div class="booking-step-actions">
+                        <button type="button" class="btn btn-outline" id="booking-back-btn"><i class="fa-solid fa-arrow-left" style="margin-right: 6px;"></i> Back</button>
+                        <button type="submit" class="btn btn-primary" id="booking-submit-btn" disabled>Confirm &amp; Book Consultation <i class="fa-solid fa-circle-check" style="margin-left: 6px;"></i></button>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="modal-interest">Enterprise Need / Industry</label>
-                    <input type="text" id="modal-interest" name="interest" required placeholder="Real Estate / Law Firm / Finance...">
-                </div>
-                <button type="submit" class="btn btn-primary btn-full">Schedule Briefing</button>
             </form>
         </div>
     </div>

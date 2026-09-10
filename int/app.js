@@ -236,6 +236,9 @@
                 }
             });
 
+            // Initialize Booking Wizard & Calendar Logic
+            initBookingWizard();
+
             // Form Submissions
             const modalForm = document.getElementById('modal-consultation-form') || demoModal.querySelector('form');
             const consultationForm = document.getElementById('consultation-form');
@@ -243,8 +246,17 @@
             if (modalForm) {
                 modalForm.addEventListener('submit', (e) => {
                     e.preventDefault();
-                    ToastModule.show('Thank you! Your AI Consultation request has been received.');
-                    modalForm.reset();
+                    const dateVal = document.getElementById('modal-selected-date')?.value;
+                    const timeVal = document.getElementById('modal-selected-time')?.value;
+
+                    let msg = 'Thank you! Your AI Consultation request has been received.';
+                    if (dateVal && timeVal) {
+                        const dObj = new Date(dateVal);
+                        const dateStr = dObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                        msg = `Booking Confirmed! Consultation scheduled for ${dateStr} at ${timeVal}. Check your email for calendar invite.`;
+                    }
+                    ToastModule.show(msg);
+                    resetBookingWizard();
                     close();
                 });
             }
@@ -257,6 +269,230 @@
                     close();
                 });
             }
+        }
+
+        let selectedDate = null;
+        let selectedTime = null;
+        let currentCalDate = new Date();
+
+        function initBookingWizard() {
+            if (!demoModal) return;
+
+            const step1Content = demoModal.querySelector('#booking-step-1');
+            const step2Content = demoModal.querySelector('#booking-step-2');
+            const nextBtn = demoModal.querySelector('#booking-next-btn');
+            const backBtn = demoModal.querySelector('#booking-back-btn');
+
+            const nameInput = demoModal.querySelector('#modal-name');
+            const emailInput = demoModal.querySelector('#modal-email');
+            const companyInput = demoModal.querySelector('#modal-company');
+            const phoneInput = demoModal.querySelector('#modal-phone');
+
+            const stepDot1 = demoModal.querySelector('#step-dot-1');
+            const stepDot2 = demoModal.querySelector('#step-dot-2');
+            const stepConnector = demoModal.querySelector('#step-connector-1');
+
+            if (!step1Content || !step2Content || !nextBtn) return;
+
+            // Step 1 -> Step 2 Next Button
+            nextBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                let valid = true;
+
+                const inputsToValidate = [nameInput, emailInput, companyInput, phoneInput].filter(Boolean);
+
+                inputsToValidate.forEach(input => {
+                    const val = input.value ? input.value.trim() : '';
+                    let fieldValid = val.length > 0;
+                    if (input.type === 'email' && fieldValid) {
+                        fieldValid = val.includes('@') && val.includes('.');
+                    }
+
+                    if (!fieldValid) {
+                        input.classList.add('input-error');
+                        if (valid) input.focus();
+                        valid = false;
+                    } else {
+                        input.classList.remove('input-error');
+                    }
+                });
+
+                if (!valid) return;
+
+                // Move to Step 2
+                step1Content.style.display = 'none';
+                step1Content.classList.remove('active');
+                step2Content.style.display = 'block';
+                step2Content.classList.add('active');
+
+                if (stepDot1) { stepDot1.classList.remove('active'); stepDot1.classList.add('completed'); }
+                if (stepDot2) { stepDot2.classList.add('active'); }
+                if (stepConnector) { stepConnector.classList.add('active'); }
+
+                renderCalendar();
+            });
+
+            // Step 2 -> Step 1 Back Button
+            if (backBtn) {
+                backBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    step2Content.style.display = 'none';
+                    step2Content.classList.remove('active');
+                    step1Content.style.display = 'block';
+                    step1Content.classList.add('active');
+
+                    if (stepDot1) { stepDot1.classList.add('active'); stepDot1.classList.remove('completed'); }
+                    if (stepDot2) { stepDot2.classList.remove('active'); }
+                    if (stepConnector) { stepConnector.classList.remove('active'); }
+                });
+            }
+
+            // Calendar Prev / Next Month
+            const prevMonthBtn = demoModal.querySelector('#cal-prev-month');
+            const nextMonthBtn = demoModal.querySelector('#cal-next-month');
+
+            if (prevMonthBtn) {
+                prevMonthBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    currentCalDate.setMonth(currentCalDate.getMonth() - 1);
+                    renderCalendar();
+                });
+            }
+
+            if (nextMonthBtn) {
+                nextMonthBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    currentCalDate.setMonth(currentCalDate.getMonth() + 1);
+                    renderCalendar();
+                });
+            }
+
+            // Time Slots Selection
+            const timeSlotBtns = demoModal.querySelectorAll('.time-slot-btn');
+            timeSlotBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    timeSlotBtns.forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedTime = btn.getAttribute('data-time');
+                    const timeInput = demoModal.querySelector('#modal-selected-time');
+                    if (timeInput) timeInput.value = selectedTime;
+                    updateBookingSummary();
+                });
+            });
+        }
+
+        function renderCalendar() {
+            if (!demoModal) return;
+            const daysGrid = demoModal.querySelector('#cal-days-grid');
+            const monthYearLabel = demoModal.querySelector('#cal-month-year-label');
+            if (!daysGrid || !monthYearLabel) return;
+
+            const year = currentCalDate.getFullYear();
+            const month = currentCalDate.getMonth();
+
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            monthYearLabel.textContent = `${monthNames[month]} ${year}`;
+
+            daysGrid.innerHTML = '';
+
+            const firstDayIndex = new Date(year, month, 1).getDay();
+            const lastDate = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyCell = document.createElement('div');
+                daysGrid.appendChild(emptyCell);
+            }
+
+            for (let d = 1; d <= lastDate; d++) {
+                const dayBtn = document.createElement('button');
+                dayBtn.type = 'button';
+                dayBtn.className = 'cal-day-btn';
+                dayBtn.textContent = d;
+
+                const thisDate = new Date(year, month, d);
+
+                if (thisDate < today) {
+                    dayBtn.classList.add('disabled');
+                    dayBtn.disabled = true;
+                } else {
+                    if (thisDate.getTime() === today.getTime()) {
+                        dayBtn.classList.add('today');
+                    }
+                    if (selectedDate && thisDate.toDateString() === selectedDate.toDateString()) {
+                        dayBtn.classList.add('selected');
+                    }
+
+                    dayBtn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        daysGrid.querySelectorAll('.cal-day-btn').forEach(b => b.classList.remove('selected'));
+                        dayBtn.classList.add('selected');
+                        selectedDate = thisDate;
+                        const dateInput = demoModal.querySelector('#modal-selected-date');
+                        if (dateInput) dateInput.value = selectedDate.toISOString().split('T')[0];
+                        updateBookingSummary();
+                    });
+                }
+
+                daysGrid.appendChild(dayBtn);
+            }
+        }
+
+        function updateBookingSummary() {
+            if (!demoModal) return;
+            const summaryBadge = demoModal.querySelector('#booking-summary-badge');
+            const summaryText = demoModal.querySelector('#selected-date-time-text');
+            const submitBtn = demoModal.querySelector('#booking-submit-btn');
+
+            if (selectedDate && selectedTime) {
+                const dateOptions = { weekday: 'short', month: 'short', day: 'numeric' };
+                const formattedDate = selectedDate.toLocaleDateString('en-US', dateOptions);
+                if (summaryText) summaryText.textContent = `Selected: ${formattedDate} at ${selectedTime}`;
+                if (summaryBadge) summaryBadge.style.display = 'flex';
+                if (submitBtn) submitBtn.disabled = false;
+            } else if (selectedDate) {
+                const dateOptions = { weekday: 'short', month: 'short', day: 'numeric' };
+                const formattedDate = selectedDate.toLocaleDateString('en-US', dateOptions);
+                if (summaryText) summaryText.textContent = `Selected Date: ${formattedDate} (Please select a time slot)`;
+                if (summaryBadge) summaryBadge.style.display = 'flex';
+                if (submitBtn) submitBtn.disabled = true;
+            } else {
+                if (summaryBadge) summaryBadge.style.display = 'none';
+                if (submitBtn) submitBtn.disabled = true;
+            }
+        }
+
+        function resetBookingWizard() {
+            if (!demoModal) return;
+            selectedDate = null;
+            selectedTime = null;
+            currentCalDate = new Date();
+
+            const step1 = demoModal.querySelector('#booking-step-1');
+            const step2 = demoModal.querySelector('#booking-step-2');
+            const stepDot1 = demoModal.querySelector('#step-dot-1');
+            const stepDot2 = demoModal.querySelector('#step-dot-2');
+            const stepConnector = demoModal.querySelector('#step-connector-1');
+            const summaryBadge = demoModal.querySelector('#booking-summary-badge');
+            const submitBtn = demoModal.querySelector('#booking-submit-btn');
+
+            if (step1) { step1.style.display = 'block'; step1.classList.add('active'); }
+            if (step2) { step2.style.display = 'none'; step2.classList.remove('active'); }
+
+            if (stepDot1) { stepDot1.classList.add('active'); stepDot1.classList.remove('completed'); }
+            if (stepDot2) { stepDot2.classList.remove('active'); }
+            if (stepConnector) { stepConnector.classList.remove('active'); }
+
+            if (summaryBadge) summaryBadge.style.display = 'none';
+            if (submitBtn) submitBtn.disabled = true;
+
+            const timeSlotBtns = demoModal.querySelectorAll('.time-slot-btn');
+            timeSlotBtns.forEach(b => b.classList.remove('selected'));
+
+            const form = demoModal.querySelector('form');
+            if (form) form.reset();
         }
 
         function isOpen() {
