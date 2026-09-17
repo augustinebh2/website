@@ -85,6 +85,7 @@ function sendError(res, statusCode, message, customHeaders = {}) {
         <p>${message}</p>
         <a href="/">Return to Intellectir</a>
     </div>
+<script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>`;
 
