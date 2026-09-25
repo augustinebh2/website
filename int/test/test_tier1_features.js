@@ -316,13 +316,13 @@ describe('Tier 1.6: Global Footer Contract', () => {
     }
   });
 
-  test('1.6.3: Footer contains copyright notice with 2026 Intellectir Inc.', () => {
+  test('1.6.3: Footer contains copyright notice with 2026 Intellectir (PTY) LTD.', () => {
     for (const page of PAGES) {
       const html = readPageHtml(page);
       assert.match(
         html,
-        /2026\s+Intellectir\s+Inc/i,
-        `${page} footer must declare copyright 2026 Intellectir Inc.`
+        /2026\s+Intellectir\s+\(PTY\)\s+LTD/i,
+        `${page} footer must declare copyright 2026 Intellectir (PTY) LTD.`
       );
     }
   });

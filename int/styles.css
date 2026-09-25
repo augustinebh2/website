@@ -6313,9 +6313,22 @@ body.dark-theme .partner-logo-container {
 }
 
 @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-    40% { transform: translateY(-8px); }
-    60% { transform: translateY(-4px); }
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-8px);
+    }
+
+    60% {
+        transform: translateY(-4px);
+    }
 }
 
 /* Screen 2: Text Section */
@@ -6437,9 +6450,17 @@ body.dark-theme .partner-text-title {
     border-radius: 50%;
 }
 
-.partner-browser-dot.red { background: #ff5f56; }
-.partner-browser-dot.yellow { background: #ffbd2e; }
-.partner-browser-dot.green { background: #27c93f; }
+.partner-browser-dot.red {
+    background: #ff5f56;
+}
+
+.partner-browser-dot.yellow {
+    background: #ffbd2e;
+}
+
+.partner-browser-dot.green {
+    background: #27c93f;
+}
 
 .partner-browser-url {
     flex-grow: 1;
@@ -7018,4 +7039,3 @@ body.dark-theme .selected-booking-summary {
 html {
     scroll-behavior: smooth;
 }
-
