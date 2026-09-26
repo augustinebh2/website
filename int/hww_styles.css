@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    INTELLECTIR ENTERPRISE AI CONSULTING - GLOBAL DESIGN SYSTEM & STYLESHEET
    Unified CSS Architecture, Design Tokens, WCAG 2.1 AA Compliance & Responsiveness
    ========================================================================== */
@@ -448,23 +448,23 @@ body.dark-theme h6 {
 
 /* WCAG 2.1 AA: White text on blue/indigo gradient (>5.2:1 contrast ratio) */
 .btn-primary {
-    background: var(--gradient-primary);
-    color: #ffffff !important;
-    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+    background: #ffffff;
+    color: #000000 !important;
+    box-shadow: 0 4px 14px rgba(255, 255, 255, 0.2);
     border-color: transparent;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    text-shadow: none;
 }
 
 .btn-primary:hover {
-    background: var(--gradient-primary-hover);
-    color: #ffffff !important;
+    background: #f8fafc;
+    color: #000000 !important;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(37, 99, 235, 0.45);
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
 }
 
 .btn-primary:active {
     transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.15);
 }
 
 .btn-secondary {
@@ -497,8 +497,25 @@ body.dark-theme h6 {
 }
 
 .dark-nav .btn-outline:hover {
-    background: var(--accent-primary);
-    border-color: var(--accent-primary);
+    background: #ffffff;
+    color: #000000 !important;
+    border-color: #ffffff;
+}
+
+/* Force navigation CTA to be outline (transparent) with white text, and fill white on hover */
+.nav-cta {
+    background: transparent !important;
+    color: #ffffff !important;
+    border-color: #ffffff !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+.nav-cta:hover {
+    background: #ffffff !important;
+    color: #000000 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(255, 255, 255, 0.2) !important;
 }
 
 .btn-large {
