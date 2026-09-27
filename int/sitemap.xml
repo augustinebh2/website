@@ -6,32 +6,32 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.intellectir.com/company</loc>
+    <loc>https://www.intellectir.com/company.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.intellectir.com/discover</loc>
+    <loc>https://www.intellectir.com/discover.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.intellectir.com/hww_index</loc>
+    <loc>https://www.intellectir.com/hww_index.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.intellectir.com/industries</loc>
+    <loc>https://www.intellectir.com/industries.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.intellectir.com/partners</loc>
+    <loc>https://www.intellectir.com/partners.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.intellectir.com/solutions</loc>
+    <loc>https://www.intellectir.com/solutions.html</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
