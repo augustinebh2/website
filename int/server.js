@@ -56,7 +56,8 @@ const MIME_TYPES = {
 const SECURITY_HEADERS = {
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'SAMEORIGIN',
-    'Referrer-Policy': 'strict-origin-when-cross-origin'
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://cdnjs.cloudflare.com https://unpkg.com https://f.convertkit.com https://app.cal.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://app.cal.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com https://app.cal.com data:; img-src 'self' data: blob: https://www.google-analytics.com https://www.googletagmanager.com https://app.cal.com https://app.spline.design; connect-src 'self' https://www.google-analytics.com https://prod.spline.design https://app.convertkit.com https://app.cal.com https://unpkg.com; frame-src 'self' https://app.cal.com https://cal.com https://app.spline.design; media-src 'self' data:; object-src 'none'; base-uri 'self';"
 };
 
 /**
