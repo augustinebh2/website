@@ -382,3 +382,57 @@ describe('Tier 2.7: ROI Calculator Input Boundary Cases', () => {
     assert.ok(!isNaN(result.annualSavings));
   });
 });
+
+// =========================================================================
+// 8. escapeRegExp Input Boundary Cases Feature (JS Logic)
+// =========================================================================
+describe('Tier 2.8: escapeRegExp Input Boundary Cases', () => {
+  // Extract escapeRegExp function directly from app.js to test pure logic
+  // The module is exported to window.Intellectir.DiscoverFilterModule.escapeRegExp
+  function getEscapeRegExpFn() {
+    const appJsPath = path.join(PROJECT_ROOT, 'app.js');
+    const appJs = fs.readFileSync(appJsPath, 'utf-8');
+    // Create a mock window object
+    const window = { document: { addEventListener: () => {}, querySelector: () => null, getElementById: () => null, querySelectorAll: () => [] } };
+    const document = window.document;
+    const mockEnv = { window, document, CustomEvent: class {} };
+    // evaluate app.js within the mock environment
+    const script = new Function('window', 'document', 'CustomEvent', appJs);
+    script(window, document, mockEnv.CustomEvent);
+
+    return window.Intellectir.DiscoverFilterModule.escapeRegExp;
+  }
+
+  let escapeRegExp;
+  try {
+    escapeRegExp = getEscapeRegExpFn();
+  } catch (err) {
+    // Fallback if evaluating fails
+    console.error(err);
+    escapeRegExp = function (string) { return string; };
+  }
+
+  test('2.8.1: Minimum basic string without regex metacharacters remains unchanged', () => {
+    const input = 'hello world';
+    const expected = 'hello world';
+    assert.strictEqual(escapeRegExp(input), expected);
+  });
+
+  test('2.8.2: String containing all RegExp metacharacters is fully escaped', () => {
+    const input = '.*+?^${}()|[]\\';
+    const expected = '\\.\\*\\+\\?\\^\\$\\{\\}\\(\\)\\|\\[\\]\\\\';
+    assert.strictEqual(escapeRegExp(input), expected);
+  });
+
+  test('2.8.3: Empty string input is safely handled and returns empty string', () => {
+    const input = '';
+    const expected = '';
+    assert.strictEqual(escapeRegExp(input), expected);
+  });
+
+  test('2.8.4: Mixed content with alphanumeric characters and metacharacters is escaped properly', () => {
+    const input = 'test(with) regex? symbols$';
+    const expected = 'test\\(with\\) regex\\? symbols\\$';
+    assert.strictEqual(escapeRegExp(input), expected);
+  });
+});

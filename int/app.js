@@ -669,7 +669,7 @@
             item.descEl.textContent = item.rawDesc;
         }
 
-        return { init, filterArticles: filterAndRankArticles };
+        return { init, filterArticles: filterAndRankArticles, escapeRegExp };
     })();
 
     /* ==========================================================================
