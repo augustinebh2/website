@@ -510,6 +510,97 @@
             });
         }
 
+        function calculateArticleScore(item, normalizedQuery, tokens) {
+            let score = 0;
+            let matchedAny = false;
+
+            // Exact full phrase bonuses
+            if (normalizedQuery.length > 2) {
+                if (item.titleText.includes(normalizedQuery)) score += 45;
+                if (item.publisher.includes(normalizedQuery)) score += 40;
+                if (item.tags.includes(normalizedQuery)) score += 30;
+                if (item.descText.includes(normalizedQuery)) score += 20;
+            }
+
+            // Token-level scoring
+            tokens.forEach(token => {
+                let tokenMatched = false;
+                if (item.publisher.includes(token)) {
+                    score += 20;
+                    tokenMatched = true;
+                }
+                if (item.titleText.includes(token)) {
+                    score += 16;
+                    tokenMatched = true;
+                }
+                if (item.tags.includes(token)) {
+                    score += 12;
+                    tokenMatched = true;
+                }
+                if (item.category.includes(token)) {
+                    score += 10;
+                    tokenMatched = true;
+                }
+                if (item.descText.includes(token)) {
+                    score += 6;
+                    tokenMatched = true;
+                }
+                if (tokenMatched) matchedAny = true;
+            });
+
+            // All tokens matched bonus
+            const allTokensMatch = tokens.every(token =>
+                item.titleText.includes(token) ||
+                item.descText.includes(token) ||
+                item.publisher.includes(token) ||
+                item.tags.includes(token) ||
+                item.category.includes(token)
+            );
+
+            if (allTokensMatch) score += 25;
+
+            return { score, matchedAny };
+        }
+
+        function updateSearchStatus(visibleCount, rawQuery, normalizedQuery, activePill, selectedCategory) {
+            // Update status text
+            if (resultsCountEl) {
+                const categoryLabel = activePill ? (activePill.querySelector('span:first-child')?.textContent || 'resources') : 'resources';
+                if (normalizedQuery) {
+                    resultsCountEl.textContent = `Showing ${visibleCount} ${visibleCount === 1 ? 'result' : 'results'} for "${rawQuery.trim()}"`;
+                } else if (selectedCategory === 'all') {
+                    resultsCountEl.textContent = `Showing all ${visibleCount} articles`;
+                } else {
+                    resultsCountEl.textContent = `Showing ${visibleCount} ${visibleCount === 1 ? 'article' : 'articles'} in ${categoryLabel}`;
+                }
+            }
+
+            // Toggle empty state
+            if (noResultsEl) {
+                noResultsEl.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+        }
+
+        function updateArticlesDOM(visibleCards, scoredCards, tokens) {
+            // Reorder in DOM so top-ranked articles pop up first
+            if (!articlesGrid) return;
+
+            visibleCards.forEach(item => {
+                item.card.style.display = '';
+                item.card.style.opacity = '1';
+                item.card.style.transform = 'scale(1)';
+                articlesGrid.appendChild(item.card);
+                applyHighlight(item, tokens);
+            });
+
+            scoredCards.filter(c => !c.isVisible).forEach(item => {
+                item.card.style.display = 'none';
+                item.card.style.opacity = '0';
+                item.card.style.transform = 'scale(0.96)';
+                resetHighlight(item);
+            });
+        }
+
         function filterAndRankArticles() {
             const rawQuery = searchInput ? searchInput.value : '';
             const normalizedQuery = (rawQuery || '').trim().toLowerCase();
@@ -534,53 +625,7 @@
                     return;
                 }
 
-                let score = 0;
-                let matchedAny = false;
-
-                // Exact full phrase bonuses
-                if (normalizedQuery.length > 2) {
-                    if (item.titleText.includes(normalizedQuery)) score += 45;
-                    if (item.publisher.includes(normalizedQuery)) score += 40;
-                    if (item.tags.includes(normalizedQuery)) score += 30;
-                    if (item.descText.includes(normalizedQuery)) score += 20;
-                }
-
-                // Token-level scoring
-                tokens.forEach(token => {
-                    let tokenMatched = false;
-                    if (item.publisher.includes(token)) {
-                        score += 20;
-                        tokenMatched = true;
-                    }
-                    if (item.titleText.includes(token)) {
-                        score += 16;
-                        tokenMatched = true;
-                    }
-                    if (item.tags.includes(token)) {
-                        score += 12;
-                        tokenMatched = true;
-                    }
-                    if (item.category.includes(token)) {
-                        score += 10;
-                        tokenMatched = true;
-                    }
-                    if (item.descText.includes(token)) {
-                        score += 6;
-                        tokenMatched = true;
-                    }
-                    if (tokenMatched) matchedAny = true;
-                });
-
-                // All tokens matched bonus
-                const allTokensMatch = tokens.every(token =>
-                    item.titleText.includes(token) ||
-                    item.descText.includes(token) ||
-                    item.publisher.includes(token) ||
-                    item.tags.includes(token) ||
-                    item.category.includes(token)
-                );
-
-                if (allTokensMatch) score += 25;
+                const { score, matchedAny } = calculateArticleScore(item, normalizedQuery, tokens);
 
                 if (matchedAny && score > 0) {
                     scoredCards.push({ ...item, score, isVisible: true });
@@ -594,40 +639,9 @@
             const visibleCards = scoredCards.filter(c => c.isVisible);
             visibleCards.sort((a, b) => b.score - a.score || a.index - b.index);
 
-            // Reorder in DOM so top-ranked articles pop up first
-            if (articlesGrid) {
-                visibleCards.forEach(item => {
-                    item.card.style.display = '';
-                    item.card.style.opacity = '1';
-                    item.card.style.transform = 'scale(1)';
-                    articlesGrid.appendChild(item.card);
-                    applyHighlight(item, tokens);
-                });
+            updateArticlesDOM(visibleCards, scoredCards, tokens);
 
-                scoredCards.filter(c => !c.isVisible).forEach(item => {
-                    item.card.style.display = 'none';
-                    item.card.style.opacity = '0';
-                    item.card.style.transform = 'scale(0.96)';
-                    resetHighlight(item);
-                });
-            }
-
-            // Update status text
-            if (resultsCountEl) {
-                const categoryLabel = activePill ? (activePill.querySelector('span:first-child')?.textContent || 'resources') : 'resources';
-                if (normalizedQuery) {
-                    resultsCountEl.textContent = `Showing ${visibleCount} ${visibleCount === 1 ? 'result' : 'results'} for "${rawQuery.trim()}"`;
-                } else if (selectedCategory === 'all') {
-                    resultsCountEl.textContent = `Showing all ${visibleCount} articles`;
-                } else {
-                    resultsCountEl.textContent = `Showing ${visibleCount} ${visibleCount === 1 ? 'article' : 'articles'} in ${categoryLabel}`;
-                }
-            }
-
-            // Toggle empty state
-            if (noResultsEl) {
-                noResultsEl.style.display = visibleCount === 0 ? 'block' : 'none';
-            }
+            updateSearchStatus(visibleCount, rawQuery, normalizedQuery, activePill, selectedCategory);
 
             updatePillCounts();
         }
