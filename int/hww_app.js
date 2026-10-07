@@ -61,7 +61,7 @@
             }
         }
 
-        function show(message, type = 'success', duration = 4000) {
+        function show(message, _type = 'success', duration = 4000) {
             if (!toastEl) {
                 init();
             }
