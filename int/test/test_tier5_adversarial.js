@@ -77,6 +77,66 @@ function referenceSmoothstep(t) {
 }
 
 // Helper to create a fully isolated mock DOM environment for app.js
+
+function createMockModalEnvironment() {
+  const mockClassList = new Set();
+  const mockModal = {
+    id: 'demo-modal',
+    classList: {
+      add: (...cls) => cls.forEach(c => mockClassList.add(c)),
+      remove: (...cls) => cls.forEach(c => mockClassList.delete(c)),
+      contains: (c) => mockClassList.has(c)
+    },
+    setAttribute: () => {},
+    querySelector: () => null,
+    querySelectorAll: () => [],
+    addEventListener: () => {}
+  };
+
+  const mockDocument = {
+    getElementById: (id) => id === 'demo-modal' ? mockModal : null,
+    querySelector: () => null,
+    querySelectorAll: () => [],
+    addEventListener: () => {},
+    body: { style: {} },
+    head: { appendChild: () => ({ src: '' }) },
+    createElement: () => ({ src: '' })
+  };
+
+  const mockWindow = {
+    document: mockDocument,
+    addEventListener: () => {}
+  };
+
+  const mockCal = function() {};
+  mockCal.ns = { meeting: function() {} };
+
+  const sandbox = {
+    window: mockWindow,
+    document: mockDocument,
+    Math: Math,
+    parseInt: parseInt,
+    parseFloat: parseFloat,
+    isNaN: isNaN,
+    setTimeout: setTimeout,
+    clearTimeout: clearTimeout,
+    Array: Array,
+    Set: Set,
+    IntersectionObserver: class { observe() {} disconnect() {} },
+    Cal: mockCal
+  };
+
+  const context = vm.createContext(sandbox);
+  const code = readAppJs();
+  vm.runInContext(code, context);
+
+  return {
+    module: sandbox.window.Intellectir.ModalModule,
+    modal: mockModal,
+    classList: mockClassList
+  };
+}
+
 function createMockHowWeWorkEnvironment(customOptions = {}) {
   const eventListeners = {
     window: {},
@@ -769,5 +829,66 @@ describe('Tier 5.11: Reduced-Motion (prefers-reduced-motion: reduce) Accessibili
 
     assert.strictEqual(env.elements.canvas.style.transform, 'none', 'Canvas transform must be "none" when reduced motion is preferred');
     env.module.destroy();
+  });
+});
+
+
+// =========================================================================
+// 12. ModalModule Unit Tests
+// =========================================================================
+describe('Tier 5.12: ModalModule isOpen() State Management Unit Tests', () => {
+  test('5.12.1: isOpen() returns false when modal is absent or uninitialized', () => {
+    const env = createMockModalEnvironment();
+    // Do not init the modal to keep demoModal = null internally
+    assert.strictEqual(!!env.module.isOpen(), false, "Should return falsy when uninitialized");
+  });
+
+  test('5.12.2: isOpen() returns false when modal has no active classes', () => {
+    const env = createMockModalEnvironment();
+    env.module.init();
+    assert.strictEqual(env.module.isOpen(), false);
+  });
+
+  test('5.12.3: isOpen() returns true when modal has "active" class', () => {
+    const env = createMockModalEnvironment();
+    env.module.init();
+    env.classList.add('active');
+    assert.strictEqual(env.module.isOpen(), true);
+  });
+
+  test('5.12.4: isOpen() returns true when modal has "is-open" class', () => {
+    const env = createMockModalEnvironment();
+    env.module.init();
+    env.classList.add('is-open');
+    assert.strictEqual(env.module.isOpen(), true);
+  });
+
+  test('5.12.5: isOpen() returns true when modal has "open" class', () => {
+    const env = createMockModalEnvironment();
+    env.module.init();
+    env.classList.add('open');
+    assert.strictEqual(env.module.isOpen(), true);
+  });
+
+  test('5.12.6: isOpen() returns true after calling ModalModule.open()', () => {
+    const env = createMockModalEnvironment();
+    env.module.init();
+    env.module.open();
+    assert.strictEqual(env.module.isOpen(), true);
+    assert.ok(env.classList.has('active'));
+    assert.ok(env.classList.has('is-open'));
+    assert.ok(env.classList.has('open'));
+  });
+
+  test('5.12.7: isOpen() returns false after calling ModalModule.close()', () => {
+    const env = createMockModalEnvironment();
+    env.module.init();
+    env.module.open();
+    assert.strictEqual(env.module.isOpen(), true);
+    env.module.close();
+    assert.strictEqual(env.module.isOpen(), false);
+    assert.ok(!env.classList.has('active'));
+    assert.ok(!env.classList.has('is-open'));
+    assert.ok(!env.classList.has('open'));
   });
 });
