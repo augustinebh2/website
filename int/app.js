@@ -353,6 +353,7 @@
         let searchInput = null;
         let clearBtn = null;
         let filterPills = [];
+        let cachedPills = [];
         let articlesGrid = null;
         let articleCards = [];
         let resultsCountEl = null;
@@ -366,6 +367,12 @@
                 document.getElementById('article-search');
             clearBtn = document.getElementById('discover-search-clear');
             filterPills = Array.from(document.querySelectorAll('.filter-pill, .category-pill'));
+
+            cachedPills = filterPills.map(pill => ({
+                pill,
+                cat: pill.getAttribute('data-category') || 'all',
+                countEl: pill.querySelector('.pill-count')
+            }));
             articlesGrid = document.getElementById('discover-articles-grid') || document.querySelector('.ind-grid-3');
             articleCards = Array.from(document.querySelectorAll('.discover-article-card, .case-card, .insight-card, .article-card, .whitepaper, .research-card'));
             resultsCountEl = document.getElementById('discover-results-count');
@@ -477,8 +484,7 @@
             const tokens = normalizedQuery.split(/\s+/).filter(t => t.length > 0);
 
             const counts = { all: 0 };
-            filterPills.forEach(pill => {
-                const cat = pill.getAttribute('data-category') || 'all';
+            cachedPills.forEach(({ cat }) => {
                 counts[cat] = 0;
             });
 
@@ -501,9 +507,7 @@
                 }
             });
 
-            filterPills.forEach(pill => {
-                const cat = pill.getAttribute('data-category') || 'all';
-                const countEl = pill.querySelector('.pill-count');
+            cachedPills.forEach(({ cat, countEl }) => {
                 if (countEl && counts[cat] !== undefined) {
                     countEl.textContent = counts[cat];
                 }
