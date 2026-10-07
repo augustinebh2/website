@@ -636,6 +636,14 @@
             return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
         }
 
+        function escapeHTML(str) {
+            return String(str).replace(/&/g, '&amp;')
+                              .replace(/</g, '&lt;')
+                              .replace(/>/g, '&gt;')
+                              .replace(/"/g, '&quot;')
+                              .replace(/'/g, '&#39;');
+        }
+
         function applyHighlight(item, tokens) {
             if (!item.titleEl || !item.descEl) return;
             if (tokens.length === 0) {
@@ -648,14 +656,20 @@
 
             const regex = new RegExp(`(${cleanTokens.join('|')})`, 'gi');
 
-            const titleLink = item.titleEl.querySelector('a');
-            if (titleLink) {
-                titleLink.innerHTML = item.rawTitle.replace(regex, '<mark class="search-highlight">$1</mark>');
-            } else {
-                item.titleEl.innerHTML = item.rawTitle.replace(regex, '<mark class="search-highlight">$1</mark>');
+            function safeHighlight(text) {
+                return text.split(regex).map((part, i) => {
+                    return i % 2 === 0 ? escapeHTML(part) : `<mark class="search-highlight">${escapeHTML(part)}</mark>`;
+                }).join('');
             }
 
-            item.descEl.innerHTML = item.rawDesc.replace(regex, '<mark class="search-highlight">$1</mark>');
+            const titleLink = item.titleEl.querySelector('a');
+            if (titleLink) {
+                titleLink.innerHTML = safeHighlight(item.rawTitle);
+            } else {
+                item.titleEl.innerHTML = safeHighlight(item.rawTitle);
+            }
+
+            item.descEl.innerHTML = safeHighlight(item.rawDesc);
         }
 
         function resetHighlight(item) {
