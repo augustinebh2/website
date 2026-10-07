@@ -787,11 +787,17 @@
 
                     if (container) {
                         const siblings = container.querySelectorAll('.minimal-accordion-item, .faq-item');
+                        const headers = container.querySelectorAll('.minimal-accordion-header, .faq-header');
+
                         siblings.forEach(sib => {
                             if (sib !== item) {
                                 sib.classList.remove('active');
-                                const sibHeader = sib.querySelector('.minimal-accordion-header, .faq-header');
-                                if (sibHeader) sibHeader.setAttribute('aria-expanded', 'false');
+                            }
+                        });
+
+                        headers.forEach(h => {
+                            if (!item.contains(h)) {
+                                h.setAttribute('aria-expanded', 'false');
                             }
                         });
                     }
