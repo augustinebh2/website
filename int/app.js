@@ -1229,7 +1229,7 @@
                         simProgressFill.style.width = `${stepData.progress}%`;
                         const logLine = document.createElement('div');
                         logLine.className = 'sim-log-line';
-                        logLine.innerHTML = stepData.log;
+                        logLine.textContent = stepData.log;
                         simLogTerminal.appendChild(logLine);
                         simLogTerminal.scrollTop = simLogTerminal.scrollHeight;
 
