@@ -728,7 +728,11 @@
                         siblings.forEach(sib => {
                             if (sib !== item) {
                                 sib.classList.remove('active');
-                                const sibHeader = sib.querySelector('.minimal-accordion-header, .faq-header');
+                                let sibHeader = sib._cachedAccordionHeader;
+                                if (sibHeader === undefined) {
+                                    sibHeader = sib.querySelector('.minimal-accordion-header, .faq-header');
+                                    sib._cachedAccordionHeader = sibHeader;
+                                }
                                 if (sibHeader) sibHeader.setAttribute('aria-expanded', 'false');
                             }
                         });
