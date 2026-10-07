@@ -34,10 +34,6 @@ function readAppJs() {
   return fs.readFileSync(path.join(PROJECT_ROOT, 'app.js'), 'utf-8');
 }
 
-function readOriginalRequest() {
-  return fs.readFileSync(path.join(PROJECT_ROOT, 'ORIGINAL_REQUEST.md'), 'utf-8');
-}
-
 function extractHowWeWorkSection(html) {
   const startTag = '<section class="how-we-work-section" id="how-we-work-section"';
   const startIdx = html.indexOf(startTag);
