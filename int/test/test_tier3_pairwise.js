@@ -172,7 +172,6 @@ describe('Tier 3.4: ROI Slider HTML Attributes vs JS Logic (Pairwise)', () => {
 
   test('3.4.2: Department selector keys in HTML align with app.js calculation configs', () => {
     const appJs = readAppJs();
-    const discoverHtml = readPageHtml('discover.html');
 
     // Expected standard departments
     const standardDepts = ['support', 'sales', 'finance', 'operations'];
