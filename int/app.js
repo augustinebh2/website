@@ -669,7 +669,12 @@
             item.descEl.textContent = item.rawDesc;
         }
 
-        return { init, filterArticles: filterAndRankArticles };
+        const api = { init, filterArticles: filterAndRankArticles };
+        // Expose for testing
+        if (typeof module !== 'undefined' && module.exports) {
+            api._test = { applyHighlight, resetHighlight, escapeRegExp };
+        }
+        return api;
     })();
 
     /* ==========================================================================
@@ -1720,4 +1725,7 @@
         window.Intellectir.init();
     }
 
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = window.Intellectir;
+    }
 })(typeof window !== 'undefined' ? window : this, typeof document !== 'undefined' ? document : {});

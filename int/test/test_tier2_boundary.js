@@ -382,3 +382,103 @@ describe('Tier 2.7: ROI Calculator Input Boundary Cases', () => {
     assert.ok(!isNaN(result.annualSavings));
   });
 });
+
+// =========================================================================
+// 8. Search Highlight Boundary Cases
+// =========================================================================
+describe('Tier 2.8: applyHighlight Boundary Cases', () => {
+  // We need to test the logic directly from the app environment
+  const path = require('path');
+
+  // We set up a minimal global DOM environment to be able to require app.js
+  global.window = global.window || {};
+  global.document = global.document || {
+    readyState: 'complete',
+    getElementById: () => null,
+    querySelectorAll: () => [],
+    querySelector: () => null,
+    addEventListener: () => {},
+    documentElement: { style: {} },
+    createElement: () => ({ style: {} }),
+    body: { appendChild: () => {}, style: {} }
+  };
+  global.navigator = global.navigator || { userAgent: '' };
+  global.matchMedia = global.matchMedia || (() => ({ matches: false, addEventListener: () => {} }));
+  global.IntersectionObserver = global.IntersectionObserver || class { constructor() {} observe() {} disconnect() {} };
+
+  let Intellectir;
+  try {
+    Intellectir = require('../app.js');
+  } catch (e) {
+    console.error("Could not require app.js", e);
+  }
+
+  const applyHighlight = Intellectir?.DiscoverFilterModule?._test?.applyHighlight;
+
+  function createMockItem(hasLink = false) {
+    const linkEl = hasLink ? { textContent: '', innerHTML: '' } : null;
+    return {
+      rawTitle: 'Hello World! An amazing AI test.',
+      rawDesc: 'This is a description about Artificial Intelligence.',
+      titleEl: {
+        innerHTML: '',
+        textContent: '',
+        querySelector: (sel) => sel === 'a' ? linkEl : null,
+        _linkEl: linkEl
+      },
+      descEl: {
+        innerHTML: '',
+        textContent: ''
+      }
+    };
+  }
+
+  test('2.8.1: Empty tokens array calls resetHighlight', () => {
+    const item = createMockItem();
+    item.titleEl.innerHTML = 'modified';
+    item.descEl.innerHTML = 'modified';
+    applyHighlight(item, []);
+    assert.strictEqual(item.titleEl.textContent, 'Hello World! An amazing AI test.');
+    assert.strictEqual(item.descEl.textContent, 'This is a description about Artificial Intelligence.');
+  });
+
+  test('2.8.2: Tokens array with only small length words (length <= 1) ignores highlighting', () => {
+    const item = createMockItem();
+    applyHighlight(item, ['a', 'I', ' ']);
+    assert.strictEqual(item.titleEl.innerHTML, '');
+    assert.strictEqual(item.descEl.innerHTML, '');
+  });
+
+  test('2.8.3: Highlighting text containing regex metacharacters works safely', () => {
+    const item = createMockItem();
+    item.rawTitle = 'Title with .* and ?';
+    item.rawDesc = 'Desc with + and $';
+    applyHighlight(item, ['.*', '+', '?', '$']);
+    assert.ok(item.titleEl.innerHTML.includes('<mark class="search-highlight">.*</mark>'));
+    assert.ok(item.descEl.innerHTML.includes('<mark class="search-highlight">+</mark>'));
+  });
+
+  test('2.8.4: Highlighting title with an embedded <a> link modifies link innerHTML', () => {
+    const item = createMockItem(true);
+    applyHighlight(item, ['World']);
+    assert.ok(item.titleEl._linkEl.innerHTML.includes('<mark class="search-highlight">World</mark>'));
+    assert.strictEqual(item.titleEl.innerHTML, '');
+  });
+
+  test('2.8.5: Highlighting title without an embedded link modifies titleEl innerHTML', () => {
+    const item = createMockItem(false);
+    applyHighlight(item, ['World']);
+    assert.ok(item.titleEl.innerHTML.includes('<mark class="search-highlight">World</mark>'));
+  });
+
+  test('2.8.6: Case-insensitive matches are highlighted properly', () => {
+    const item = createMockItem(false);
+    item.rawTitle = 'Mixed CaSe TeSt';
+    item.rawDesc = 'Another Test case';
+    applyHighlight(item, ['case', 'test']);
+    assert.ok(item.titleEl.innerHTML.includes('<mark class="search-highlight">CaSe</mark>'), 'Expected title to highlight CaSe');
+    assert.ok(item.titleEl.innerHTML.includes('<mark class="search-highlight">TeSt</mark>'), 'Expected title to highlight TeSt');
+    assert.ok(item.descEl.innerHTML.includes('<mark class="search-highlight">case</mark>'), 'Expected desc to highlight case');
+    assert.ok(item.descEl.innerHTML.includes('<mark class="search-highlight">Test</mark>'), 'Expected desc to highlight Test');
+  });
+});
