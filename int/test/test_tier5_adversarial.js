@@ -70,12 +70,6 @@ function calculateContrastRatio(hex1, hex2) {
   return (brighter + 0.05) / (darker + 0.05);
 }
 
-// Hermite smoothstep reference oracle
-function referenceSmoothstep(t) {
-  const clamped = Math.max(0, Math.min(1, t));
-  return clamped * clamped * (3 - 2 * clamped);
-}
-
 // Helper to create a fully isolated mock DOM environment for app.js
 function createMockHowWeWorkEnvironment(customOptions = {}) {
   const eventListeners = {
