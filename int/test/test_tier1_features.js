@@ -14,6 +14,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const vm = require('vm');
 const { describe, test, it, httpRequest, assert, BASE_URL } = require('./e2e_runner');
 
 const PROJECT_ROOT = path.resolve(__dirname, '..');
@@ -22,6 +23,87 @@ const PAGES = ['index.html', 'company.html', 'discover.html', 'industries.html',
 function readPageHtml(filename) {
   const filePath = path.join(PROJECT_ROOT, filename);
   return fs.readFileSync(filePath, 'utf-8');
+}
+
+function readAppJs() {
+  return fs.readFileSync(path.join(PROJECT_ROOT, 'app.js'), 'utf-8');
+}
+
+function createMockModalEnvironment() {
+  const mockDocument = {
+    readyState: 'complete',
+    head: {
+      appendChild: (el) => {
+        mockDocument.head.children.push(el);
+        return el;
+      },
+      children: []
+    },
+    createElement: (tag) => {
+      return { tagName: tag.toUpperCase(), src: '' };
+    },
+    getElementById: (id) => {
+      if (id === 'demo-modal') return mockElements.demoModal;
+      return null;
+    },
+    querySelector: (sel) => {
+      if (sel === '.modal-backdrop, .modal') return mockElements.demoModal;
+      return null;
+    },
+    querySelectorAll: () => [],
+    addEventListener: () => {}
+  };
+
+  const mockElements = {
+    demoModal: {
+      id: 'demo-modal',
+      querySelectorAll: () => [],
+      querySelector: () => null,
+      classList: {
+        contains: () => false,
+        remove: () => {},
+        add: () => {}
+      },
+      setAttribute: () => {},
+      removeAttribute: () => {},
+      addEventListener: () => {}
+    }
+  };
+
+  const mockWindow = {
+    document: mockDocument,
+    addEventListener: () => {}
+  };
+
+  const sandbox = {
+    window: mockWindow,
+    document: mockDocument,
+    console: { log: () => {}, error: () => {}, warn: () => {} },
+    setTimeout: (cb) => cb(),
+    clearTimeout: () => {},
+    Math: Math,
+    Date: Date,
+    Intellectir: {}
+  };
+
+  // Bind the global Cal object reference back to window.Cal so Cal() doesn't throw ReferenceError
+  // The closure inside initBookingWizard relies on window being the global context or Cal being globally defined.
+  // In vm contexts, we need to explicitly link it or define a getter/setter to mirror the sandbox global.
+  Object.defineProperty(sandbox, 'Cal', {
+    get: () => sandbox.window.Cal,
+    set: (val) => { sandbox.window.Cal = val; },
+    configurable: true
+  });
+
+  const context = vm.createContext(sandbox);
+  const code = readAppJs();
+  vm.runInContext(code, context);
+
+  return {
+    module: sandbox.window.Intellectir.ModalModule,
+    window: sandbox.window,
+    document: sandbox.document
+  };
 }
 
 // =========================================================================
@@ -289,6 +371,50 @@ describe('Tier 1.5: Global Header & Navigation Markup Contract', () => {
         `${page} must contain consultation CTA button linking to demo modal`
       );
     }
+  });
+
+  test('1.7.6: ModalModule initializes Booking Wizard and configures Cal.com embed', () => {
+    const env = createMockModalEnvironment();
+
+    // Since vm.runInContext executes the whole script immediately and app.js might call initBookingWizard if Intellectir.init() runs, we just verify it exists.
+    // If not already there, we manually invoke init
+    if (!env.window.Cal) {
+      env.module.init();
+    }
+
+    // 1. Check if Cal object is defined on window
+    assert.ok(env.window.Cal, 'window.Cal must be defined after module init');
+    assert.ok(typeof env.window.Cal === 'function', 'window.Cal must be a function');
+    assert.ok(env.window.Cal.q, 'window.Cal.q queue must be created');
+
+    // 2. Check if embed.js script tag is appended to the document head
+    const scripts = env.document.head.children;
+    const embedScript = scripts.find(el => el.tagName === 'SCRIPT' && el.src === 'https://app.cal.com/embed.js');
+    assert.ok(embedScript, 'Cal embed.js script must be appended to document head');
+
+    // 3. Check if Cal.ns is populated
+    assert.ok(env.window.Cal.ns, 'Cal.ns must be defined');
+
+    // 4. Verify inline config queue and init arguments are passed to the meeting namespace wrapper
+    // The embed script initialization injects arguments array objects into the namespaces queue
+    assert.ok(typeof env.window.Cal.ns["meeting"] === 'function', 'Cal.ns["meeting"] namespace must exist');
+    const meetingQueue = env.window.Cal.ns["meeting"].q;
+    assert.ok(meetingQueue && meetingQueue.length > 0, 'Meeting namespace queue must have items');
+
+    const initCall = meetingQueue.find(call =>
+      call[0] === 'init' &&
+      call[1] === 'meeting' &&
+      call[2] && call[2].origin === 'https://cal.com'
+    );
+    assert.ok(initCall, 'Cal must be initialized with origin config');
+
+    const inlineCall = meetingQueue.find(call =>
+      call[0] === 'inline' &&
+      call[1] && call[1].elementOrSelector === '#my-cal-inline' &&
+      call[1].calLink === 'augustine-ekwunife-jr1xqa/meeting' &&
+      call[1].config && call[1].config.theme === 'dark'
+    );
+    assert.ok(inlineCall, 'Inline meeting configuration must be pushed to queue');
   });
 });
 
