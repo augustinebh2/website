@@ -1341,12 +1341,8 @@
             return Math.max(0, Math.min(1, rawProgress));
         }
 
-        // Render one animation frame for visual synchronization
-        function renderFrame(progress) {
-            const matrix = computeCameraTransform(progress);
-            const stage = matrix.stage;
-
-            // Map stage to active phase (1 to 4)
+        // --- Render Helpers ---
+        function updateActivePhase(stage) {
             if (stage === 0 || stage === 1) {
                 activePhaseIndex = 1;
             } else if (stage === 2) {
@@ -1356,59 +1352,57 @@
             } else {
                 activePhaseIndex = 4;
             }
+        }
 
-            // 1. Camera Canvas Matrix Transformation
-            if (canvasEl && canvasEl.style) {
-                const prefersReducedMotion = typeof window !== 'undefined' &&
-                    window.matchMedia &&
-                    typeof window.matchMedia === 'function' &&
-                    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        function applyCanvasTransform(matrix) {
+            if (!canvasEl || !canvasEl.style) return;
+            const prefersReducedMotion = typeof window !== 'undefined' &&
+                window.matchMedia &&
+                typeof window.matchMedia === 'function' &&
+                window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-                const isMobileReflow = typeof window !== 'undefined' && window.innerWidth && window.innerWidth <= 992;
+            const isMobileReflow = typeof window !== 'undefined' && window.innerWidth && window.innerWidth <= 992;
 
-                if (prefersReducedMotion) {
-                    canvasEl.style.transform = 'none';
-                } else if (isMobileReflow) {
-                    canvasEl.style.transform = '';
-                } else {
-                    canvasEl.style.transform = matrix.transformString;
+            if (prefersReducedMotion) {
+                canvasEl.style.transform = 'none';
+            } else if (isMobileReflow) {
+                canvasEl.style.transform = '';
+            } else {
+                canvasEl.style.transform = matrix.transformString;
+            }
+        }
+
+        function updateIntroOutroState(progress) {
+            if (!introFrameEl) return;
+            if (progress < 0.12) {
+                if (introFrameEl.classList) introFrameEl.classList.remove('faded', 'hidden', 'is-dimmed');
+                if (introFrameEl.style) {
+                    introFrameEl.style.opacity = '1';
+                    introFrameEl.style.pointerEvents = 'auto';
+                    introFrameEl.style.visibility = 'visible';
+                }
+                if (stateIntroEl && stateIntroEl.style) stateIntroEl.style.display = 'block';
+                if (statePlatformEl && statePlatformEl.style) statePlatformEl.style.display = 'none';
+            } else if (progress > 0.90) {
+                if (introFrameEl.classList) introFrameEl.classList.remove('faded', 'hidden', 'is-dimmed');
+                if (introFrameEl.style) {
+                    introFrameEl.style.opacity = '1';
+                    introFrameEl.style.pointerEvents = 'auto';
+                    introFrameEl.style.visibility = 'visible';
+                }
+                if (stateIntroEl && stateIntroEl.style) stateIntroEl.style.display = 'none';
+                if (statePlatformEl && statePlatformEl.style) statePlatformEl.style.display = 'block';
+            } else {
+                if (introFrameEl.classList) introFrameEl.classList.add('faded', 'hidden', 'is-dimmed');
+                if (introFrameEl.style) {
+                    introFrameEl.style.opacity = '0';
+                    introFrameEl.style.pointerEvents = 'none';
+                    introFrameEl.style.visibility = 'hidden';
                 }
             }
+        }
 
-            // 2. Intro / Outro Center Frame State Switching
-            if (introFrameEl) {
-                if (progress < 0.12) {
-                    // Stage 0: Initial "How we work" view
-                    if (introFrameEl.classList) introFrameEl.classList.remove('faded', 'hidden', 'is-dimmed');
-                    if (introFrameEl.style) {
-                        introFrameEl.style.opacity = '1';
-                        introFrameEl.style.pointerEvents = 'auto';
-                        introFrameEl.style.visibility = 'visible';
-                    }
-                    if (stateIntroEl && stateIntroEl.style) stateIntroEl.style.display = 'block';
-                    if (statePlatformEl && statePlatformEl.style) statePlatformEl.style.display = 'none';
-                } else if (progress > 0.90) {
-                    // Stage 5: Final Ecosystem "The Intellectir Platform" & Explore Solutions CTA
-                    if (introFrameEl.classList) introFrameEl.classList.remove('faded', 'hidden', 'is-dimmed');
-                    if (introFrameEl.style) {
-                        introFrameEl.style.opacity = '1';
-                        introFrameEl.style.pointerEvents = 'auto';
-                        introFrameEl.style.visibility = 'visible';
-                    }
-                    if (stateIntroEl && stateIntroEl.style) stateIntroEl.style.display = 'none';
-                    if (statePlatformEl && statePlatformEl.style) statePlatformEl.style.display = 'block';
-                } else {
-                    // Stages 1ΓÇô4: Panned focus onto active quadrant card
-                    if (introFrameEl.classList) introFrameEl.classList.add('faded', 'hidden', 'is-dimmed');
-                    if (introFrameEl.style) {
-                        introFrameEl.style.opacity = '0';
-                        introFrameEl.style.pointerEvents = 'none';
-                        introFrameEl.style.visibility = 'hidden';
-                    }
-                }
-            }
-
-            // 3. Scrubber Pills Active Synchronization
+        function updateScrubberPills() {
             navPills.forEach(pill => {
                 if (!pill) return;
                 const goto = sanitizeGotoIndex(pill.getAttribute ? pill.getAttribute('data-hww-goto') : null);
@@ -1416,15 +1410,16 @@
                 if (pill.classList) pill.classList.toggle('active', isActive);
                 if (pill.setAttribute) pill.setAttribute('aria-selected', isActive ? 'true' : 'false');
             });
+        }
 
-            // 4. Scrubber Progress Line Width
+        function updateScrubberProgress(progress) {
             if (scrubberProgressEl && scrubberProgressEl.style) {
                 const pct = Math.max(0, Math.min(100, progress * 100));
                 scrubberProgressEl.style.width = `${pct}%`;
             }
+        }
 
-            // 5. HUD Corner Boundary Tags Illumination
-            // Stage 0 and Stage 5 illuminate all 4 corner tags; Stages 1-4 isolate specific active tag
+        function updateCornerTags(stage) {
             const cornerTagMap = {
                 1: 'discovery',
                 2: 'building',
@@ -1442,8 +1437,9 @@
                     if (tag.classList) tag.classList.toggle('active', cornerName === activeCornerName);
                 }
             });
+        }
 
-            // 6. Quadrant Cards Active Illumination
+        function updateQuadrantCards(stage) {
             quadrantCards.forEach(card => {
                 if (!card) return;
                 const qNum = parseInt(card.getAttribute ? card.getAttribute('data-quadrant') : '', 10);
@@ -1453,6 +1449,20 @@
                     if (card.classList) card.classList.toggle('active', qNum === activePhaseIndex);
                 }
             });
+        }
+
+        // Render one animation frame for visual synchronization
+        function renderFrame(progress) {
+            const matrix = computeCameraTransform(progress);
+            const stage = matrix.stage;
+
+            updateActivePhase(stage);
+            applyCanvasTransform(matrix);
+            updateIntroOutroState(progress);
+            updateScrubberPills();
+            updateScrubberProgress(progress);
+            updateCornerTags(stage);
+            updateQuadrantCards(stage);
         }
 
         // Cross-environment RAF wrappers
