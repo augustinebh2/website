@@ -457,3 +457,109 @@ describe('Tier 1.8: Core Interactive Component Markup Contracts', () => {
     );
   });
 });
+
+describe('Tier 1.9: Test resetHighlight functionality via public API', () => {
+    test('1.9.1: Search query with highlights is cleared and raw text is restored', async () => {
+        const fs_mod = require('fs');
+        const path_mod = require('path');
+        const discoverHtml = fs_mod.readFileSync(path_mod.join(PROJECT_ROOT, 'discover.html'), 'utf-8');
+        const appJs = fs_mod.readFileSync(path_mod.join(PROJECT_ROOT, 'app.js'), 'utf-8');
+
+        // Use jsdom to render discover.html and execute app.js
+        const jsdom = require('jsdom');
+        const { JSDOM } = jsdom;
+        const dom = new JSDOM(discoverHtml, { runScripts: "outside-only" });
+
+        // Mock requestAnimationFrame to prevent infinite loops in jsdom
+        dom.window.requestAnimationFrame = () => 1;
+        dom.window.cancelAnimationFrame = () => {};
+
+        // Execute app.js in jsdom context
+        dom.window.eval(appJs);
+
+        // Trigger DOMContentLoaded
+        dom.window.document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
+
+        const searchInput = dom.window.document.getElementById('article-search') || dom.window.document.getElementById('search-input') || dom.window.document.getElementById('discover-search-input');
+        const cards = dom.window.document.querySelectorAll('.discover-article-card');
+
+        assert.ok(searchInput, "Search input should be found");
+        assert.ok(cards.length > 0, "Cards should be found");
+
+        const firstCard = cards[0];
+        const titleLink = firstCard.querySelector('h3 a') || firstCard.querySelector('h3');
+        const descEl = firstCard.querySelector('p');
+
+        const originalTitle = titleLink.textContent.trim();
+        const originalDesc = descEl.textContent.trim();
+
+        // We simulate typing part of the title
+        const searchStr = originalTitle.substring(0, Math.min(4, originalTitle.length));
+        searchInput.value = searchStr;
+
+        // Dispatch input event
+        searchInput.dispatchEvent(new dom.window.Event('input'));
+
+        // Wait for debounce (80ms in app.js + extra margin)
+        await new Promise(r => setTimeout(r, 150));
+
+        // Assert highlights are applied
+        assert.ok(titleLink.innerHTML.includes('<mark'), "Highlight tags should be added to title");
+
+        // Clear the search query to trigger resetHighlight logic
+        searchInput.value = '';
+        searchInput.dispatchEvent(new dom.window.Event('input'));
+
+        await new Promise(r => setTimeout(r, 150));
+
+        // Assert raw text is restored
+        assert.strictEqual(titleLink.textContent.trim(), originalTitle, "Title text content should be restored");
+        assert.strictEqual(descEl.textContent.trim(), originalDesc, "Desc text content should be restored");
+        assert.ok(!titleLink.innerHTML.includes('<mark'), "Highlight tags should be removed from title");
+        assert.ok(!descEl.innerHTML.includes('<mark'), "Highlight tags should be removed from desc");
+    });
+
+    test('1.9.2: resetHighlight restores text correctly when title anchor is missing', async () => {
+        const fs_mod = require('fs');
+        const path_mod = require('path');
+        const discoverHtml = fs_mod.readFileSync(path_mod.join(PROJECT_ROOT, 'discover.html'), 'utf-8');
+        const appJs = fs_mod.readFileSync(path_mod.join(PROJECT_ROOT, 'app.js'), 'utf-8');
+
+        const jsdom = require('jsdom');
+        const { JSDOM } = jsdom;
+        const dom = new JSDOM(discoverHtml, { runScripts: "outside-only" });
+        dom.window.requestAnimationFrame = () => 1;
+        dom.window.cancelAnimationFrame = () => {};
+
+        // Remove the anchor from the first card's title to simulate the "no link" branch
+        const cards = dom.window.document.querySelectorAll('.discover-article-card');
+        const firstCard = cards[0];
+        const titleEl = firstCard.querySelector('h3');
+        if (titleEl.querySelector('a')) {
+            titleEl.innerHTML = titleEl.textContent; // replace with just text
+        }
+
+        dom.window.eval(appJs);
+        dom.window.document.dispatchEvent(new dom.window.Event('DOMContentLoaded'));
+
+        const searchInput = dom.window.document.getElementById('article-search') || dom.window.document.getElementById('search-input') || dom.window.document.getElementById('discover-search-input');
+
+        const originalTitle = titleEl.textContent.trim();
+
+        const searchStr = originalTitle.substring(0, Math.min(4, originalTitle.length));
+        searchInput.value = searchStr;
+        searchInput.dispatchEvent(new dom.window.Event('input'));
+
+        await new Promise(r => setTimeout(r, 150));
+
+        assert.ok(titleEl.innerHTML.includes('<mark'), "Highlight tags should be added to title");
+
+        searchInput.value = '';
+        searchInput.dispatchEvent(new dom.window.Event('input'));
+
+        await new Promise(r => setTimeout(r, 150));
+
+        assert.strictEqual(titleEl.textContent.trim(), originalTitle, "Title text content should be restored");
+        assert.ok(!titleEl.innerHTML.includes('<mark'), "Highlight tags should be removed from title");
+    });
+});
