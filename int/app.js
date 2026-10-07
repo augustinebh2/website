@@ -1187,6 +1187,8 @@
 
             if (!simRunBtn || !simProgressFill || !simLogTerminal) return;
 
+            const simStepStatusEls = Array.from(simStepNodes).map(node => node.querySelector('.sim-step-status'));
+
             let isSimRunning = false;
 
             const simStepsData = [
@@ -1215,14 +1217,14 @@
                             if (simStepNodes[i]) {
                                 simStepNodes[i].classList.remove('active');
                                 simStepNodes[i].classList.add('completed');
-                                const statusEl = simStepNodes[i].querySelector('.sim-step-status');
+                                const statusEl = simStepStatusEls[i];
                                 if (statusEl) statusEl.textContent = 'Completed';
                             }
                         }
 
                         if (simStepNodes[stepData.stepIndex]) {
                             simStepNodes[stepData.stepIndex].classList.add('active');
-                            const statusEl = simStepNodes[stepData.stepIndex].querySelector('.sim-step-status');
+                            const statusEl = simStepStatusEls[stepData.stepIndex];
                             if (statusEl) statusEl.textContent = 'Processing...';
                         }
 
@@ -1236,10 +1238,10 @@
                         step++;
                     } else {
                         clearInterval(interval);
-                        simStepNodes.forEach(node => {
+                        simStepNodes.forEach((node, idx) => {
                             node.classList.remove('active');
                             node.classList.add('completed');
-                            const statusEl = node.querySelector('.sim-step-status');
+                            const statusEl = simStepStatusEls[idx];
                             if (statusEl) statusEl.textContent = 'Completed';
                         });
 
