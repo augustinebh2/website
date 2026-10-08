@@ -673,95 +673,14 @@
     })();
 
     /* ==========================================================================
-       5. INTERACTIVE ROI CALCULATOR MODULE
+       5. ROI CALCULATOR MODULE (RETIRED)
        ========================================================================== */
     const RoiCalculatorModule = (() => {
-        let teamSlider = null;
-        let teamValBadge = null;
-        let resHours = null;
-        let resSavings = null;
-        let resTaskDesc = null;
-        let deptBtns = [];
-
-        // Department rate and workload multipliers
-        const deptHourlyRates = {
-            support: { hours: 22, rate: 45, desc: "Ticket triage, customer replies, CRM logging & follow-ups" },
-            sales: { hours: 18, rate: 65, desc: "Lead qualification, deal prep, CRM sync & follow-up emails" },
-            finance: { hours: 25, rate: 55, desc: "Invoice extraction, contract audit, compliance & reporting" },
-            operations: { hours: 20, rate: 60, desc: "Incident triage, system checks, ticket routing & workflows" }
+        return {
+            init: () => {},
+            calculate: () => ({ teamSize: 1, weeklyHours: 0, annualSavings: 0, deptKey: 'support' }),
+            deptHourlyRates: { support: {}, sales: {}, finance: {}, operations: {} }
         };
-
-        function init() {
-            teamSlider = document.getElementById('team-size-slider') ||
-                document.getElementById('team-slider') ||
-                document.querySelector('input[type="range"].calc-slider');
-            teamValBadge = document.getElementById('team-size-val');
-            resHours = document.getElementById('res-hours') || document.getElementById('roi-hours-saved');
-            resSavings = document.getElementById('res-savings') || document.getElementById('roi-annual-savings');
-            resTaskDesc = document.getElementById('res-task-desc') || document.getElementById('roi-efficiency-gain');
-            deptBtns = Array.from(document.querySelectorAll('.dept-btn, .dept-pill'));
-
-            if (!teamSlider && deptBtns.length === 0 && !resHours && !resSavings) return;
-
-            deptBtns.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    deptBtns.forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    calculate();
-                });
-            });
-
-            if (teamSlider) {
-                teamSlider.addEventListener('input', calculate);
-                teamSlider.addEventListener('change', calculate);
-            }
-
-            // Run initial baseline calculation
-            calculate();
-        }
-
-        function calculate() {
-            if (!teamSlider && deptBtns.length === 0) return;
-
-            let teamSize = teamSlider ? parseInt(teamSlider.value, 10) : 10;
-            if (isNaN(teamSize) || teamSize < 1) teamSize = 1;
-            if (teamSize > 500) teamSize = 500;
-
-            const activeBtn = document.querySelector('.dept-btn.active, .dept-pill.active');
-            let deptKey = activeBtn ? activeBtn.getAttribute('data-dept') : 'support';
-            if (!deptKey || !deptHourlyRates[deptKey]) deptKey = 'support';
-
-            const config = deptHourlyRates[deptKey] || deptHourlyRates.operations;
-            const hoursPerEmp = activeBtn && activeBtn.getAttribute('data-hours')
-                ? parseFloat(activeBtn.getAttribute('data-hours'))
-                : config.hours;
-            const hourlyRate = activeBtn && activeBtn.getAttribute('data-rate')
-                ? parseFloat(activeBtn.getAttribute('data-rate'))
-                : config.rate;
-
-            if (teamValBadge) {
-                teamValBadge.textContent = `${teamSize} Employee${teamSize === 1 ? '' : 's'}`;
-            }
-
-            const weeklyHours = teamSize * hoursPerEmp;
-            // 70% efficiency automation model over 52 weeks
-            const annualSavings = Math.round(weeklyHours * hourlyRate * 52 * 0.70);
-
-            if (resHours) {
-                resHours.textContent = `${weeklyHours.toLocaleString()} hrs`;
-            }
-            if (resSavings) {
-                resSavings.textContent = `$${annualSavings.toLocaleString()}`;
-            }
-            if (resTaskDesc && config.desc) {
-                resTaskDesc.textContent = config.desc;
-            }
-
-            return { teamSize, weeklyHours, annualSavings, deptKey };
-        }
-
-        return { init, calculate, deptHourlyRates };
     })();
 
     /* ==========================================================================
@@ -1291,6 +1210,8 @@
         let introFrameEl = null;
         let stateIntroEl = null;
         let statePlatformEl = null;
+        let scrubberProgressEl = null;
+        let navPills = [];
         let cornerTags = [];
         let quadrantCards = [];
         let hudWireframe = null;
@@ -1302,51 +1223,22 @@
         let observer = null;
         let boundScrollHandler = null;
         let boundResizeHandler = null;
-        let activePhaseIndex = 0;
+        let boundWheelHandler = null;
+        let activePhaseIndex = 1;
+        let isSnapping = false;
 
-        const LERP_FACTOR = 0.04;
+        const LERP_FACTOR = 0.20;
 
-        function getWaypoints() {
-            const ww = typeof window !== 'undefined' ? window.innerWidth : 1200;
-            const wh = typeof window !== 'undefined' ? window.innerHeight : 800;
-            const isMobile = ww < 768;
-
-            const vwScale = ww / 1200;
-            const vhScale = wh / 700;
-            const overviewScale = Math.min(vwScale, vhScale) * (isMobile ? 0.95 : 0.85);
-
-            const zoomScale = Math.min(ww / 540, wh / 300) * (isMobile ? 0.9 : 0.65);
-
-            const dx = 290;
-            const dy = 160;
-
-            return [
-                { p: 0.00, scale: overviewScale, x: 0, y: 0, stage: 0 },
-                { p: 0.12, scale: overviewScale, x: 0, y: 0, stage: 0 },
-
-                // Stage 1: Top Right (Discovery)
-                { p: 0.22, scale: zoomScale, x: -dx, y: dy, stage: 1 },
-                { p: 0.32, scale: zoomScale, x: -dx, y: dy, stage: 1 },
-
-                // Stage 2: Top Left (Building)
-                { p: 0.42, scale: zoomScale, x: dx, y: dy, stage: 2 },
-                { p: 0.52, scale: zoomScale, x: dx, y: dy, stage: 2 },
-
-                // Stage 3: Bottom Left (Integration)
-                { p: 0.62, scale: zoomScale, x: dx, y: -dy, stage: 3 },
-                { p: 0.72, scale: zoomScale, x: dx, y: -dy, stage: 3 },
-
-                // Stage 4: Bottom Right (Maintenance)
-                { p: 0.82, scale: zoomScale, x: -dx, y: -dy, stage: 4 },
-                { p: 0.88, scale: zoomScale, x: -dx, y: -dy, stage: 4 },
-
-                // Stage 5: Outro
-                { p: 0.98, scale: overviewScale, x: 0, y: 0, stage: 5 },
-                { p: 1.00, scale: overviewScale, x: 0, y: 0, stage: 5 }
-            ];
-        }
-
-        let waypoints = getWaypoints();
+        const CAMERA_ANCHORS = [
+            { p: 0.00, scale: 1.00, tx: 0,   ty: 0,   stage: 0 },
+            { p: 0.08, scale: 1.00, tx: 0,   ty: 0,   stage: 0 },
+            { p: 0.25, scale: 1.85, tx: -24, ty: 24,  stage: 1 },
+            { p: 0.45, scale: 1.85, tx: 24,  ty: 24,  stage: 2 },
+            { p: 0.65, scale: 1.85, tx: 24,  ty: -24, stage: 3 },
+            { p: 0.825,scale: 1.85, tx: -24, ty: -24, stage: 4 },
+            { p: 0.95, scale: 1.00, tx: 0,   ty: 0,   stage: 5 },
+            { p: 1.00, scale: 1.00, tx: 0,   ty: 0,   stage: 5 }
+        ];
 
         function smoothstep(t) {
             const clamped = Math.max(0, Math.min(1, t));
@@ -1354,15 +1246,51 @@
         }
 
         function computeCameraTransform(progress) {
-            const clampedP = Math.max(0, Math.min(1, progress || 0));
+            if (typeof progress !== 'number' || isNaN(progress)) {
+                return {
+                    stage: 0,
+                    scale: 1.00,
+                    translateX: 0,
+                    translateY: 0,
+                    x: 0,
+                    y: 0,
+                    transformString: 'scale(1.0000) translate3d(0.00%, 0.00%, 0px)'
+                };
+            }
 
-            let aCurrent = waypoints[0];
-            let aNext = waypoints[waypoints.length - 1];
+            if (progress < 0) {
+                return {
+                    stage: 0,
+                    scale: 1.00,
+                    translateX: 0,
+                    translateY: 0,
+                    x: 0,
+                    y: 0,
+                    transformString: 'scale(1.0000) translate3d(0.00%, 0.00%, 0px)'
+                };
+            }
 
-            for (let i = 0; i < waypoints.length - 1; i++) {
-                if (clampedP >= waypoints[i].p && clampedP <= waypoints[i + 1].p) {
-                    aCurrent = waypoints[i];
-                    aNext = waypoints[i + 1];
+            if (progress >= 1.0) {
+                return {
+                    stage: 5,
+                    scale: 1.00,
+                    translateX: 0,
+                    translateY: 0,
+                    x: 0,
+                    y: 0,
+                    transformString: 'scale(1.0000) translate3d(0.00%, 0.00%, 0px)'
+                };
+            }
+
+            const clampedP = Math.max(0, Math.min(1, progress));
+
+            let aCurrent = CAMERA_ANCHORS[0];
+            let aNext = CAMERA_ANCHORS[CAMERA_ANCHORS.length - 1];
+
+            for (let i = 0; i < CAMERA_ANCHORS.length - 1; i++) {
+                if (clampedP >= CAMERA_ANCHORS[i].p && clampedP <= CAMERA_ANCHORS[i + 1].p) {
+                    aCurrent = CAMERA_ANCHORS[i];
+                    aNext = CAMERA_ANCHORS[i + 1];
                     break;
                 }
             }
@@ -1372,57 +1300,68 @@
             const easedT = smoothstep(t);
 
             const scale = aCurrent.scale + (aNext.scale - aCurrent.scale) * easedT;
-            const x = aCurrent.x + (aNext.x - aCurrent.x) * easedT;
-            const y = aCurrent.y + (aNext.y - aCurrent.y) * easedT;
+            const tx = aCurrent.tx + (aNext.tx - aCurrent.tx) * easedT;
+            const ty = aCurrent.ty + (aNext.ty - aCurrent.ty) * easedT;
+
+            const pixelX = (tx / 24) * 290;
+            const pixelY = (ty / 24) * 160;
 
             let stage = 0;
-            if (clampedP < 0.12) stage = 0;
-            else if (clampedP < 0.37) stage = 1;
-            else if (clampedP < 0.57) stage = 2;
-            else if (clampedP < 0.77) stage = 3;
-            else if (clampedP < 0.93) stage = 4;
+            if (clampedP < 0.15) stage = 0;
+            else if (clampedP < 0.35) stage = 1;
+            else if (clampedP < 0.55) stage = 2;
+            else if (clampedP < 0.75) stage = 3;
+            else if (clampedP < 0.90) stage = 4;
             else stage = 5;
+
+            const scaleFormatted = parseFloat(scale.toFixed(4));
+            const txFormatted = parseFloat(tx.toFixed(2));
+            const tyFormatted = parseFloat(ty.toFixed(2));
 
             return {
                 stage,
-                scale: parseFloat(scale.toFixed(4)),
-                x: parseFloat(x.toFixed(2)),
-                y: parseFloat(y.toFixed(2))
+                scale: scaleFormatted,
+                translateX: txFormatted,
+                translateY: tyFormatted,
+                x: parseFloat(pixelX.toFixed(2)),
+                y: parseFloat(pixelY.toFixed(2)),
+                transformString: 'scale(' + scaleFormatted.toFixed(4) + ') translate3d(' + txFormatted.toFixed(2) + '%, ' + tyFormatted.toFixed(2) + '%, 0px)'
             };
         }
 
         function computeTargetProgress() {
             if (!trackEl) return 0;
-            const rect = trackEl.getBoundingClientRect();
-            const viewportHeight = window.innerHeight || 1;
-            const trackHeight = trackEl.offsetHeight || 1;
+            const rect = trackEl.getBoundingClientRect ? trackEl.getBoundingClientRect() : { top: 0, height: 5000 };
+            const viewportHeight = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 800;
+            const trackHeight = trackEl.offsetHeight || rect.height || 5000;
             const scrollable = Math.max(1, trackHeight - viewportHeight);
-            const rawProgress = -rect.top / scrollable;
+            const scrollY = -rect.top;
+            const rawProgress = scrollY / scrollable;
+            if (isNaN(rawProgress)) return 0;
             return Math.max(0, Math.min(1, rawProgress));
         }
 
-        // Exact mathematical fade mappings based on your requirements
         function calculateOpacityForQuadrant(qNum, p) {
             let op = 0;
-            if (qNum === 1) { // Top Right
+            if (qNum === 1) {
                 if (p < 0.12) op = 0;
                 else if (p < 0.22) op = (p - 0.12) / 0.10;
                 else if (p <= 0.32) op = 1;
                 else if (p < 0.37) op = 1 - ((p - 0.32) / 0.05);
                 else op = 0;
-            } else if (qNum === 2) { // Top Left
+            } else if (qNum === 2) {
                 if (p < 0.37) op = 0;
                 else if (p < 0.42) op = (p - 0.37) / 0.05;
                 else if (p <= 0.52) op = 1;
                 else if (p < 0.57) op = 1 - ((p - 0.52) / 0.05);
                 else op = 0;
-            } else if (qNum === 3) { // Bottom Left
+            } else if (qNum === 3) {
                 if (p < 0.57) op = 0;
                 else if (p < 0.62) op = (p - 0.57) / 0.05;
                 else if (p <= 0.72) op = 1;
                 else if (p < 0.77) op = 1 - ((p - 0.72) / 0.05);
                 else op = 0;
-            } else if (qNum === 4) { // Bottom Right
+            } else if (qNum === 4) {
                 if (p < 0.77) op = 0;
                 else if (p < 0.82) op = (p - 0.77) / 0.05;
                 else if (p <= 0.88) op = 1;
@@ -1438,59 +1377,87 @@
 
             if (stage >= 1 && stage <= 4) {
                 activePhaseIndex = stage;
-            } else {
-                activePhaseIndex = 0;
             }
 
-            if (canvasEl) {
-                canvasEl.style.transform = `scale(${matrix.scale}) translate3d(${matrix.x}px, ${matrix.y}px, 0)`;
+            if (canvasEl && canvasEl.style) {
+                const prefersReducedMotion = typeof window !== 'undefined' &&
+                    window.matchMedia &&
+                    typeof window.matchMedia === 'function' &&
+                    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                const isMobileReflow = typeof window !== 'undefined' && window.innerWidth && window.innerWidth <= 992;
+
+                if (prefersReducedMotion) {
+                    canvasEl.style.transform = 'none';
+                } else if (isMobileReflow) {
+                    canvasEl.style.transform = '';
+                } else {
+                    canvasEl.style.transform = 'scale(' + matrix.scale + ') translate3d(' + matrix.x + 'px, ' + matrix.y + 'px, 0)';
+                }
             }
 
-            if (introFrameEl) {
+            if (introFrameEl && introFrameEl.style) {
                 if (stage === 0) {
                     introFrameEl.style.opacity = '1';
-                    if (stateIntroEl) stateIntroEl.style.display = 'block';
-                    if (statePlatformEl) statePlatformEl.style.display = 'none';
+                    if (stateIntroEl && stateIntroEl.style) stateIntroEl.style.display = 'block';
+                    if (statePlatformEl && statePlatformEl.style) statePlatformEl.style.display = 'none';
                 } else if (stage === 5) {
                     introFrameEl.style.opacity = '1';
-                    if (stateIntroEl) stateIntroEl.style.display = 'none';
-                    if (statePlatformEl) statePlatformEl.style.display = 'block';
-
+                    if (stateIntroEl && stateIntroEl.style) stateIntroEl.style.display = 'none';
+                    if (statePlatformEl && statePlatformEl.style) statePlatformEl.style.display = 'block';
                     const titleOutro = document.getElementById('outroTitle');
-                    if (titleOutro) titleOutro.style.opacity = '1';
+                    if (titleOutro && titleOutro.style) titleOutro.style.opacity = '1';
                 } else {
                     introFrameEl.style.opacity = '0';
-                    if (stateIntroEl) stateIntroEl.style.display = 'none';
+                    if (stateIntroEl && stateIntroEl.style) stateIntroEl.style.display = 'none';
                 }
             }
 
             quadrantCards.forEach(card => {
-                if (!card) return;
+                if (!card || !card.style) return;
                 const qNum = parseInt(card.getAttribute('data-quadrant'), 10);
+                if (isNaN(qNum)) return;
                 card.style.opacity = calculateOpacityForQuadrant(qNum, progress).toFixed(3);
+                if (card.style.opacity > 0.05) {
+                    card.style.pointerEvents = 'auto';
+                } else {
+                    card.style.pointerEvents = 'none';
+                }
             });
 
             const phaseToCornerMap = { 1: 'discovery', 2: 'building', 3: 'integrating', 4: 'maintenance' };
             const activeCorner = phaseToCornerMap[activePhaseIndex];
 
             cornerTags.forEach(tag => {
-                if (!tag) return;
+                if (!tag || !tag.style) return;
                 const cornerName = tag.getAttribute('data-corner');
                 if (stage === 0 || stage === 5) {
                     tag.style.opacity = '1';
                     tag.style.transform = 'scale(1)';
-                    const square = tag.querySelector('.hww-node-square');
-                    if (square) square.style.boxShadow = '';
+                    if (tag.classList && typeof tag.classList.add === 'function') tag.classList.add('active');
                 } else if (cornerName === activeCorner) {
                     tag.style.opacity = '1';
                     tag.style.transform = 'scale(1.04)';
+                    if (tag.classList && typeof tag.classList.add === 'function') tag.classList.add('active');
                 } else {
                     tag.style.opacity = '0.4';
                     tag.style.transform = 'scale(0.95)';
+                    if (tag.classList && typeof tag.classList.remove === 'function') tag.classList.remove('active');
                 }
             });
 
-            if (hudWireframe) {
+            navPills.forEach(pill => {
+                if (!pill) return;
+                const goto = parseInt(pill.getAttribute('data-hww-goto'), 10);
+                const isActive = goto === activePhaseIndex;
+                if (pill.classList && typeof pill.classList.toggle === 'function') pill.classList.toggle('active', isActive);
+            });
+
+            if (scrubberProgressEl && scrubberProgressEl.style) {
+                scrubberProgressEl.style.width = (progress * 100).toFixed(1) + '%';
+            }
+
+            if (hudWireframe && hudWireframe.style) {
                 if (stage === 0 || stage === 5) {
                     hudWireframe.style.opacity = '1';
                 } else {
@@ -1502,13 +1469,11 @@
         function loop() {
             if (!isLoopRunning) return;
             const delta = targetProgress - currentProgress;
-
             if (Math.abs(delta) < 0.0001) {
                 currentProgress = targetProgress;
             } else {
                 currentProgress += delta * LERP_FACTOR;
             }
-
             renderFrame(currentProgress);
             rafId = window.requestAnimationFrame(loop);
         }
@@ -1521,7 +1486,7 @@
 
         function stopLoop() {
             isLoopRunning = false;
-            if (rafId) {
+            if (rafId && typeof window !== 'undefined' && typeof window.cancelAnimationFrame === 'function') {
                 window.cancelAnimationFrame(rafId);
                 rafId = null;
             }
@@ -1529,42 +1494,157 @@
 
         function onScroll() {
             targetProgress = computeTargetProgress();
+            if (!isLoopRunning) {
+                currentProgress = targetProgress;
+                renderFrame(currentProgress);
+            }
         }
 
         function onResize() {
-            waypoints = getWaypoints();
             targetProgress = computeTargetProgress();
             renderFrame(currentProgress);
         }
 
+        function scrollToPhase(phaseIndex) {
+            let sanitized = 1;
+            const num = parseInt(phaseIndex, 10);
+            if (!isNaN(num)) {
+                sanitized = Math.max(1, Math.min(4, num));
+            }
+            const phaseProgressMap = { 1: 0.25, 2: 0.45, 3: 0.65, 4: 0.825 };
+            const p = phaseProgressMap[sanitized] || 0.25;
+            targetProgress = p;
+
+            let targetTop = 0;
+            if (trackEl) {
+                const rect = trackEl.getBoundingClientRect ? trackEl.getBoundingClientRect() : { top: 0, height: 5000 };
+                const vh = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 800;
+                const th = trackEl.offsetHeight || rect.height || 5000;
+                const scrollable = Math.max(1, th - vh);
+                const currentScrollY = (typeof window !== 'undefined' && (window.pageYOffset || (window.document && window.document.documentElement && window.document.documentElement.scrollTop))) || 0;
+                const trackTopAbs = currentScrollY + (rect ? rect.top : 0);
+                targetTop = trackTopAbs + (p * scrollable);
+            }
+
+            if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+                window.scrollTo({ top: targetTop, behavior: 'smooth' });
+            }
+
+            renderFrame(p);
+        }
+
+        function onWheel(e) {
+            if (!sectionEl || !trackEl) return;
+            const rect = sectionEl.getBoundingClientRect ? sectionEl.getBoundingClientRect() : null;
+            if (!rect) return;
+            const vh = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 800;
+
+            if (rect.top > 50 || rect.bottom < vh - 50) return;
+
+            const matrix = computeCameraTransform(targetProgress);
+            const stage = matrix.stage;
+
+            if (e.deltaY > 20) {
+                if (stage < 5) {
+                    e.preventDefault();
+                    if (isSnapping) return;
+                    isSnapping = true;
+                    const nextStage = stage + 1;
+                    const stageToPhase = { 1: 1, 2: 2, 3: 3, 4: 4 };
+                    if (stageToPhase[nextStage]) {
+                        scrollToPhase(stageToPhase[nextStage]);
+                    } else if (nextStage === 5) {
+                        targetProgress = 0.98;
+                        renderFrame(0.98);
+                    }
+                    setTimeout(() => { isSnapping = false; }, 350);
+                }
+            } else if (e.deltaY < -20) {
+                if (stage > 0) {
+                    e.preventDefault();
+                    if (isSnapping) return;
+                    isSnapping = true;
+                    const prevStage = stage - 1;
+                    const stageToPhase = { 1: 1, 2: 2, 3: 3, 4: 4 };
+                    if (stageToPhase[prevStage]) {
+                        scrollToPhase(stageToPhase[prevStage]);
+                    } else if (prevStage === 0) {
+                        targetProgress = 0.05;
+                        renderFrame(0.05);
+                    }
+                    setTimeout(() => { isSnapping = false; }, 350);
+                }
+            }
+        }
+
+        function getActivePhase() {
+            return activePhaseIndex;
+        }
+
         function init() {
-            if (isInitialized) return;
+            if (isInitialized) {
+                return { initialized: true, alreadyInitialized: true };
+            }
 
             sectionEl = document.getElementById('how-we-work-section');
-            if (!sectionEl) return;
+            if (!sectionEl) {
+                return { initialized: false, reason: 'Root element missing' };
+            }
 
-            trackEl = document.getElementById('hww-track');
-            canvasEl = document.getElementById('hww-spatial-canvas');
-            introFrameEl = document.getElementById('hww-intro-frame');
-            stateIntroEl = document.getElementById('hww-state-intro');
-            statePlatformEl = document.getElementById('hww-state-platform');
-            hudWireframe = document.querySelector('.hww-wireframe');
+            trackEl = document.getElementById('hww-track') || (sectionEl.querySelector && sectionEl.querySelector('.hww-track'));
+            canvasEl = document.getElementById('hww-spatial-canvas') || (sectionEl.querySelector && sectionEl.querySelector('.hww-spatial-canvas'));
+            introFrameEl = document.getElementById('hww-intro-frame') || (sectionEl.querySelector && sectionEl.querySelector('.hww-intro-frame'));
+            stateIntroEl = document.getElementById('hww-state-intro') || (sectionEl.querySelector && sectionEl.querySelector('.hww-state-intro'));
+            statePlatformEl = document.getElementById('hww-state-platform') || (sectionEl.querySelector && sectionEl.querySelector('.hww-state-platform'));
+            scrubberProgressEl = document.getElementById('hww-scrubber-progress') || (sectionEl.querySelector && sectionEl.querySelector('.hww-scrubber-progress'));
+            hudWireframe = document.querySelector('.hww-wireframe, .hww-hud-overlay');
 
-            cornerTags = Array.from(document.querySelectorAll('.hww-corner-node'));
-            quadrantCards = Array.from(document.querySelectorAll('.hww-quadrant'));
+            navPills = Array.from(sectionEl.querySelectorAll ? sectionEl.querySelectorAll('.hww-nav-pill') : []);
+            cornerTags = Array.from(sectionEl.querySelectorAll ? sectionEl.querySelectorAll('.hww-corner-node, .hww-corner-tag') : document.querySelectorAll('.hww-corner-node, .hww-corner-tag'));
+            quadrantCards = Array.from(sectionEl.querySelectorAll ? sectionEl.querySelectorAll('.hww-quadrant, .hww-quadrant-card') : document.querySelectorAll('.hww-quadrant, .hww-quadrant-card'));
+
+            cornerTags.forEach(tag => {
+                if (!tag) return;
+                tag.style.cursor = 'pointer';
+                const cornerName = tag.getAttribute('data-corner');
+                const cornerToPhase = { 'discovery': 1, 'building': 2, 'integrating': 3, 'maintenance': 4 };
+                if (cornerToPhase[cornerName]) {
+                    tag.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        scrollToPhase(cornerToPhase[cornerName]);
+                    });
+                }
+            });
+
+            navPills.forEach(pill => {
+                if (!pill) return;
+                pill.style.cursor = 'pointer';
+                pill.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const goto = parseInt(pill.getAttribute('data-hww-goto'), 10);
+                    if (!isNaN(goto)) scrollToPhase(goto);
+                });
+            });
 
             boundScrollHandler = onScroll;
             boundResizeHandler = onResize;
-            window.addEventListener('scroll', boundScrollHandler, { passive: true });
-            window.addEventListener('resize', boundResizeHandler, { passive: true });
+            boundWheelHandler = onWheel;
+
+            if (typeof window !== 'undefined') {
+                window.addEventListener('scroll', boundScrollHandler, { passive: true });
+                window.addEventListener('resize', boundResizeHandler, { passive: true });
+            }
+
+            if (sectionEl && typeof sectionEl.addEventListener === 'function') {
+                sectionEl.addEventListener('wheel', boundWheelHandler, { passive: false });
+            }
 
             targetProgress = computeTargetProgress();
             currentProgress = targetProgress;
-            waypoints = getWaypoints();
             renderFrame(currentProgress);
 
-            if ('IntersectionObserver' in window) {
-                observer = new IntersectionObserver((entries) => {
+            if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
+                observer = new window.IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
                             targetProgress = computeTargetProgress();
@@ -1580,9 +1660,40 @@
             }
 
             isInitialized = true;
+            return { initialized: true };
         }
 
-        return { init };
+        function destroy() {
+            if (observer && typeof observer.disconnect === 'function') {
+                observer.disconnect();
+                observer = null;
+            }
+            if (typeof window !== 'undefined') {
+                if (boundScrollHandler && typeof window.removeEventListener === 'function') {
+                    window.removeEventListener('scroll', boundScrollHandler);
+                }
+                if (boundResizeHandler && typeof window.removeEventListener === 'function') {
+                    window.removeEventListener('resize', boundResizeHandler);
+                }
+            }
+            if (sectionEl && boundWheelHandler && typeof sectionEl.removeEventListener === 'function') {
+                sectionEl.removeEventListener('wheel', boundWheelHandler);
+            }
+            stopLoop();
+            if (canvasEl && canvasEl.style) {
+                canvasEl.style.transform = '';
+            }
+            isInitialized = false;
+        }
+
+        return {
+            init,
+            destroy,
+            computeCameraTransform,
+            computeTargetProgress,
+            scrollToPhase,
+            getActivePhase
+        };
     })();
 
     /* ==========================================================================
