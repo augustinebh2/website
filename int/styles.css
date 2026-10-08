@@ -4527,8 +4527,68 @@ text-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
     font-weight: 900;
     flex-shrink: 0;
 }
+/* How We Work Desktop & Responsive Layout Standards */
+.hww-viewport-rules {
+    perspective: 1200px;
+    align-items: center;
+    justify-content: center;
+}
+.hww-canvas-spec {
+    width: 1400px;
+    max-width: 94vw;
+    max-height: 88vh;
+    transform-style: preserve-3d;
+    grid-template-columns: 1fr 1fr;
+}
+.hww-phase-title {
+    font-size: 1.35rem;
+}
+.hww-phase-description {
+    font-size: 0.85rem;
+}
+.hww-points-list li {
+    font-size: 0.78rem;
+}
 
+@media (max-width: 992px) {
+    #how-we-work-section .hww-track {
+        height: auto !important;
+    }
+    #how-we-work-section .hww-spatial-canvas {
+        transform: none !important;
+        flex-direction: column !important;
+    }
+    .hww-hud-overlay {
+        display: none !important;
+    }
+    .hww-quadrant-card {
+        width: 100% !important;
+    }
+}
 
+/* Small Mobile */
+@media (max-width: 576px) {
+    .pill-title {
+        display: none !important;
+    }
+    .mockup-telemetry-grid, .vitals-telemetry-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wave-bar,
+    .live-pulse-dot,
+    .sprint-progress-fill,
+    .term-cursor,
+    .rlhf-spin-icon {
+        animation: none !important;
+    }
+    .hww-spatial-canvas,
+    .hww-canvas {
+        transition: opacity 0.2s ease !important;
+    }
+}
 
 /* 5. WATERMARK SECTION */
 .watermark-section {
