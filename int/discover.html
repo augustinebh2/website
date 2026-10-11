@@ -41,15 +41,12 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles.css">
 
-    <!-- Spline 3D Robot: warm up connections & fetch all assets in parallel immediately -->
-    <link rel="preconnect" href="https://unpkg.com" crossorigin>
-    <link rel="preconnect" href="https://prod.spline.design" crossorigin>
-    <link rel="preload" as="image" href="assets/robot_poster.webp" type="image/webp" fetchpriority="high">
-    <link rel="modulepreload" href="https://unpkg.com/@splinetool/viewer@1.9.72/build/spline-viewer.js">
-    <link rel="preload" as="fetch" href="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" crossorigin="anonymous" fetchpriority="high">
+    <!-- Locally Hosted Spline 3D Robot Assets (zero external latency) -->
+    <link rel="modulepreload" href="assets/spline-viewer.js">
+    <link rel="preload" as="fetch" href="assets/scene.splinecode" crossorigin="anonymous" fetchpriority="high">
 
-    <!-- Spline 3D Viewer Engine (async: runs as soon as downloaded, not blocked by footer scripts) -->
-    <script type="module" async src="https://unpkg.com/@splinetool/viewer@1.9.72/build/spline-viewer.js"></script>
+    <!-- Spline 3D Viewer Engine -->
+    <script type="module" src="assets/spline-viewer.js"></script>
 </head>
 
 <body class="light-theme">
@@ -106,33 +103,34 @@
 
                 <!-- Right: Full 3D Interactive Robot with Embedded White IR Chest Letters -->
                 <div class="discover-hero-robot" id="discover-hero-robot">
-                    <!-- Instant poster: first frame of the 3D robot, shown until the live scene is ready -->
-                    <img src="assets/robot_poster.webp" alt="" class="robot-poster" id="robot-poster"
-                        width="580" height="540" fetchpriority="high" decoding="sync" aria-hidden="true">
                     <spline-viewer id="spline-robot-viewer"
-                        url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"></spline-viewer>
+                        url="assets/scene.splinecode"></spline-viewer>
                     <div class="robot-chest-letters" id="robot-chest-letters" aria-label="Intellectir IR">
                         <img src="assets/ir_letters_white.svg" alt="Intellectir IR" class="chest-ir-letters-img">
                     </div>
                 </div>
                 <script>
-                    /* Poster -> live 3D crossfade. Attached inline so it can never miss Spline's load event. */
+                    /* Synchronized Entrance: triggers text animation and 3D robot entrance at the very same time */
                     (function () {
-                        var box = document.getElementById('discover-hero-robot');
+                        var hero = document.getElementById('discover-robot-hero');
                         var viewer = document.getElementById('spline-robot-viewer');
-                        if (!box || !viewer) return;
-                        var done = false;
-                        function goLive() {
-                            if (done) return;
-                            done = true;
-                            // Wait two frames so the first 3D frame is painted before fading (no flash)
+                        if (!hero) return;
+                        var revealed = false;
+                        function revealHero() {
+                            if (revealed) return;
+                            revealed = true;
+                            // Wait for paint to ensure 3D canvas and text appear together with zero flash
                             requestAnimationFrame(function () {
-                                requestAnimationFrame(function () { box.classList.add('is-live'); });
+                                requestAnimationFrame(function () {
+                                    hero.classList.add('is-revealed');
+                                });
                             });
                         }
-                        viewer.addEventListener('load-complete', goLive, { once: true });
-                        // Safety net: never leave the live robot hidden if the event is missed
-                        setTimeout(goLive, 20000);
+                        if (viewer) {
+                            viewer.addEventListener('load-complete', revealHero, { once: true });
+                        }
+                        // Safety fallback ensures entrance always fires promptly even if WebGL is delayed
+                        setTimeout(revealHero, 1200);
                     })();
                 </script>
             </div>
@@ -488,8 +486,7 @@
             </div>
             <div class="footer-bottom-bar">
                 <div class="copyright">© 2026 Intellectir (PTY) LTD. All rights reserved. Reg No: 2026/617864/07</div>
-                <div class="footer-location"><i class="fa-solid fa-location-dot"></i> Cape Town - South Africa
-                </div>
+                <div class="footer-location"><i class="fa-solid fa-location-dot"></i> Cape Town - South Africa</div>
             </div>
         </div>
     </footer>
