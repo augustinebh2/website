@@ -41,8 +41,15 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="styles.css">
 
-    <!-- Spline 3D Viewer Engine -->
-    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.72/build/spline-viewer.js"></script>
+    <!-- Spline 3D Robot: warm up connections & fetch all assets in parallel immediately -->
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link rel="preconnect" href="https://prod.spline.design" crossorigin>
+    <link rel="preload" as="image" href="assets/robot_poster.webp" type="image/webp" fetchpriority="high">
+    <link rel="modulepreload" href="https://unpkg.com/@splinetool/viewer@1.9.72/build/spline-viewer.js">
+    <link rel="preload" as="fetch" href="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" crossorigin="anonymous" fetchpriority="high">
+
+    <!-- Spline 3D Viewer Engine (async: runs as soon as downloaded, not blocked by footer scripts) -->
+    <script type="module" async src="https://unpkg.com/@splinetool/viewer@1.9.72/build/spline-viewer.js"></script>
 </head>
 
 <body class="light-theme">
@@ -99,13 +106,35 @@
 
                 <!-- Right: Full 3D Interactive Robot with Embedded White IR Chest Letters -->
                 <div class="discover-hero-robot" id="discover-hero-robot">
+                    <!-- Instant poster: first frame of the 3D robot, shown until the live scene is ready -->
+                    <img src="assets/robot_poster.webp" alt="" class="robot-poster" id="robot-poster"
+                        width="580" height="540" fetchpriority="high" decoding="sync" aria-hidden="true">
                     <spline-viewer id="spline-robot-viewer"
-                        url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-                        loading-anim-type="spinner"></spline-viewer>
+                        url="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"></spline-viewer>
                     <div class="robot-chest-letters" id="robot-chest-letters" aria-label="Intellectir IR">
                         <img src="assets/ir_letters_white.svg" alt="Intellectir IR" class="chest-ir-letters-img">
                     </div>
                 </div>
+                <script>
+                    /* Poster -> live 3D crossfade. Attached inline so it can never miss Spline's load event. */
+                    (function () {
+                        var box = document.getElementById('discover-hero-robot');
+                        var viewer = document.getElementById('spline-robot-viewer');
+                        if (!box || !viewer) return;
+                        var done = false;
+                        function goLive() {
+                            if (done) return;
+                            done = true;
+                            // Wait two frames so the first 3D frame is painted before fading (no flash)
+                            requestAnimationFrame(function () {
+                                requestAnimationFrame(function () { box.classList.add('is-live'); });
+                            });
+                        }
+                        viewer.addEventListener('load-complete', goLive, { once: true });
+                        // Safety net: never leave the live robot hidden if the event is missed
+                        setTimeout(goLive, 20000);
+                    })();
+                </script>
             </div>
         </section>
 
