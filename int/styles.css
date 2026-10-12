@@ -3992,6 +3992,9 @@ body.dark-theme .prop-card-main-title,
     margin-top: -350px;
     transform-origin: 50% 50%;
     transform-style: preserve-3d;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 /* Wireframe Rectangle */
@@ -4113,7 +4116,7 @@ body.dark-theme .prop-card-main-title,
 }
 
 #how-we-work-section .hww-title-init {
-    transition: opacity 0.25s ease;
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 #how-we-work-section .hww-title-outro {
@@ -4123,10 +4126,8 @@ body.dark-theme .prop-card-main-title,
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
-    transition: opacity 0.25s ease;
-}
-
-text-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    text-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
 }
 
 #how-we-work-section .hww-outro-badge {
@@ -4162,7 +4163,7 @@ text-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
     z-index: 25;
     user-select: none;
     cursor: pointer;
-    transition: all 0.25s ease;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
@@ -4237,6 +4238,7 @@ text-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
     pointer-events: none;
     z-index: 15;
     transform: translate(-50%, -50%);
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Symmetrical Center Coordinates in 1200x700 Virtual Canvas */

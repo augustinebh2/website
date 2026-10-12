@@ -1224,8 +1224,11 @@
         let boundScrollHandler = null;
         let boundResizeHandler = null;
         let boundWheelHandler = null;
+        let boundKeyDownHandler = null;
         let activePhaseIndex = 1;
         let isSnapping = false;
+        let currentStageIndex = 0;
+        const STAGE_PROGRESS = [0.05, 0.25, 0.45, 0.65, 0.825, 0.98];
 
         const LERP_FACTOR = 0.20;
 
@@ -1493,6 +1496,7 @@
         }
 
         function onScroll() {
+            if (isSnapping) return;
             targetProgress = computeTargetProgress();
             if (!isLoopRunning) {
                 currentProgress = targetProgress;
@@ -1505,15 +1509,15 @@
             renderFrame(currentProgress);
         }
 
-        function scrollToPhase(phaseIndex) {
-            let sanitized = 1;
-            const num = parseInt(phaseIndex, 10);
-            if (!isNaN(num)) {
-                sanitized = Math.max(1, Math.min(4, num));
-            }
-            const phaseProgressMap = { 1: 0.25, 2: 0.45, 3: 0.65, 4: 0.825 };
-            const p = phaseProgressMap[sanitized] || 0.25;
+        function goToStage(targetStage) {
+            const sanitized = Math.max(0, Math.min(5, parseInt(targetStage, 10) || 0));
+            currentStageIndex = sanitized;
+            const p = STAGE_PROGRESS[sanitized];
             targetProgress = p;
+
+            if (sanitized >= 1 && sanitized <= 4) {
+                activePhaseIndex = sanitized;
+            }
 
             let targetTop = 0;
             if (trackEl) {
@@ -1533,46 +1537,84 @@
             renderFrame(p);
         }
 
+        function scrollToPhase(phaseIndex) {
+            let sanitized = 1;
+            const num = parseInt(phaseIndex, 10);
+            if (!isNaN(num)) {
+                sanitized = Math.max(1, Math.min(4, num));
+            }
+            goToStage(sanitized);
+        }
+
         function onWheel(e) {
             if (!sectionEl || !trackEl) return;
+            if (typeof window !== 'undefined' && window.innerWidth && window.innerWidth <= 992) return;
+
             const rect = sectionEl.getBoundingClientRect ? sectionEl.getBoundingClientRect() : null;
             if (!rect) return;
             const vh = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 800;
 
-            if (rect.top > 50 || rect.bottom < vh - 50) return;
+            // Intercept only when the section sticky viewport is currently occupying the screen
+            const isSectionInView = rect.top <= 60 && rect.bottom >= 60;
+            if (!isSectionInView) return;
 
-            const matrix = computeCameraTransform(targetProgress);
-            const stage = matrix.stage;
+            const delta = e.deltaY;
+            if (Math.abs(delta) < 8) return;
 
-            if (e.deltaY > 20) {
-                if (stage < 5) {
+            // Synchronize stage index when not mid-snap
+            if (!isSnapping) {
+                const matrix = computeCameraTransform(targetProgress);
+                currentStageIndex = matrix.stage;
+            }
+
+            if (delta > 0) {
+                // Scrolling FORWARD (down)
+                if (currentStageIndex < 5) {
                     e.preventDefault();
                     if (isSnapping) return;
                     isSnapping = true;
-                    const nextStage = stage + 1;
-                    const stageToPhase = { 1: 1, 2: 2, 3: 3, 4: 4 };
-                    if (stageToPhase[nextStage]) {
-                        scrollToPhase(stageToPhase[nextStage]);
-                    } else if (nextStage === 5) {
-                        targetProgress = 0.98;
-                        renderFrame(0.98);
-                    }
-                    setTimeout(() => { isSnapping = false; }, 350);
+                    const nextStage = currentStageIndex + 1;
+                    goToStage(nextStage);
+                    setTimeout(() => { isSnapping = false; }, 420);
                 }
-            } else if (e.deltaY < -20) {
-                if (stage > 0) {
+                // At stage 5 (outro), let wheel pass through to scroll down to footer naturally
+            } else if (delta < 0) {
+                // Scrolling BACKWARD (up)
+                if (currentStageIndex > 0) {
                     e.preventDefault();
                     if (isSnapping) return;
                     isSnapping = true;
-                    const prevStage = stage - 1;
-                    const stageToPhase = { 1: 1, 2: 2, 3: 3, 4: 4 };
-                    if (stageToPhase[prevStage]) {
-                        scrollToPhase(stageToPhase[prevStage]);
-                    } else if (prevStage === 0) {
-                        targetProgress = 0.05;
-                        renderFrame(0.05);
-                    }
-                    setTimeout(() => { isSnapping = false; }, 350);
+                    const prevStage = currentStageIndex - 1;
+                    goToStage(prevStage);
+                    setTimeout(() => { isSnapping = false; }, 420);
+                }
+                // At stage 0 (intro), let wheel pass through to scroll up to previous section naturally
+            }
+        }
+
+        function onKeyDown(e) {
+            if (!sectionEl || !trackEl) return;
+            if (typeof window !== 'undefined' && window.innerWidth && window.innerWidth <= 992) return;
+            const rect = sectionEl.getBoundingClientRect ? sectionEl.getBoundingClientRect() : null;
+            if (!rect) return;
+            const isSectionInView = rect.top <= 60 && rect.bottom >= 60;
+            if (!isSectionInView) return;
+
+            if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+                if (currentStageIndex < 5) {
+                    e.preventDefault();
+                    if (isSnapping) return;
+                    isSnapping = true;
+                    goToStage(currentStageIndex + 1);
+                    setTimeout(() => { isSnapping = false; }, 420);
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+                if (currentStageIndex > 0) {
+                    e.preventDefault();
+                    if (isSnapping) return;
+                    isSnapping = true;
+                    goToStage(currentStageIndex - 1);
+                    setTimeout(() => { isSnapping = false; }, 420);
                 }
             }
         }
@@ -1611,7 +1653,7 @@
                 if (cornerToPhase[cornerName]) {
                     tag.addEventListener('click', (e) => {
                         e.preventDefault();
-                        scrollToPhase(cornerToPhase[cornerName]);
+                        goToStage(cornerToPhase[cornerName]);
                     });
                 }
             });
@@ -1622,17 +1664,19 @@
                 pill.addEventListener('click', (e) => {
                     e.preventDefault();
                     const goto = parseInt(pill.getAttribute('data-hww-goto'), 10);
-                    if (!isNaN(goto)) scrollToPhase(goto);
+                    if (!isNaN(goto)) goToStage(goto);
                 });
             });
 
             boundScrollHandler = onScroll;
             boundResizeHandler = onResize;
             boundWheelHandler = onWheel;
+            boundKeyDownHandler = onKeyDown;
 
             if (typeof window !== 'undefined') {
                 window.addEventListener('scroll', boundScrollHandler, { passive: true });
                 window.addEventListener('resize', boundResizeHandler, { passive: true });
+                window.addEventListener('keydown', boundKeyDownHandler, { passive: false });
             }
 
             if (sectionEl && typeof sectionEl.addEventListener === 'function') {
@@ -1675,6 +1719,9 @@
                 if (boundResizeHandler && typeof window.removeEventListener === 'function') {
                     window.removeEventListener('resize', boundResizeHandler);
                 }
+                if (boundKeyDownHandler && typeof window.removeEventListener === 'function') {
+                    window.removeEventListener('keydown', boundKeyDownHandler);
+                }
             }
             if (sectionEl && boundWheelHandler && typeof sectionEl.removeEventListener === 'function') {
                 sectionEl.removeEventListener('wheel', boundWheelHandler);
@@ -1692,6 +1739,7 @@
             computeCameraTransform,
             computeTargetProgress,
             scrollToPhase,
+            goToStage,
             getActivePhase
         };
     })();
