@@ -256,10 +256,8 @@ function serveFile(req, res, filePath, stats) {
     const contentType = MIME_TYPES[ext] || 'application/octet-stream';
     const totalSize = stats.size;
 
-    // Cache policy: HTML is revalidated, static assets cached for 1 day
-    const cacheControl = ext === '.html' || ext === '.htm'
-        ? 'public, max-age=0, must-revalidate'
-        : 'public, max-age=86400, immutable';
+    // Cache policy: no-cache so style and script changes take effect immediately
+    const cacheControl = 'no-cache, no-store, must-revalidate';
 
     const baseHeaders = {
         ...SECURITY_HEADERS,
