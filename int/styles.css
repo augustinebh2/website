@@ -4106,9 +4106,9 @@ body.dark-theme .prop-card-main-title,
 
 #how-we-work-section .hww-title-init,
 #how-we-work-section .hww-title-outro {
-    font-family: var(--font-accent, 'Instrument Serif', 'Bodoni Moda', Georgia, serif);
+    font-family: var(--font-heading, 'Outfit', 'Inter', sans-serif);
     font-size: 5rem;
-    font-weight: 400;
+    font-weight: 700;
     color: #ffffff;
     letter-spacing: -0.02em;
     line-height: 1.05;
@@ -4129,6 +4129,16 @@ body.dark-theme .prop-card-main-title,
     width: 100%;
     transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     text-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
+}
+
+#how-we-work-section .hww-main-title,
+#how-we-work-section .hww-platform-title {
+    font-family: var(--font-heading, 'Outfit', 'Inter', sans-serif);
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0.5rem 0 0.75rem 0;
+    text-align: center;
 }
 
 #how-we-work-section .hww-outro-badge {

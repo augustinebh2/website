@@ -3928,7 +3928,7 @@ input[type="range"]::-webkit-slider-thumb:hover,
 }
 
 #how-we-work-section .hww-main-title {
-    font-family: var(--font-heading);
+    font-family: var(--font-heading, 'Outfit', 'Inter', sans-serif);
     font-size: 2.2rem;
     font-weight: 700;
     letter-spacing: -0.02em;
@@ -3936,8 +3936,8 @@ input[type="range"]::-webkit-slider-thumb:hover,
 }
 
 #how-we-work-section .hww-platform-title {
-    font-family: var(--font-heading);
-    font-size: 2.1rem;
+    font-family: var(--font-heading, 'Outfit', 'Inter', sans-serif);
+    font-size: 2.2rem;
     font-weight: 700;
     letter-spacing: -0.02em;
     margin: 0.5rem 0 0.75rem 0;
