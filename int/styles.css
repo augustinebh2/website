@@ -3922,14 +3922,14 @@ body.dark-theme .prop-card-main-title,
 #how-we-work-section,
 .how-we-work-section {
     --hww-bg-canvas: #000000;
-    --hww-card-bg: #080a11;
-    --hww-card-inner: #0f121d;
+    --hww-card-bg: #090d16;
+    --hww-card-inner: #0f1422;
     --hww-border-wireframe: rgba(255, 255, 255, 0.15);
-    --hww-border-subtle: rgba(255, 255, 255, 0.08);
+    --hww-border-subtle: rgba(255, 255, 255, 0.12);
     --hww-text-white: #ffffff;
-    --hww-text-heading: #f8fafc;
-    --hww-text-body: #94a3b8;
-    --hww-text-muted: #64748b;
+    --hww-text-heading: #ffffff;
+    --hww-text-body: #cbd5e1;
+    --hww-text-muted: #94a3b8;
 
     /* Phase Accent Colors */
     --hww-accent-green: #10b981;
@@ -3943,6 +3943,9 @@ body.dark-theme .prop-card-main-title,
     color: var(--hww-text-white);
     padding: 0;
     overflow: visible;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 /* Scroll Track — 600vh scroll depth for smooth pacing */
@@ -3992,9 +3995,7 @@ body.dark-theme .prop-card-main-title,
     margin-top: -350px;
     transform-origin: 50% 50%;
     transform-style: preserve-3d;
-    will-change: transform;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+    image-rendering: -webkit-optimize-contrast;
 }
 
 /* Wireframe Rectangle */
@@ -4153,23 +4154,30 @@ body.dark-theme .prop-card-main-title,
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.3rem 0.65rem;
-    background: rgba(8, 10, 17, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 0.35rem 0.75rem;
+    background: rgba(9, 13, 22, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: 6px;
     font-size: 0.78rem;
-    font-weight: 500;
-    color: #e2e8f0;
+    font-weight: 600;
+    color: #f1f5f9;
     z-index: 25;
     user-select: none;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 #how-we-work-section .hww-corner-node:hover {
     border-color: rgba(255, 255, 255, 0.35);
-    transform: scale(1.04);
+    background: rgba(15, 23, 42, 0.98);
+    transform: scale(1.03);
+}
+
+#how-we-work-section .hww-corner-node.active {
+    border-color: rgba(255, 255, 255, 0.32);
+    background: rgba(15, 23, 42, 0.98);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.7), 0 0 14px rgba(255, 255, 255, 0.12);
 }
 
 #how-we-work-section .hww-node-square {
@@ -4237,59 +4245,60 @@ body.dark-theme .prop-card-main-title,
     opacity: 0;
     pointer-events: none;
     z-index: 15;
-    transform: translate(-50%, -50%);
+    transform: none;
     transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Symmetrical Center Coordinates in 1200x700 Virtual Canvas */
+/* Whole-Pixel Coordinates in 1200x700 Virtual Canvas (Eliminates sub-pixel blur) */
 #how-we-work-section .hww-quad-tr {
-    /* Top-Right: Step 1 */
-    top: 195px;
-    left: 890px;
+    /* Top-Right: Step 1 (Discovery) */
+    top: 40px;
+    left: 620px;
 }
 
 #how-we-work-section .hww-quad-tl {
-    /* Top-Left: Step 2 */
-    top: 195px;
-    left: 310px;
+    /* Top-Left: Step 2 (Building) */
+    top: 40px;
+    left: 40px;
 }
 
 #how-we-work-section .hww-quad-bl {
-    /* Bottom-Left: Step 3 */
-    top: 515px;
-    left: 310px;
+    /* Bottom-Left: Step 3 (Integration) */
+    top: 360px;
+    left: 40px;
 }
 
 #how-we-work-section .hww-quad-br {
-    /* Bottom-Right: Step 4 */
-    top: 515px;
-    left: 890px;
+    /* Bottom-Right: Step 4 (Maintenance) */
+    top: 360px;
+    left: 620px;
 }
 
 /* ==========================================================================
    RIGHT BOX: CONTENT CARD
    ========================================================================== */
 #how-we-work-section .hww-card-content {
-    background: var(--hww-card-bg);
-    border: 1px solid var(--hww-border-subtle);
+    background: #090d16;
+    border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 12px;
     padding: 1.15rem 1.05rem;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     gap: 0.75rem;
+    box-sizing: border-box;
 }
 
 #how-we-work-section .hww-step-badge {
     display: flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.45rem;
     font-size: 0.72rem;
     font-weight: 600;
     color: #cbd5e1;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
 }
 
 #how-we-work-section .hww-step-badge-square {
@@ -4300,20 +4309,22 @@ body.dark-theme .prop-card-main-title,
 }
 
 #how-we-work-section .hww-content-heading {
-    font-family: var(--font-accent, 'Instrument Serif', 'Bodoni Moda', Georgia, serif);
-    font-size: 1.65rem;
-    font-weight: 400;
-    color: var(--hww-text-heading);
-    line-height: 1.15;
-    letter-spacing: -0.01em;
-    margin: 0.05rem 0;
+    font-family: var(--font-heading, 'Outfit', 'Inter', sans-serif);
+    font-size: 1.45rem;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+    margin: 0.15rem 0 0.1rem 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 
 #how-we-work-section .hww-content-desc {
-    font-size: 0.74rem;
-    color: var(--hww-text-body);
-    line-height: 1.4;
+    font-size: 0.78rem;
+    color: #cbd5e1;
+    line-height: 1.45;
     margin-bottom: 0.2rem;
+    font-weight: 400;
 }
 
 #how-we-work-section .hww-content-list {
@@ -4326,20 +4337,20 @@ body.dark-theme .prop-card-main-title,
 }
 
 #how-we-work-section .hww-content-item {
-    font-size: 0.73rem;
-    color: #f1f5f9;
+    font-size: 0.76rem;
+    color: #f8fafc;
     display: flex;
     align-items: flex-start;
-    gap: 0.45rem;
-    line-height: 1.35;
+    gap: 0.5rem;
+    line-height: 1.4;
     font-weight: 400;
 }
 
 #how-we-work-section .hww-chevron {
-    color: var(--hww-text-muted);
-    font-size: 0.75rem;
+    color: #94a3b8;
+    font-size: 0.76rem;
     font-weight: 700;
-    margin-top: 0px;
+    margin-top: 1px;
     flex-shrink: 0;
     user-select: none;
 }
@@ -4348,43 +4359,43 @@ body.dark-theme .prop-card-main-title,
    LEFT BOX: VISUAL ILLUSTRATION CARDS
    ========================================================================== */
 #how-we-work-section .hww-card-visual {
-    background: var(--hww-card-bg);
+    background: #090d16;
     border-radius: 12px;
-    padding: 1.1rem 1rem;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+    padding: 1.15rem 1.05rem;
+    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 0.6rem;
+    gap: 0.65rem;
     box-sizing: border-box;
 }
 
 /* Step-Specific Border Glows */
 #how-we-work-section .hww-visual-step1 {
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    box-shadow: 0 0 25px rgba(16, 185, 129, 0.07), 0 15px 35px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(16, 185, 129, 0.45);
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.12), 0 20px 45px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 #how-we-work-section .hww-visual-step2 {
-    border: 1px solid rgba(168, 85, 247, 0.3);
-    box-shadow: 0 0 25px rgba(168, 85, 247, 0.07), 0 15px 35px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(168, 85, 247, 0.45);
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.12), 0 20px 45px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 #how-we-work-section .hww-visual-step3 {
-    border: 1px solid rgba(244, 63, 94, 0.3);
-    box-shadow: 0 0 25px rgba(244, 63, 94, 0.07), 0 15px 35px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(244, 63, 94, 0.45);
+    box-shadow: 0 0 25px rgba(244, 63, 94, 0.12), 0 20px 45px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 #how-we-work-section .hww-visual-step4 {
-    border: 1px solid rgba(245, 158, 11, 0.3);
-    box-shadow: 0 0 25px rgba(245, 158, 11, 0.07), 0 15px 35px rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(245, 158, 11, 0.45);
+    box-shadow: 0 0 25px rgba(245, 158, 11, 0.12), 0 20px 45px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 /* Card Header Title */
 #how-we-work-section .hww-visual-title {
     display: flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: 0.5rem;
     font-size: 0.88rem;
     font-weight: 600;
     color: #ffffff;
@@ -4402,54 +4413,132 @@ body.dark-theme .prop-card-main-title,
     gap: 0.35rem;
     padding: 0.25rem 0.55rem;
     border-radius: 6px;
-    font-size: 0.7rem;
+    font-size: 0.72rem;
     font-weight: 600;
     width: fit-content;
 }
 
 #how-we-work-section .hww-pill-green {
-    background: rgba(16, 185, 129, 0.12);
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    background: rgba(16, 185, 129, 0.14);
+    border: 1px solid rgba(16, 185, 129, 0.4);
     color: #6ee7b7;
 }
 
 #how-we-work-section .hww-pill-purple {
-    background: rgba(168, 85, 247, 0.12);
-    border: 1px solid rgba(168, 85, 247, 0.3);
+    background: rgba(168, 85, 247, 0.14);
+    border: 1px solid rgba(168, 85, 247, 0.4);
     color: #d8b4fe;
 }
 
 #how-we-work-section .hww-pill-coral {
-    background: rgba(244, 63, 94, 0.12);
-    border: 1px solid rgba(244, 63, 94, 0.3);
+    background: rgba(244, 63, 94, 0.14);
+    border: 1px solid rgba(244, 63, 94, 0.4);
     color: #fda4af;
     width: 100%;
     justify-content: center;
 }
 
-/* Item Rows */
+/* Item Rows — Crisp Tab Styling */
 #how-we-work-section .hww-visual-row {
-    background: var(--hww-card-inner);
-    border: 1px solid rgba(255, 255, 255, 0.04);
-    border-radius: 6px;
-    padding: 0.4rem 0.65rem;
+    background: #0f1422;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 7px;
+    padding: 0.48rem 0.75rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 0.7rem;
+    font-size: 0.76rem;
+    line-height: 1.35;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 2px 6px rgba(0, 0, 0, 0.4);
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+#how-we-work-section .hww-visual-row:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    background: #141b2d;
+}
+
+#how-we-work-section .hww-visual-step1 .hww-visual-row {
+    border: 1px solid rgba(16, 185, 129, 0.25);
+    border-left: 2.5px solid #10b981;
+    background: rgba(16, 185, 129, 0.05);
+}
+
+#how-we-work-section .hww-visual-step1 .hww-visual-row:hover {
+    border-color: rgba(16, 185, 129, 0.45);
+    border-left-color: #34d399;
+    background: rgba(16, 185, 129, 0.09);
+}
+
+#how-we-work-section .hww-visual-step2 .hww-visual-row {
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    border-left: 2.5px solid #a855f7;
+    background: rgba(168, 85, 247, 0.05);
+}
+
+#how-we-work-section .hww-visual-step2 .hww-visual-row:hover {
+    border-color: rgba(168, 85, 247, 0.45);
+    border-left-color: #c084fc;
+    background: rgba(168, 85, 247, 0.09);
+}
+
+#how-we-work-section .hww-visual-step3 .hww-visual-row {
+    border: 1px solid rgba(244, 63, 94, 0.25);
+    border-left: 2.5px solid #f43f5e;
+    background: rgba(244, 63, 94, 0.05);
+}
+
+#how-we-work-section .hww-visual-step3 .hww-visual-row:hover {
+    border-color: rgba(244, 63, 94, 0.45);
+    border-left-color: #fb7185;
+    background: rgba(244, 63, 94, 0.09);
+}
+
+#how-we-work-section .hww-visual-step4 .hww-visual-row {
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-left: 2.5px solid #f59e0b;
+    background: rgba(245, 158, 11, 0.05);
+}
+
+#how-we-work-section .hww-visual-step4 .hww-visual-row:hover {
+    border-color: rgba(245, 158, 11, 0.45);
+    border-left-color: #fbbf24;
+    background: rgba(245, 158, 11, 0.09);
 }
 
 #how-we-work-section .hww-row-left {
     display: flex;
     align-items: center;
-    gap: 0.45rem;
-    color: #e2e8f0;
+    gap: 0.55rem;
+    color: #f1f5f9;
     font-weight: 500;
+}
+
+#how-we-work-section .hww-row-left svg {
+    color: #10b981;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 3px rgba(16, 185, 129, 0.35));
+    shape-rendering: geometricPrecision;
+}
+
+#how-we-work-section .hww-visual-step2 .hww-row-left svg {
+    color: #a855f7;
+    filter: drop-shadow(0 0 3px rgba(168, 85, 247, 0.35));
+}
+
+#how-we-work-section .hww-visual-step3 .hww-row-left svg {
+    color: #f43f5e;
+    filter: drop-shadow(0 0 3px rgba(244, 63, 94, 0.35));
+}
+
+#how-we-work-section .hww-visual-step4 .hww-row-left svg {
+    color: #f59e0b;
+    filter: drop-shadow(0 0 3px rgba(245, 158, 11, 0.35));
 }
 
 #how-we-work-section .hww-row-right {
     font-weight: 600;
-    font-size: 0.68rem;
+    font-size: 0.72rem;
 }
 
 #how-we-work-section .hww-status-green {
@@ -4467,11 +4556,11 @@ body.dark-theme .prop-card-main-title,
 /* Step 2 Progress Bar */
 #how-we-work-section .hww-prog-track {
     width: 100%;
-    height: 3px;
+    height: 4px;
     background: rgba(255, 255, 255, 0.08);
     border-radius: 9999px;
     overflow: hidden;
-    margin-top: 0.1rem;
+    margin-top: 0.15rem;
 }
 
 #how-we-work-section .hww-prog-fill {
@@ -4483,13 +4572,14 @@ body.dark-theme .prop-card-main-title,
 
 /* Live Status Banners */
 #how-we-work-section .hww-live-banner {
-    border-radius: 6px;
-    padding: 0.4rem 0.65rem;
+    border-radius: 7px;
+    padding: 0.44rem 0.75rem;
     display: flex;
     align-items: center;
-    gap: 0.45rem;
-    font-size: 0.68rem;
+    gap: 0.5rem;
+    font-size: 0.72rem;
     font-weight: 500;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 #how-we-work-section .hww-dot-pulse {
@@ -4532,11 +4622,12 @@ body.dark-theme .prop-card-main-title,
 }
 
 #how-we-work-section .hww-stat-box {
-    background: var(--hww-card-inner);
-    border: 1px solid rgba(245, 158, 11, 0.2);
-    border-radius: 6px;
+    background: #0f1422;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 7px;
     padding: 0.5rem 0.35rem;
     text-align: center;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 #how-we-work-section .hww-stat-number {
@@ -4549,7 +4640,7 @@ body.dark-theme .prop-card-main-title,
 }
 
 #how-we-work-section .hww-stat-label {
-    font-size: 0.64rem;
+    font-size: 0.66rem;
     color: var(--hww-text-body);
 }
 
