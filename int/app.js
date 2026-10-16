@@ -738,6 +738,107 @@
     })();
 
     /* ==========================================================================
+       6b. SMOOTH SCROLL MODULE (LENIS - CONSULTING.COM TIER FEEL)
+       ========================================================================== */
+    const SmoothScrollModule = (() => {
+        let lenisInstance = null;
+        let rafId = null;
+
+        function init() {
+            if (typeof window === 'undefined') return;
+
+            // Respect user accessibility preference
+            const prefersReducedMotion = window.matchMedia &&
+                typeof window.matchMedia === 'function' &&
+                window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (prefersReducedMotion) return;
+
+            if (typeof window.Lenis !== 'function') return;
+
+            try {
+                lenisInstance = new window.Lenis({
+                    duration: 1.0, // Matches Consulting.com's intensity setting
+                    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Snappy exponential ease-out
+                    orientation: 'vertical',
+                    gestureOrientation: 'vertical',
+                    smoothWheel: true,
+                    wheelMultiplier: 1.0,
+                    touchMultiplier: 1.5,
+                });
+
+                function raf(time) {
+                    if (lenisInstance) {
+                        lenisInstance.raf(time);
+                        rafId = window.requestAnimationFrame(raf);
+                    }
+                }
+                rafId = window.requestAnimationFrame(raf);
+
+                window.lenis = lenisInstance;
+
+                // Synchronize Lenis scroll events with Header Contrast updates
+                lenisInstance.on('scroll', () => {
+                    if (ScrollAnimationModule && typeof ScrollAnimationModule.updateHeaderContrast === 'function') {
+                        ScrollAnimationModule.updateHeaderContrast();
+                    }
+                });
+
+                // Anchor link smooth scrolling (excluding How We Work scrubber)
+                initAnchorNavigation();
+            } catch (err) {
+                console.warn('Smooth scroll initialization error:', err);
+            }
+        }
+
+        function initAnchorNavigation() {
+            if (!lenisInstance) return;
+
+            const anchors = document.querySelectorAll('a[href^="#"]');
+            anchors.forEach(anchor => {
+                if (!anchor || typeof anchor.getAttribute !== 'function') return;
+                // Exclude links inside How We Work section or modals
+                if (anchor.closest && (anchor.closest('#how-we-work-section') || anchor.closest('[data-lenis-prevent]'))) return;
+                if (anchor.hasAttribute('data-modal-target') || anchor.hasAttribute('data-hww-goto')) return;
+
+                anchor.addEventListener('click', (e) => {
+                    const href = anchor.getAttribute('href');
+                    if (!href || href === '#' || href === '#!') return;
+                    const targetEl = document.querySelector(href);
+                    if (targetEl) {
+                        e.preventDefault();
+                        lenisInstance.scrollTo(targetEl, {
+                            offset: -70,
+                            duration: 1.0
+                        });
+                    }
+                });
+            });
+        }
+
+        function destroy() {
+            if (rafId && typeof window !== 'undefined' && typeof window.cancelAnimationFrame === 'function') {
+                window.cancelAnimationFrame(rafId);
+                rafId = null;
+            }
+            if (lenisInstance) {
+                if (typeof lenisInstance.destroy === 'function') {
+                    lenisInstance.destroy();
+                }
+                lenisInstance = null;
+                if (typeof window !== 'undefined') {
+                    window.lenis = null;
+                }
+            }
+        }
+
+        function getLenis() {
+            return lenisInstance;
+        }
+
+        return { init, destroy, getLenis };
+    })();
+
+    /* ==========================================================================
        7. SCROLL ANIMATION & HEADER CONTRAST MODULE
        ========================================================================== */
     const ScrollAnimationModule = (() => {
@@ -751,7 +852,22 @@
         }
 
         function initObserver() {
-            const revealElements = document.querySelectorAll('.reveal-on-scroll, .glass-card, .prop-card, .pillar-card, .case-card, .stat-counter-box, .discover-article-card, .cinematic-card, .hud-panel, .ind-card');
+            const candidates = document.querySelectorAll('.reveal-on-scroll, .glass-card, .prop-card, .pillar-card, .case-card, .stat-counter-box, .discover-article-card, .cinematic-card, .hud-panel, .ind-card');
+            if (candidates.length === 0) return;
+
+            // Completely exclude the "How We Work" section and any elements inside [data-lenis-prevent]
+            const revealElements = Array.from(candidates).filter(el => {
+                if (!el) return false;
+                if (typeof el.closest === 'function') {
+                    if (el.closest('#how-we-work-section') ||
+                        el.closest('[data-lenis-prevent]') ||
+                        el.closest('.hww-spatial-canvas') ||
+                        el.closest('.hww-track')) {
+                        return false;
+                    }
+                }
+                return true;
+            });
             if (revealElements.length === 0) return;
 
             if ('IntersectionObserver' in window) {
@@ -763,7 +879,7 @@
                         }
                     });
                 }, {
-                    threshold: 0.1,
+                    threshold: 0.08,
                     rootMargin: '0px 0px -40px 0px'
                 });
 
@@ -1530,7 +1646,9 @@
                 targetTop = trackTopAbs + (p * scrollable);
             }
 
-            if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+            if (window.lenis && typeof window.lenis.scrollTo === 'function') {
+                window.lenis.scrollTo(targetTop, { immediate: false, duration: 0.8 });
+            } else if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
                 window.scrollTo({ top: targetTop, behavior: 'smooth' });
             }
 
@@ -1633,7 +1751,14 @@
                 return { initialized: false, reason: 'Root element missing' };
             }
 
+            if (typeof sectionEl.setAttribute === 'function') {
+                sectionEl.setAttribute('data-lenis-prevent', '');
+            }
+
             trackEl = document.getElementById('hww-track') || (sectionEl.querySelector && sectionEl.querySelector('.hww-track'));
+            if (trackEl && typeof trackEl.setAttribute === 'function') {
+                trackEl.setAttribute('data-lenis-prevent', '');
+            }
             canvasEl = document.getElementById('hww-spatial-canvas') || (sectionEl.querySelector && sectionEl.querySelector('.hww-spatial-canvas'));
             introFrameEl = document.getElementById('hww-intro-frame') || (sectionEl.querySelector && sectionEl.querySelector('.hww-intro-frame'));
             stateIntroEl = document.getElementById('hww-state-intro') || (sectionEl.querySelector && sectionEl.querySelector('.hww-state-intro'));
@@ -1854,6 +1979,7 @@
         RoiCalculatorModule,
         AccordionModule,
         ScrollAnimationModule,
+        SmoothScrollModule,
         InteractiveComponentsModule,
         HowWeWorkModule,
         RobotHeroModule,
@@ -1865,6 +1991,7 @@
             RoiCalculatorModule.init();
             AccordionModule.init();
             ScrollAnimationModule.init();
+            SmoothScrollModule.init();
             InteractiveComponentsModule.init();
             HowWeWorkModule.init();
             RobotHeroModule.init();

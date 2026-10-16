@@ -2202,12 +2202,30 @@ input[type="range"]::-webkit-slider-thumb:hover,
 }
 
 /* ==========================================================================
-   17. SCROLL-DRIVEN REVEAL ANIMATIONS & UTILITIES
+   17. SCROLL-DRIVEN REVEAL ANIMATIONS & UTILITIES (CONSULTING.COM FEEL)
    ========================================================================== */
+/* Core Smooth Scroll Setup (Lenis) */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* Subtle Scroll-Triggered Reveals (Consulting.com Standard) */
 .reveal-on-scroll {
     opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(20px);
+    transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: opacity, transform;
 }
 
@@ -2234,6 +2252,17 @@ input[type="range"]::-webkit-slider-thumb:hover,
 
 .delay-400 {
     transition-delay: 0.4s;
+}
+
+.delay-500 {
+    transition-delay: 0.5s;
+}
+
+/* Strict exclusion of #how-we-work-section from generic scroll reveals */
+#how-we-work-section .reveal-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
 }
 
 /* Custom cursor tracker */
