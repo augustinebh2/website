@@ -3978,6 +3978,7 @@ body.dark-theme .prop-card-main-title,
     color: var(--hww-text-white);
     padding: 0;
     overflow: visible;
+    overscroll-behavior: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -3988,6 +3989,7 @@ body.dark-theme .prop-card-main-title,
     position: relative;
     height: 600vh;
     background-color: var(--hww-bg-canvas);
+    overscroll-behavior: auto;
 }
 
 /* Sticky Viewport */

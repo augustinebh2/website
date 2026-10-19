@@ -1622,7 +1622,6 @@
         }
 
         function onScroll() {
-            if (isSnapping) return;
             targetProgress = computeTargetProgress();
             if (!isLoopRunning) {
                 currentProgress = targetProgress;
@@ -1656,11 +1655,62 @@
                 targetTop = trackTopAbs + (p * scrollable);
             }
 
-            if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+            if (window.lenis && typeof window.lenis.scrollTo === 'function') {
+                window.lenis.scrollTo(targetTop, { duration: 0.8, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+            } else if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
                 window.scrollTo({ top: targetTop, behavior: 'smooth' });
             }
 
-            renderFrame(p);
+            startLoop();
+        }
+
+        function scrollToFooter() {
+            let targetTop = 0;
+            if (trackEl) {
+                const rect = trackEl.getBoundingClientRect ? trackEl.getBoundingClientRect() : { top: 0, height: 5000 };
+                const vh = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 800;
+                const th = trackEl.offsetHeight || rect.height || 5000;
+                const scrollable = Math.max(1, th - vh);
+                const currentScrollY = (typeof window !== 'undefined' && (window.pageYOffset || (window.document && window.document.documentElement && window.document.documentElement.scrollTop))) || 0;
+                const trackTopAbs = currentScrollY + (rect ? rect.top : 0);
+                targetTop = trackTopAbs + scrollable + 10;
+            } else {
+                const footer = document.getElementById('watermark-section');
+                if (footer) targetTop = footer.offsetTop;
+            }
+
+            currentStageIndex = 5;
+            targetProgress = 1.0;
+
+            if (window.lenis && typeof window.lenis.scrollTo === 'function') {
+                window.lenis.scrollTo(targetTop, { duration: 0.8, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+            } else if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+                window.scrollTo({ top: targetTop, behavior: 'smooth' });
+            }
+
+            startLoop();
+        }
+
+        function scrollToPreviousSection() {
+            let targetTop = 0;
+            if (trackEl) {
+                const rect = trackEl.getBoundingClientRect ? trackEl.getBoundingClientRect() : { top: 0, height: 5000 };
+                const vh = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 800;
+                const currentScrollY = (typeof window !== 'undefined' && (window.pageYOffset || (window.document && window.document.documentElement && window.document.documentElement.scrollTop))) || 0;
+                const trackTopAbs = currentScrollY + (rect ? rect.top : 0);
+                targetTop = Math.max(0, trackTopAbs - vh * 0.5);
+            }
+
+            currentStageIndex = 0;
+            targetProgress = 0;
+
+            if (window.lenis && typeof window.lenis.scrollTo === 'function') {
+                window.lenis.scrollTo(targetTop, { duration: 0.8, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+            } else if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+                window.scrollTo({ top: targetTop, behavior: 'smooth' });
+            }
+
+            startLoop();
         }
 
         function scrollToPhase(phaseIndex) {
@@ -1680,9 +1730,10 @@
             if (!rect) return;
             const vh = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 800;
 
-            // Intercept only when the section sticky viewport is currently occupying the screen
-            const isSectionInView = rect.top <= 60 && rect.bottom >= 60;
-            if (!isSectionInView) return;
+            // Only intercept when the section sticky viewport is pinned:
+            // Top must have reached top of screen (rect.top <= 2), and bottom must be at/below viewport (rect.bottom >= vh - 20)
+            const isSectionPinned = rect.top <= 2 && rect.bottom >= (vh - 20);
+            if (!isSectionPinned) return;
 
             const delta = e.deltaY;
             if (Math.abs(delta) < 8) return;
@@ -1701,9 +1752,15 @@
                     isSnapping = true;
                     const nextStage = currentStageIndex + 1;
                     goToStage(nextStage);
-                    setTimeout(() => { isSnapping = false; }, 420);
+                    setTimeout(() => { isSnapping = false; }, 480);
+                } else if (currentStageIndex === 5) {
+                    // At stage 5 (outro), smoothly transition directly into the watermark footer
+                    e.preventDefault();
+                    if (isSnapping) return;
+                    isSnapping = true;
+                    scrollToFooter();
+                    setTimeout(() => { isSnapping = false; }, 480);
                 }
-                // At stage 5 (outro), let wheel pass through to scroll down to footer naturally
             } else if (delta < 0) {
                 // Scrolling BACKWARD (up)
                 if (currentStageIndex > 0) {
@@ -1712,9 +1769,15 @@
                     isSnapping = true;
                     const prevStage = currentStageIndex - 1;
                     goToStage(prevStage);
-                    setTimeout(() => { isSnapping = false; }, 420);
+                    setTimeout(() => { isSnapping = false; }, 480);
+                } else if (currentStageIndex === 0) {
+                    // At stage 0 (intro), smoothly scroll back up to previous section
+                    e.preventDefault();
+                    if (isSnapping) return;
+                    isSnapping = true;
+                    scrollToPreviousSection();
+                    setTimeout(() => { isSnapping = false; }, 480);
                 }
-                // At stage 0 (intro), let wheel pass through to scroll up to previous section naturally
             }
         }
 
@@ -1723,8 +1786,9 @@
             if (typeof window !== 'undefined' && window.innerWidth && window.innerWidth <= 992) return;
             const rect = sectionEl.getBoundingClientRect ? sectionEl.getBoundingClientRect() : null;
             if (!rect) return;
-            const isSectionInView = rect.top <= 60 && rect.bottom >= 60;
-            if (!isSectionInView) return;
+            const vh = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 800;
+            const isSectionPinned = rect.top <= 2 && rect.bottom >= (vh - 20);
+            if (!isSectionPinned) return;
 
             if (e.key === 'ArrowDown' || e.key === 'PageDown') {
                 if (currentStageIndex < 5) {
@@ -1732,7 +1796,13 @@
                     if (isSnapping) return;
                     isSnapping = true;
                     goToStage(currentStageIndex + 1);
-                    setTimeout(() => { isSnapping = false; }, 420);
+                    setTimeout(() => { isSnapping = false; }, 480);
+                } else if (currentStageIndex === 5) {
+                    e.preventDefault();
+                    if (isSnapping) return;
+                    isSnapping = true;
+                    scrollToFooter();
+                    setTimeout(() => { isSnapping = false; }, 480);
                 }
             } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
                 if (currentStageIndex > 0) {
@@ -1740,7 +1810,13 @@
                     if (isSnapping) return;
                     isSnapping = true;
                     goToStage(currentStageIndex - 1);
-                    setTimeout(() => { isSnapping = false; }, 420);
+                    setTimeout(() => { isSnapping = false; }, 480);
+                } else if (currentStageIndex === 0) {
+                    e.preventDefault();
+                    if (isSnapping) return;
+                    isSnapping = true;
+                    scrollToPreviousSection();
+                    setTimeout(() => { isSnapping = false; }, 480);
                 }
             }
         }
