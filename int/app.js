@@ -305,6 +305,9 @@
             demoModal.classList.add('active', 'is-open', 'open');
             demoModal.setAttribute('aria-hidden', 'false');
             document.body.style.overflow = 'hidden';
+            if (window.lenis && typeof window.lenis.stop === 'function') {
+                window.lenis.stop();
+            }
 
             const firstFocusable = demoModal.querySelector(focusableSelectors);
             if (firstFocusable) {
@@ -317,6 +320,9 @@
             demoModal.classList.remove('active', 'is-open', 'open');
             demoModal.setAttribute('aria-hidden', 'true');
             document.body.style.overflow = '';
+            if (window.lenis && typeof window.lenis.start === 'function') {
+                window.lenis.start();
+            }
 
             if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
                 lastFocusedElement.focus();
@@ -677,7 +683,7 @@
        ========================================================================== */
     const RoiCalculatorModule = (() => {
         return {
-            init: () => {},
+            init: () => { },
             calculate: () => ({ teamSize: 1, weeklyHours: 0, annualSavings: 0, deptKey: 'support' }),
             deptHourlyRates: { support: {}, sales: {}, finance: {}, operations: {} }
         };
@@ -803,13 +809,17 @@
                 anchor.addEventListener('click', (e) => {
                     const href = anchor.getAttribute('href');
                     if (!href || href === '#' || href === '#!') return;
-                    const targetEl = document.querySelector(href);
-                    if (targetEl) {
-                        e.preventDefault();
-                        lenisInstance.scrollTo(targetEl, {
-                            offset: -70,
-                            duration: 1.0
-                        });
+                    try {
+                        const targetEl = document.querySelector(href);
+                        if (targetEl) {
+                            e.preventDefault();
+                            lenisInstance.scrollTo(targetEl, {
+                                offset: -70,
+                                duration: 1.0
+                            });
+                        }
+                    } catch (err) {
+                        // Ignore non-standard selector syntax
                     }
                 });
             });
@@ -1349,14 +1359,14 @@
         const LERP_FACTOR = 0.20;
 
         const CAMERA_ANCHORS = [
-            { p: 0.00, scale: 1.00, tx: 0,   ty: 0,   stage: 0 },
-            { p: 0.08, scale: 1.00, tx: 0,   ty: 0,   stage: 0 },
-            { p: 0.25, scale: 1.85, tx: -24, ty: 24,  stage: 1 },
-            { p: 0.45, scale: 1.85, tx: 24,  ty: 24,  stage: 2 },
-            { p: 0.65, scale: 1.85, tx: 24,  ty: -24, stage: 3 },
-            { p: 0.825,scale: 1.85, tx: -24, ty: -24, stage: 4 },
-            { p: 0.95, scale: 1.00, tx: 0,   ty: 0,   stage: 5 },
-            { p: 1.00, scale: 1.00, tx: 0,   ty: 0,   stage: 5 }
+            { p: 0.00, scale: 1.00, tx: 0, ty: 0, stage: 0 },
+            { p: 0.08, scale: 1.00, tx: 0, ty: 0, stage: 0 },
+            { p: 0.25, scale: 1.85, tx: -24, ty: 24, stage: 1 },
+            { p: 0.45, scale: 1.85, tx: 24, ty: 24, stage: 2 },
+            { p: 0.65, scale: 1.85, tx: 24, ty: -24, stage: 3 },
+            { p: 0.825, scale: 1.85, tx: -24, ty: -24, stage: 4 },
+            { p: 0.95, scale: 1.00, tx: 0, ty: 0, stage: 5 },
+            { p: 1.00, scale: 1.00, tx: 0, ty: 0, stage: 5 }
         ];
 
         function smoothstep(t) {
@@ -1646,9 +1656,7 @@
                 targetTop = trackTopAbs + (p * scrollable);
             }
 
-            if (window.lenis && typeof window.lenis.scrollTo === 'function') {
-                window.lenis.scrollTo(targetTop, { immediate: false, duration: 0.8 });
-            } else if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
+            if (typeof window !== 'undefined' && typeof window.scrollTo === 'function') {
                 window.scrollTo({ top: targetTop, behavior: 'smooth' });
             }
 

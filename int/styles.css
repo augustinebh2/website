@@ -87,7 +87,7 @@
 }
 
 html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto !important;
     font-size: 16px;
     -webkit-text-size-adjust: 100%;
 }
@@ -2205,27 +2205,32 @@ input[type="range"]::-webkit-slider-thumb:hover,
    17. SCROLL-DRIVEN REVEAL ANIMATIONS & UTILITIES (CONSULTING.COM FEEL)
    ========================================================================== */
 /* Core Smooth Scroll Setup (Lenis) */
-html.lenis, html.lenis body {
-  height: auto;
+html.lenis,
+html.lenis body {
+    height: auto;
 }
+
 .lenis.lenis-smooth {
-  scroll-behavior: auto !important;
+    scroll-behavior: auto !important;
 }
+
 .lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
+    overscroll-behavior: contain;
 }
+
 .lenis.lenis-stopped {
-  overflow: hidden;
+    overflow: hidden;
 }
+
 .lenis.lenis-scrolling iframe {
-  pointer-events: none;
+    pointer-events: none;
 }
 
 /* Subtle Scroll-Triggered Reveals (Consulting.com Standard) */
 .reveal-on-scroll {
     opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(16px);
+    transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: opacity, transform;
 }
 
@@ -2236,6 +2241,7 @@ html.lenis, html.lenis body {
 .is-revealed {
     opacity: 1 !important;
     transform: translateY(0) !important;
+    will-change: auto !important;
 }
 
 .delay-100 {
@@ -4696,12 +4702,14 @@ body.dark-theme .prop-card-main-title,
     font-weight: 900;
     flex-shrink: 0;
 }
+
 /* How We Work Desktop & Responsive Layout Standards */
 .hww-viewport-rules {
     perspective: 1200px;
     align-items: center;
     justify-content: center;
 }
+
 .hww-canvas-spec {
     width: 1400px;
     max-width: 94vw;
@@ -4709,12 +4717,15 @@ body.dark-theme .prop-card-main-title,
     transform-style: preserve-3d;
     grid-template-columns: 1fr 1fr;
 }
+
 .hww-phase-title {
     font-size: 1.35rem;
 }
+
 .hww-phase-description {
     font-size: 0.85rem;
 }
+
 .hww-points-list li {
     font-size: 0.78rem;
 }
@@ -4723,13 +4734,16 @@ body.dark-theme .prop-card-main-title,
     #how-we-work-section .hww-track {
         height: auto !important;
     }
+
     #how-we-work-section .hww-spatial-canvas {
         transform: none !important;
         flex-direction: column !important;
     }
+
     .hww-hud-overlay {
         display: none !important;
     }
+
     .hww-quadrant-card {
         width: 100% !important;
     }
@@ -4740,12 +4754,15 @@ body.dark-theme .prop-card-main-title,
     .pill-title {
         display: none !important;
     }
-    .mockup-telemetry-grid, .vitals-telemetry-grid {
+
+    .mockup-telemetry-grid,
+    .vitals-telemetry-grid {
         grid-template-columns: 1fr !important;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
+
     .wave-bar,
     .live-pulse-dot,
     .sprint-progress-fill,
@@ -4753,6 +4770,7 @@ body.dark-theme .prop-card-main-title,
     .rlhf-spin-icon {
         animation: none !important;
     }
+
     .hww-spatial-canvas,
     .hww-canvas {
         transition: opacity 0.2s ease !important;
@@ -5977,7 +5995,8 @@ spline-viewer a[href*="spline.design"] {
 
 .discover-robot-hero.is-revealed .robot-chest-letters {
     opacity: 0.96;
-    transition-delay: 1.2s; /* Fades in smoothly once 3D robot settles into standing pose */
+    transition-delay: 1.2s;
+    /* Fades in smoothly once 3D robot settles into standing pose */
 }
 
 .chest-ir-letters-img {
