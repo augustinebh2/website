@@ -1356,6 +1356,12 @@
         let currentStageIndex = 0;
         const STAGE_PROGRESS = [0.05, 0.25, 0.45, 0.65, 0.825, 0.98];
 
+        // Entry/exit smoothing: pin detection tolerance and gesture boundary after landing on a pin edge
+        const PIN_TOLERANCE_PX = 2;
+        const GESTURE_GAP_MS = 220;
+        let lastEdgeAbsorbAt = 0;
+        let lastEdgeDirection = 0;
+
         const LERP_FACTOR = 0.20;
 
         const CAMERA_ANCHORS = [
@@ -1667,13 +1673,10 @@
         function scrollToFooter() {
             let targetTop = 0;
             if (trackEl) {
-                const rect = trackEl.getBoundingClientRect ? trackEl.getBoundingClientRect() : { top: 0, height: 5000 };
-                const vh = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 800;
-                const th = trackEl.offsetHeight || rect.height || 5000;
-                const scrollable = Math.max(1, th - vh);
-                const currentScrollY = (typeof window !== 'undefined' && (window.pageYOffset || (window.document && window.document.documentElement && window.document.documentElement.scrollTop))) || 0;
-                const trackTopAbs = currentScrollY + (rect ? rect.top : 0);
-                targetTop = trackTopAbs + scrollable + 10;
+                // Scroll fully past the pinned track so the next section starts at the top of the viewport
+                // (previously +10px left the section within the "pinned" tolerance and re-snapped in place).
+                const m = getPinMetrics();
+                targetTop = m.pinEnd + m.vh;
             } else {
                 const footer = document.getElementById('watermark-section');
                 if (footer) targetTop = footer.offsetTop;
@@ -1722,21 +1725,99 @@
             goToStage(sanitized);
         }
 
+        // Absolute pin boundaries of the sticky track (document coordinates)
+        function getPinMetrics() {
+            const rect = trackEl.getBoundingClientRect ? trackEl.getBoundingClientRect() : { top: 0, height: 5000 };
+            const vh = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 800;
+            const th = trackEl.offsetHeight || rect.height || 5000;
+            const scrollable = Math.max(1, th - vh);
+            const scrollY = (typeof window !== 'undefined' && (window.pageYOffset || (window.document && window.document.documentElement && window.document.documentElement.scrollTop))) || 0;
+            const pinStart = scrollY + rect.top;
+            const pinEnd = pinStart + scrollable;
+            return {
+                vh,
+                scrollY,
+                pinStart,
+                pinEnd,
+                isAbove: scrollY < pinStart - PIN_TOLERANCE_PX,
+                isBelow: scrollY > pinEnd + PIN_TOLERANCE_PX
+            };
+        }
+
+        function getLenisInstance() {
+            const l = typeof window !== 'undefined' ? window.lenis : null;
+            return (l && typeof l.scrollTo === 'function' && typeof l.targetScroll === 'number') ? l : null;
+        }
+
+        function normalizeWheelDelta(e) {
+            let d = e.deltaY || 0;
+            if (e.deltaMode === 1) d *= 16.666666666666668;
+            else if (e.deltaMode === 2) d *= ((typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 800);
+            return d;
+        }
+
+        function swallowWheel(e) {
+            if (e.cancelable) e.preventDefault();
+            e.lenisStopPropagation = true;
+        }
+
+        // Route a wheel tick through Lenis so the section never mixes native scrolling with Lenis smoothing
+        // (the cause of the drag on entry/exit). Optional `stopAt` clamps to a pin edge so momentum lands
+        // exactly on the intro ("How we work") or outro frame instead of overshooting into the track.
+        function forwardWheel(e, delta, stopAt) {
+            const lenis = getLenisInstance();
+            if (!lenis) return false; // No Lenis (e.g. reduced motion): allow native scrolling
+            swallowWheel(e);
+            let to = lenis.targetScroll + delta;
+            if (typeof stopAt === 'number') {
+                to = delta > 0 ? Math.min(to, stopAt) : Math.max(to, stopAt);
+                if (to === stopAt) {
+                    lastEdgeAbsorbAt = Date.now();
+                    lastEdgeDirection = Math.sign(delta);
+                }
+            }
+            lenis.scrollTo(to, { programmatic: false, duration: 1.0, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+            return true;
+        }
+
         function onWheel(e) {
             if (!sectionEl || !trackEl) return;
             if (typeof window !== 'undefined' && window.innerWidth && window.innerWidth <= 992) return;
+            if (e.ctrlKey) return; // pinch-zoom
 
-            const rect = sectionEl.getBoundingClientRect ? sectionEl.getBoundingClientRect() : null;
-            if (!rect) return;
-            const vh = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 800;
+            const delta = normalizeWheelDelta(e);
+            if (!delta) return;
 
-            // Only intercept when the section sticky viewport is pinned:
-            // Top must have reached top of screen (rect.top <= 2), and bottom must be at/below viewport (rect.bottom >= vh - 20)
-            const isSectionPinned = rect.top <= 2 && rect.bottom >= (vh - 20);
-            if (!isSectionPinned) return;
+            const m = getPinMetrics();
+            const insideSection = !!(e.target && typeof sectionEl.contains === 'function' && sectionEl.contains(e.target));
 
-            const delta = e.deltaY;
-            if (Math.abs(delta) < 8) return;
+            // Never interfere while a modal has paused scrolling, or inside other scroll-isolated panels
+            const activeLenis = getLenisInstance();
+            if (activeLenis && activeLenis.isStopped) return;
+            if (!insideSection && e.target && typeof e.target.closest === 'function' &&
+                e.target.closest('[data-lenis-prevent], [role="dialog"], #demo-modal')) return;
+
+            // ---- Approach / exit zones (section visible but not pinned) ----
+            if (m.isAbove || m.isBelow) {
+                const lenis = getLenisInstance();
+                const base = lenis ? lenis.targetScroll : m.scrollY;
+                if (delta > 0 && m.isAbove && base + delta >= m.pinStart) {
+                    forwardWheel(e, delta, m.pinStart); // Scrolling in from above: settle on the intro frame
+                } else if (delta < 0 && m.isBelow && base + delta <= m.pinEnd) {
+                    forwardWheel(e, delta, m.pinEnd);   // Scrolling back in from below: settle on the outro frame
+                } else if (insideSection) {
+                    forwardWheel(e, delta);             // Keep Lenis smoothing while the cursor is over the section
+                }
+                return;
+            }
+
+            // ---- Pinned: stage-by-stage navigation ----
+            // Swallow the tail of the gesture that carried us in, so momentum doesn't skip the intro/outro frame.
+            if (Math.sign(delta) === lastEdgeDirection && Date.now() - lastEdgeAbsorbAt < GESTURE_GAP_MS) {
+                swallowWheel(e);
+                lastEdgeAbsorbAt = Date.now();
+                return;
+            }
 
             // Synchronize stage index when not mid-snap
             if (!isSnapping) {
@@ -1744,51 +1825,29 @@
                 currentStageIndex = matrix.stage;
             }
 
-            if (delta > 0) {
-                // Scrolling FORWARD (down)
-                if (currentStageIndex < 5) {
-                    e.preventDefault();
-                    if (isSnapping) return;
-                    isSnapping = true;
-                    const nextStage = currentStageIndex + 1;
-                    goToStage(nextStage);
-                    setTimeout(() => { isSnapping = false; }, 480);
-                } else if (currentStageIndex === 5) {
-                    // At stage 5 (outro), smoothly transition directly into the watermark footer
-                    e.preventDefault();
-                    if (isSnapping) return;
-                    isSnapping = true;
-                    scrollToFooter();
-                    setTimeout(() => { isSnapping = false; }, 480);
+            // Leaving the section (down from the outro / up from the intro): hand the wheel back to Lenis
+            // for a continuous, user-controlled exit instead of a fixed jump.
+            if ((delta > 0 && currentStageIndex >= 5) || (delta < 0 && currentStageIndex <= 0)) {
+                if (isSnapping) {
+                    swallowWheel(e);
+                    return;
                 }
-            } else if (delta < 0) {
-                // Scrolling BACKWARD (up)
-                if (currentStageIndex > 0) {
-                    e.preventDefault();
-                    if (isSnapping) return;
-                    isSnapping = true;
-                    const prevStage = currentStageIndex - 1;
-                    goToStage(prevStage);
-                    setTimeout(() => { isSnapping = false; }, 480);
-                } else if (currentStageIndex === 0) {
-                    // At stage 0 (intro), smoothly scroll back up to previous section
-                    e.preventDefault();
-                    if (isSnapping) return;
-                    isSnapping = true;
-                    scrollToPreviousSection();
-                    setTimeout(() => { isSnapping = false; }, 480);
-                }
+                forwardWheel(e, delta);
+                return;
             }
+
+            swallowWheel(e);
+            if (isSnapping || Math.abs(delta) < 8) return;
+            isSnapping = true;
+            goToStage(delta > 0 ? currentStageIndex + 1 : currentStageIndex - 1);
+            setTimeout(() => { isSnapping = false; }, 480);
         }
 
         function onKeyDown(e) {
             if (!sectionEl || !trackEl) return;
             if (typeof window !== 'undefined' && window.innerWidth && window.innerWidth <= 992) return;
-            const rect = sectionEl.getBoundingClientRect ? sectionEl.getBoundingClientRect() : null;
-            if (!rect) return;
-            const vh = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 800;
-            const isSectionPinned = rect.top <= 2 && rect.bottom >= (vh - 20);
-            if (!isSectionPinned) return;
+            const pin = getPinMetrics();
+            if (pin.isAbove || pin.isBelow) return;
 
             if (e.key === 'ArrowDown' || e.key === 'PageDown') {
                 if (currentStageIndex < 5) {
@@ -1888,8 +1947,10 @@
                 window.addEventListener('keydown', boundKeyDownHandler, { passive: false });
             }
 
-            if (sectionEl && typeof sectionEl.addEventListener === 'function') {
-                sectionEl.addEventListener('wheel', boundWheelHandler, { passive: false });
+            // Capture phase on window: runs before Lenis' own wheel listener, so entry/exit ticks can be
+            // clamped to the pin edges even when the cursor is over the neighbouring section.
+            if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+                window.addEventListener('wheel', boundWheelHandler, { passive: false, capture: true });
             }
 
             targetProgress = computeTargetProgress();
@@ -1932,8 +1993,8 @@
                     window.removeEventListener('keydown', boundKeyDownHandler);
                 }
             }
-            if (sectionEl && boundWheelHandler && typeof sectionEl.removeEventListener === 'function') {
-                sectionEl.removeEventListener('wheel', boundWheelHandler);
+            if (boundWheelHandler && typeof window !== 'undefined' && typeof window.removeEventListener === 'function') {
+                window.removeEventListener('wheel', boundWheelHandler, { capture: true });
             }
             stopLoop();
             if (canvasEl && canvasEl.style) {
