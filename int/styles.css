@@ -4149,8 +4149,11 @@ body.dark-theme .prop-card-main-title,
     color: #ffffff;
     letter-spacing: -0.02em;
     line-height: 1.05;
-    text-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+    text-shadow: none !important;
     text-align: center;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 #how-we-work-section .hww-title-init {
@@ -4165,7 +4168,7 @@ body.dark-theme .prop-card-main-title,
     transform: translate(-50%, -50%);
     width: 100%;
     transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-    text-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
+    text-shadow: none !important;
 }
 
 #how-we-work-section .hww-main-title,

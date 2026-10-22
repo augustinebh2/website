@@ -1356,11 +1356,7 @@
         let currentStageIndex = 0;
         const STAGE_PROGRESS = [0.05, 0.25, 0.45, 0.65, 0.825, 0.98];
 
-        // Entry/exit smoothing: pin detection tolerance and gesture boundary after landing on a pin edge
         const PIN_TOLERANCE_PX = 2;
-        const GESTURE_GAP_MS = 220;
-        let lastEdgeAbsorbAt = 0;
-        let lastEdgeDirection = 0;
 
         const LERP_FACTOR = 0.20;
 
@@ -1509,6 +1505,7 @@
         function renderFrame(progress) {
             const matrix = computeCameraTransform(progress);
             const stage = matrix.stage;
+            currentStageIndex = stage;
 
             if (stage >= 1 && stage <= 4) {
                 activePhaseIndex = stage;
@@ -1761,22 +1758,14 @@
             e.lenisStopPropagation = true;
         }
 
-        // Route a wheel tick through Lenis so the section never mixes native scrolling with Lenis smoothing
-        // (the cause of the drag on entry/exit). Optional `stopAt` clamps to a pin edge so momentum lands
-        // exactly on the intro ("How we work") or outro frame instead of overshooting into the track.
-        function forwardWheel(e, delta, stopAt) {
+        // Route wheel movement continuously through smooth scroll without trapping or freezing
+        function forwardWheel(e, delta) {
             const lenis = getLenisInstance();
             if (!lenis) return false; // No Lenis (e.g. reduced motion): allow native scrolling
             swallowWheel(e);
-            let to = lenis.targetScroll + delta;
-            if (typeof stopAt === 'number') {
-                to = delta > 0 ? Math.min(to, stopAt) : Math.max(to, stopAt);
-                if (to === stopAt) {
-                    lastEdgeAbsorbAt = Date.now();
-                    lastEdgeDirection = Math.sign(delta);
-                }
-            }
-            lenis.scrollTo(to, { programmatic: false, duration: 1.0, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+            const current = typeof lenis.targetScroll === 'number' ? lenis.targetScroll : (window.pageYOffset || 0);
+            const to = current + delta;
+            lenis.scrollTo(to, { programmatic: false, duration: 0.8, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
             return true;
         }
 
@@ -1785,62 +1774,21 @@
             if (typeof window !== 'undefined' && window.innerWidth && window.innerWidth <= 992) return;
             if (e.ctrlKey) return; // pinch-zoom
 
+            const activeLenis = getLenisInstance();
+            if (activeLenis && activeLenis.isStopped) return;
+
+            // Never interfere inside modal or other scroll-isolated dialogs
+            if (e.target && typeof e.target.closest === 'function' &&
+                e.target.closest('[role="dialog"], #demo-modal, .modal-backdrop')) return;
+
+            const insideSection = !!(e.target && typeof sectionEl.contains === 'function' && sectionEl.contains(e.target));
+            if (!insideSection) return;
+
             const delta = normalizeWheelDelta(e);
             if (!delta) return;
 
-            const m = getPinMetrics();
-            const insideSection = !!(e.target && typeof sectionEl.contains === 'function' && sectionEl.contains(e.target));
-
-            // Never interfere while a modal has paused scrolling, or inside other scroll-isolated panels
-            const activeLenis = getLenisInstance();
-            if (activeLenis && activeLenis.isStopped) return;
-            if (!insideSection && e.target && typeof e.target.closest === 'function' &&
-                e.target.closest('[data-lenis-prevent], [role="dialog"], #demo-modal')) return;
-
-            // ---- Approach / exit zones (section visible but not pinned) ----
-            if (m.isAbove || m.isBelow) {
-                const lenis = getLenisInstance();
-                const base = lenis ? lenis.targetScroll : m.scrollY;
-                if (delta > 0 && m.isAbove && base + delta >= m.pinStart) {
-                    forwardWheel(e, delta, m.pinStart); // Scrolling in from above: settle on the intro frame
-                } else if (delta < 0 && m.isBelow && base + delta <= m.pinEnd) {
-                    forwardWheel(e, delta, m.pinEnd);   // Scrolling back in from below: settle on the outro frame
-                } else if (insideSection) {
-                    forwardWheel(e, delta);             // Keep Lenis smoothing while the cursor is over the section
-                }
-                return;
-            }
-
-            // ---- Pinned: stage-by-stage navigation ----
-            // Swallow the tail of the gesture that carried us in, so momentum doesn't skip the intro/outro frame.
-            if (Math.sign(delta) === lastEdgeDirection && Date.now() - lastEdgeAbsorbAt < GESTURE_GAP_MS) {
-                swallowWheel(e);
-                lastEdgeAbsorbAt = Date.now();
-                return;
-            }
-
-            // Synchronize stage index when not mid-snap
-            if (!isSnapping) {
-                const matrix = computeCameraTransform(targetProgress);
-                currentStageIndex = matrix.stage;
-            }
-
-            // Leaving the section (down from the outro / up from the intro): hand the wheel back to Lenis
-            // for a continuous, user-controlled exit instead of a fixed jump.
-            if ((delta > 0 && currentStageIndex >= 5) || (delta < 0 && currentStageIndex <= 0)) {
-                if (isSnapping) {
-                    swallowWheel(e);
-                    return;
-                }
-                forwardWheel(e, delta);
-                return;
-            }
-
-            swallowWheel(e);
-            if (isSnapping || Math.abs(delta) < 8) return;
-            isSnapping = true;
-            goToStage(delta > 0 ? currentStageIndex + 1 : currentStageIndex - 1);
-            setTimeout(() => { isSnapping = false; }, 480);
+            // Continuous fluid scroll routing through Lenis: eliminates stops, jams, and artificial locks
+            forwardWheel(e, delta);
         }
 
         function onKeyDown(e) {
