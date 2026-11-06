@@ -1,3 +1,6 @@
 node_modules/
 .DS_Store
 *.log
+hww_app.js
+hww_index.html
+hww_styles.css

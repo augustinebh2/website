@@ -978,10 +978,11 @@
 
         // 3D Card Hover Tilt
         function initCardTilt() {
-            const tiltCards = document.querySelectorAll('.glass-card, .prop-card, .pillar-card');
+            const tiltCards = document.querySelectorAll('.glass-card:not(.booking-modal-card):not(.modal-card):not(.modal-dialog), .prop-card, .pillar-card');
             if (tiltCards.length === 0) return;
 
             tiltCards.forEach(card => {
+                if (card.closest && card.closest('#demo-modal, .modal-backdrop, .modal')) return;
                 let rafId = null;
                 card.addEventListener('mousemove', (e) => {
                     if (rafId) cancelAnimationFrame(rafId);
